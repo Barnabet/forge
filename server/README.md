@@ -21,4 +21,5 @@ set to your real CLIProxyAPI key — the default is a placeholder):
     make lint         # ruff
     make export-protocol   # JSON-Schema bundle for web codegen
 
-Env: `FORGE_HOME` overrides `~/.forge`.
+Env: `FORGE_HOME` overrides `~/.forge`. Contents: `config.toml` (settings),
+`projects.json` (project list + per-project default model/autonomy/effort).

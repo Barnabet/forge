@@ -1,7 +1,9 @@
 # Forge web
 
-React + Vite SPA for the Forge engine. Design source of truth:
-`../design_handoff_agent_workspace/` (card 2a "Stream").
+React + Vite SPA for the Forge engine. The workspace sidebar groups sessions by
+project (folder + default model/autonomy/effort); sessions can be archived or
+deleted. Design source of truth: `../design_handoff_agent_workspace/`
+(card 2a "Stream").
 
     pnpm install
     pnpm dev            # Vite on :5173, proxies /api and /ws to :8700
