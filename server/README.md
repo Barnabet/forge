@@ -14,6 +14,11 @@ set to your real CLIProxyAPI key — the default is a placeholder):
     base_url = "http://127.0.0.1:8317/v1"
     api_key = "sk-..."
 
+Optional web tools (each tool only appears when its key is set):
+
+    serper_api_key = "..."     # web_search via serper.dev
+    firecrawl_api_key = "..."  # fetch_page via firecrawl.dev
+
 ## Run
 
     make dev          # uvicorn on 127.0.0.1:8700 (serves web/dist if built)

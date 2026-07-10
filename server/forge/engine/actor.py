@@ -25,7 +25,7 @@ from forge.store.changesets import ChangesetStore
 from forge.store.config import ForgeConfig, Policy, policy_matches, save_global_policy
 from forge.store.eventlog import EventLog
 from forge.tools.base import ToolContext, openai_spec
-from forge.tools.registry import default_tools
+from forge.tools.registry import default_tools, web_tools_from_config
 from forge.tools.subagents import SpawnAgentsTool
 
 COMPACT_THRESHOLD = 0.75
@@ -60,12 +60,15 @@ class SessionActor:
         self.log = EventLog(sdir / "events.jsonl")
         self.changesets = ChangesetStore(sdir)
         skill_dirs = [home / "skills", Path(meta.cwd) / ".forge" / "skills"]
+        web_tools = web_tools_from_config(
+            config.serper_api_key, config.firecrawl_api_key)
         subagents = SpawnAgentsTool(
             llm=llm, skill_dirs=skill_dirs,
             model_fn=lambda: self.meta.model, effort_fn=lambda: self.meta.effort,
             parent_prompt_fn=lambda: self.system_prompt_fn(self.meta),
-            max_concurrent=config.max_subagents, max_turns=config.subagent_max_turns)
-        self.tools = default_tools(skill_dirs, subagents=subagents)
+            max_concurrent=config.max_subagents, max_turns=config.subagent_max_turns,
+            web_tools=web_tools)
+        self.tools = default_tools(skill_dirs, subagents=subagents, web_tools=web_tools)
         self.session_policies: list[Policy] = []
         self.run_task: asyncio.Task | None = None
         self._approvals: dict[str, asyncio.Future] = {}

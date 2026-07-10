@@ -13,6 +13,8 @@ const FAMILY: Record<string, string> = {
   glob: 'search',
   list_dir: 'search',
   load_skill: 'skill',
+  web_search: 'web',
+  fetch_page: 'web',
 }
 
 export function familyOf(tool: string): string {
@@ -29,6 +31,8 @@ const VERBS: Record<string, [string, string]> = {
   glob: ['Searching', 'Searched'],
   list_dir: ['Listing', 'Listed'],
   load_skill: ['Loading', 'Loaded'],
+  web_search: ['Searching web for', 'Searched web for'],
+  fetch_page: ['Fetching', 'Fetched'],
 }
 
 // Presentation only: show paths relative to the session cwd. Applies to
@@ -54,6 +58,7 @@ const GROUP: Record<string, { verbs: [string, string]; noun: [string, string] }>
   run: { verbs: ['Running', 'Ran'], noun: ['command', 'commands'] },
   search: { verbs: ['Running', 'Ran'], noun: ['search', 'searches'] },
   skill: { verbs: ['Loading', 'Loaded'], noun: ['skill', 'skills'] },
+  web: { verbs: ['Browsing', 'Browsed'], noun: ['page', 'pages'] },
 }
 
 export function groupLabel(items: ToolItem[]): string {

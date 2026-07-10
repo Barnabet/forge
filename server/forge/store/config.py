@@ -32,6 +32,8 @@ class ForgeConfig(BaseModel):
     default_model: str = ""
     default_autonomy: str = "yolo"
     max_concurrent: int = 3
+    serper_api_key: str = ""     # enables web_search when set
+    firecrawl_api_key: str = ""  # enables fetch_page when set
     max_subagents: int = 4
     subagent_max_turns: int = 12
     policies: list[Policy] = []

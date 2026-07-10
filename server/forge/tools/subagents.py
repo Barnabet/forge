@@ -68,9 +68,10 @@ class SpawnAgentsTool(Tool):
     def __init__(self, llm: LLMClient, skill_dirs: list[Path],
                  model_fn: Callable[[], str], effort_fn: Callable[[], str],
                  parent_prompt_fn: Callable[[], str], max_concurrent: int = 4,
-                 max_turns: int = 12):
+                 max_turns: int = 12, web_tools: list[Tool] | None = None):
         self.llm = llm
         self.skill_dirs = skill_dirs
+        self.web_tools = web_tools or []
         self.model_fn = model_fn
         self.effort_fn = effort_fn
         self.parent_prompt_fn = parent_prompt_fn
@@ -137,6 +138,7 @@ class SpawnAgentsTool(Tool):
     def _tools(self, mode: str) -> dict[str, Tool]:
         tools: list[Tool] = [
             ReadFileTool(), GlobTool(), GrepTool(), ListDirTool(), LoadSkillTool(self.skill_dirs),
+            *self.web_tools,
         ]
         if mode == "write":
             tools += [BashTool(), WriteFileTool(), EditFileTool()]
