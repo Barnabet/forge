@@ -68,6 +68,7 @@ class AssistantMessage(BaseEvent):
     type: Literal["assistant_message"] = "assistant_message"
     text: str
     tool_calls: list[ToolCallSpec] = []
+    usage_tokens: int = 0  # total context size the model reported for this turn
 
 
 class ToolCallStarted(BaseEvent):

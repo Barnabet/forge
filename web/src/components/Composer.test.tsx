@@ -76,3 +76,30 @@ describe('draft triggers', () => {
     expect(atQuery('no token')).toBeNull()
   })
 })
+
+describe('context usage pill', () => {
+  it('shows tokens and percent of the model window', () => {
+    useForge.setState({
+      models: [{ id: 'opus-5', display_name: 'opus-5', context_window: 200_000 }],
+    })
+    useForge.getState().applyEvent(
+      ev('assistant_message', 2, { text: 'x', tool_calls: [], usage_tokens: 62_000 }))
+    render(<Composer />)
+    expect(screen.getByText('62k · 31%')).toBeInTheDocument()
+    expect(screen.getByTitle(/62,000 of 200,000/)).toBeInTheDocument()
+  })
+
+  it('warns at the 75% compaction threshold and hides with no usage', () => {
+    useForge.setState({
+      models: [{ id: 'opus-5', display_name: 'opus-5', context_window: 100_000 }],
+    })
+    const { unmount } = render(<Composer />)
+    expect(screen.queryByText(/%$/)).not.toBeInTheDocument()  // no usage yet
+    unmount()
+    useForge.getState().applyEvent(
+      ev('assistant_message', 2, { text: 'x', tool_calls: [], usage_tokens: 80_000 }))
+    render(<Composer />)
+    const pill = screen.getByText('80k · 80%')
+    expect(pill).toHaveAttribute('data-warn', 'true')
+  })
+})

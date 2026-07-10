@@ -9,6 +9,10 @@ export function paletteQuery(draft: string): string | null {
   return m ? m[1] : null
 }
 
+function fmtTokens(n: number): string {
+  return n >= 1000 ? `${Math.round(n / 1000)}k` : String(n)
+}
+
 export function atQuery(draft: string): string | null {
   const m = /(?:^|\s)@([\w./-]*)$/.exec(draft)
   return m ? m[1] : null
@@ -27,6 +31,12 @@ export default function Composer() {
 
   const archived = stream?.archived ?? false
   const effortPart = stream && stream.effort !== 'default' ? `${stream.effort} · ` : ''
+
+  const usage = stream?.usageTokens ?? 0
+  const ctxWindow = models.find(m => m.id === stream?.model)?.context_window ?? 0
+  const ctxPct = usage > 0 && ctxWindow > 0
+    ? Math.min(100, Math.round((usage / ctxWindow) * 100))
+    : null
 
   const palette = archived ? null : paletteQuery(draft)
   const at = archived || palette !== null ? null : atQuery(draft)
@@ -79,6 +89,15 @@ export default function Composer() {
           <span className={s.chip}>@ files</span>
           <span className={s.chip}>/ commands</span>
           <span className={s.spacer} />
+          {ctxPct !== null && (
+            <span
+              className={s.ctxPill}
+              data-warn={ctxPct >= 75}
+              title={`${usage.toLocaleString()} of ${ctxWindow.toLocaleString()} context tokens (auto-compacts at 75%)`}
+            >
+              {fmtTokens(usage)} · {ctxPct}%
+            </span>
+          )}
           <span
             className={s.modelPill}
             title={healthy ? undefined : 'CLIProxyAPI unreachable'}

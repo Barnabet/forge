@@ -242,3 +242,23 @@ describe('reducer: v1.1 events', () => {
     expect(s2.archived).toBe(false)
   })
 })
+
+describe('reducer: context usage', () => {
+  it('tracks the latest nonzero usage_tokens from assistant messages', () => {
+    seq = 0
+    const s = run([
+      ev('assistant_message', { text: 'a', tool_calls: [], usage_tokens: 1200 }),
+      ev('assistant_message', { text: 'b', tool_calls: [], usage_tokens: 3400 }),
+    ])
+    expect(s.usageTokens).toBe(3400)
+  })
+
+  it('keeps the last known usage when an old event carries none', () => {
+    seq = 0
+    const s = run([
+      ev('assistant_message', { text: 'a', tool_calls: [], usage_tokens: 1200 }),
+      ev('assistant_message', { text: 'b', tool_calls: [] }),  // V1-era event
+    ])
+    expect(s.usageTokens).toBe(1200)
+  })
+})

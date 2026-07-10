@@ -289,3 +289,16 @@ def test_effort_validation_and_replay(tmp_path):
         client.post(f"/api/sessions/{sid}/effort", json={"effort": "low"})
     with TestClient(create_app(tmp_path, load_config(tmp_path), FakeLLM([]))) as client:
         assert client.get("/api/sessions").json()[0]["effort"] == "low"
+
+
+def test_assistant_message_carries_usage_tokens(make_client):
+    client = make_client(script=[
+        CompletionResult(text="hi", tool_calls=[], usage_tokens=1234),
+    ])
+    with client:
+        sid = client.post("/api/sessions", json={}).json()["id"]
+        client.post(f"/api/sessions/{sid}/messages", json={"text": "hello"})
+        _wait_idle(client)
+        events = client.get(f"/api/sessions/{sid}/events").json()
+        assistant = [e for e in events if e["type"] == "assistant_message"]
+        assert assistant[-1]["usage_tokens"] == 1234

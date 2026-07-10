@@ -75,6 +75,7 @@ export interface AssistantMessage {
   type?: "assistant_message";
   text: string;
   tool_calls?: ToolCallSpec[];
+  usage_tokens?: number;
 }
 export interface ToolCallSpec {
   id: string;

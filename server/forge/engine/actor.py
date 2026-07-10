@@ -153,7 +153,8 @@ class SessionActor:
                 [openai_spec(t) for t in self.tools.values()],
                 on_delta, effort=self.meta.effort)
             self.emit(self._e(AssistantMessage, text=result.text,
-                              tool_calls=result.tool_calls))
+                              tool_calls=result.tool_calls,
+                              usage_tokens=result.usage_tokens))
             if not result.tool_calls:
                 if any(e.type == "user_message" and e.seq > start_seq
                        for e in self.log.read(after_seq=start_seq)):

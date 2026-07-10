@@ -26,13 +26,14 @@ export interface SessionStream {
   projectId: string | null
   archived: boolean
   effort: Effort
+  usageTokens: number
 }
 
 export function emptyStream(): SessionStream {
   return {
     lastSeq: 0, items: [], name: 'New session', cwd: '', model: '',
     autonomy: 'yolo', status: 'idle', steps: 0,
-    projectId: null, archived: false, effort: 'default',
+    projectId: null, archived: false, effort: 'default', usageTokens: 0,
   }
 }
 
@@ -92,6 +93,8 @@ export function reduce(s: SessionStream, e: WireEvent): SessionStream {
     }
 
     case 'assistant_message': {
+      // Keep the latest nonzero usage (old V1 logs carry no usage_tokens).
+      if ((e.usage_tokens ?? 0) > 0) n.usageTokens = e.usage_tokens ?? 0
       // Final text replaces any accumulated deltas (contract #4).
       const i = n.items.findLastIndex(it => it.kind === 'prose' && it.streaming)
       if (i >= 0) {
