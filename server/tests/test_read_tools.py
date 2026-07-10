@@ -30,6 +30,15 @@ async def test_glob_grep_listdir(tmp_path):
     assert "pkg/" in ls.output and "y.md" in ls.output
 
 
+async def test_grep_fallback_caps_at_100_matches(tmp_path, monkeypatch):
+    monkeypatch.setattr("forge.tools.search.shutil.which", lambda _: None)
+    for n in range(5):
+        (tmp_path / f"f{n}.txt").write_text("".join(f"needle {i}\n" for i in range(40)))
+    r = await GrepTool().run({"pattern": "needle"}, ctx(tmp_path))
+    assert not r.is_error
+    assert len(r.output.splitlines()) == 100
+
+
 def test_spec_and_truncation():
     spec = openai_spec(ReadFileTool())
     assert spec["type"] == "function" and spec["function"]["name"] == "read_file"

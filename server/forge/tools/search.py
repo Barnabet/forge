@@ -67,13 +67,17 @@ class GrepTool(Tool):
         files = [root] if root.is_file() else [
             p for p in root.rglob("*")
             if p.is_file() and not any(part in SKIP_DIRS for part in p.parts)]
+        capped = False
         for f in files:
             try:
                 for i, line in enumerate(f.read_text().splitlines(), 1):
                     if rx.search(line):
                         lines.append(f"{f.relative_to(ctx.cwd)}:{i}:{line}")
                         if len(lines) >= 100:
-                            raise StopIteration
-            except (UnicodeDecodeError, StopIteration, ValueError):
+                            capped = True
+                            break
+            except (UnicodeDecodeError, ValueError):
                 continue
-        return ToolResult(output="\n".join(lines) or "No matches.")
+            if capped:
+                break
+        return ToolResult(output=truncate_middle("\n".join(lines)) or "No matches.")
