@@ -140,10 +140,20 @@ export const useForge = create<ForgeState>()((set, get) => {
     setConnection: connection => set({ connection }),
 
     hydrate: async () => {
+      // Snapshot the ids we already knew BEFORE awaiting, so we only prune true
+      // ghosts (present pre-hydrate, absent on the server) and never a session
+      // that arrived over the WS while this hydrate was in flight.
+      const knownBefore = get().order.slice()
       const [metas, models, health, projects] = await Promise.all([
         api.sessions(), api.models(), api.health(), api.projects(),
       ])
       set({ models, healthy: health.ok, projects })
+      // Prune sessions the server no longer has (deleted while we were offline).
+      // Order matters: prune BEFORE seeding the fresh metas below.
+      const serverIds = new Set(metas.map(m => m.id))
+      for (const id of knownBefore) {
+        if (!serverIds.has(id)) get().removeSession(id)
+      }
       for (const m of metas) get().upsertSession(m.id, m)
       // Backfill each session's stream over REST from its current cursor. This
       // makes boot ordering vs. the WS replay irrelevant (the reducer dedupes by

@@ -70,6 +70,19 @@ describe('Sidebar', () => {
     expect(fetchMock).toHaveBeenCalledWith('/api/sessions/cc', expect.objectContaining({ method: 'DELETE' }))
   })
 
+  it('confirm dialog auto-dismisses if the session is remotely deleted', async () => {
+    const { rerender } = render(<Sidebar />)
+    await userEvent.click(screen.getByText('ARCHIVED (1)'))
+    await userEvent.click(screen.getByRole('button', { name: 'Delete old work' }))
+    expect(screen.getByText(/permanently delete/i)).toBeInTheDocument()
+    // A remote session_deleted lands while the dialog is open.
+    expect(() => {
+      useForge.getState().applyEvent(ev('session_deleted', 'cc', 0))
+      rerender(<Sidebar />)
+    }).not.toThrow()
+    expect(screen.queryByText(/permanently delete/i)).not.toBeInTheDocument()
+  })
+
   it('plus rows wire to the right entry points', async () => {
     const fetchMock = vi.fn(async () => ({
       ok: true,

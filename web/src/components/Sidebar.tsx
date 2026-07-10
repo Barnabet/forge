@@ -60,6 +60,9 @@ export default function Sidebar() {
   }
 
   const { byProject, adhoc, archived } = groupSessions(projects, order, sessions)
+  // Guard: a remote session_deleted can drop the target while its confirm
+  // dialog is open. Render the dialog only while the session still exists.
+  const target = confirmDelete ? sessions[confirmDelete] : undefined
 
   const row = (id: string, isArchived: boolean) => {
     const st = sessions[id].stream
@@ -135,14 +138,14 @@ export default function Sidebar() {
         </section>
       )}
 
-      {confirmDelete && (
+      {target && (
         <ConfirmDialog
           title="Delete session"
-          body={`This will permanently delete "${sessions[confirmDelete].stream.name}" and its history.`}
+          body={`This will permanently delete "${target.stream.name}" and its history.`}
           confirmLabel="Delete"
           onCancel={() => setConfirmDelete(null)}
           onConfirm={() => {
-            const id = confirmDelete
+            const id = target.id
             setConfirmDelete(null)
             void deleteSession(id).catch(failSoft(id))
           }}

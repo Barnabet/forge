@@ -121,6 +121,32 @@ describe('store: v1.1', () => {
     expect(useForge.getState().activeId).toBe('cc')
   })
 
+  it('hydrate prunes sessions the server no longer has', async () => {
+    const { applyEvent } = useForge.getState()
+    applyEvent(ev('session_created', 'aa', 1, { name: 'a', cwd: '/', model: 'm', autonomy: 'yolo' }))
+    applyEvent(ev('session_created', 'bb', 1, { name: 'b', cwd: '/', model: 'm', autonomy: 'yolo' }))
+    useForge.getState().setActive('aa')  // active session is the one being deleted
+
+    // Server only knows about bb now (aa was deleted while offline).
+    const meta = { id: 'bb', name: 'b', cwd: '/', model: 'm', autonomy: 'yolo', status: 'idle' }
+    vi.stubGlobal('fetch', vi.fn(async (url: string) => ({
+      ok: true,
+      json: async () =>
+        url.includes('/models') ? []
+        : url.includes('/health') ? { ok: true }
+        : url.includes('/projects') ? []
+        : url.includes('/events') ? []
+        : [meta],
+    })) as unknown as typeof fetch)
+
+    await useForge.getState().hydrate()
+
+    const s = useForge.getState()
+    expect(s.order).toEqual(['bb'])
+    expect(s.sessions['aa']).toBeUndefined()
+    expect(s.activeId).toBe('bb')  // active fell back to the survivor
+  })
+
   it('hydrate loads projects', async () => {
     vi.stubGlobal('fetch', vi.fn(async (url: string) => ({
       ok: true,
