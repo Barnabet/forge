@@ -15,6 +15,7 @@ class FakeWebSocket {
 }
 
 beforeEach(() => {
+  vi.restoreAllMocks()
   useForge.setState(useForge.getInitialState(), true)
   FakeWebSocket.instances = []
   vi.stubGlobal('WebSocket', FakeWebSocket)
@@ -32,6 +33,35 @@ describe('App', () => {
     expect(screen.getByPlaceholderText('Reply, steer, or queue another task…')).toBeInTheDocument()
     expect(FakeWebSocket.instances.length).toBeGreaterThan(0)
     expect(FakeWebSocket.instances[0].url).toMatch(/\/ws$/)
+  })
+
+  it('re-runs hydrate on every WS open so each (re)connect backfills gaps', async () => {
+    const hydrateSpy = vi.spyOn(useForge.getState(), 'hydrate').mockResolvedValue()
+    render(<App />)
+    // Boot fires hydrate once.
+    await Promise.resolve()
+    expect(hydrateSpy).toHaveBeenCalledTimes(1)
+    // Simulate the socket opening (and later reconnecting).
+    FakeWebSocket.instances[0].onopen?.()
+    expect(hydrateSpy).toHaveBeenCalledTimes(2)
+    FakeWebSocket.instances[0].onopen?.()
+    expect(hydrateSpy).toHaveBeenCalledTimes(3)
+  })
+
+  it('survives a hydrate rejection at boot (engine down) and retries on WS open', async () => {
+    const err = new Error('engine down')
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const hydrateSpy = vi
+      .spyOn(useForge.getState(), 'hydrate')
+      .mockRejectedValueOnce(err)
+      .mockResolvedValue()
+    render(<App />)
+    // Frame still renders despite the rejected boot hydrate — no crash.
+    expect(await screen.findByText('Forge')).toBeInTheDocument()
+    expect(errorSpy).toHaveBeenCalled()
+    // When the engine comes back the WS opens and hydrate runs again (retry loop).
+    FakeWebSocket.instances[0].onopen?.()
+    expect(hydrateSpy).toHaveBeenCalledTimes(2)
   })
 
   it('renders events pushed through the store', async () => {

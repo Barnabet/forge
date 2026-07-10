@@ -112,8 +112,16 @@ export const useForge = create<ForgeState>()((set, get) => {
       const [metas, models, health] = await Promise.all([
         api.sessions(), api.models(), api.health(),
       ])
-      for (const m of metas) get().upsertSession(m.id, m)
       set({ models, healthy: health.ok })
+      for (const m of metas) get().upsertSession(m.id, m)
+      // Backfill each session's stream over REST from its current cursor. This
+      // makes boot ordering vs. the WS replay irrelevant (the reducer dedupes by
+      // seq) and closes the reconnect/outage gap when re-run on every WS 'open'.
+      await Promise.all(metas.map(async m => {
+        const after = get().sessions[m.id].stream.lastSeq
+        const events = await api.events(m.id, after)
+        for (const e of events) get().applyEvent(e)
+      }))
     },
 
     newSession: async () => {

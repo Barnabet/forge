@@ -1,4 +1,4 @@
-import type { Autonomy, Changeset, ModelInfo, SessionMeta } from './protocol'
+import type { Autonomy, Changeset, ModelInfo, SessionMeta, WireEvent } from './protocol'
 
 export class ApiError extends Error {
   status: number
@@ -25,6 +25,8 @@ export const api = {
   health: () => req<{ ok: boolean }>('/api/health'),
   models: () => req<ModelInfo[]>('/api/models'),
   sessions: () => req<SessionMeta[]>('/api/sessions'),
+  events: (sid: string, after: number) =>
+    req<WireEvent[]>(`/api/sessions/${sid}/events?after=${after}`),
   createSession: (body: { cwd?: string; model?: string; autonomy?: string } = {}) =>
     post<SessionMeta>('/api/sessions', body),
   sendMessage: (sid: string, text: string) =>

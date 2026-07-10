@@ -35,6 +35,7 @@ describe('store', () => {
       json: async () =>
         url.includes('/models') ? [{ id: 'm1', display_name: 'Model One', context_window: 1 }]
         : url.includes('/health') ? { ok: true }
+        : url.includes('/events') ? []
         : [meta],
     })) as unknown as typeof fetch)
     await useForge.getState().hydrate()
@@ -43,6 +44,39 @@ describe('store', () => {
     expect(s.sessions['aa'].stream).toMatchObject({ name: 'restored', model: 'm1', autonomy: 'guarded', status: 'idle' })
     expect(s.models[0].display_name).toBe('Model One')
     expect(s.healthy).toBe(true)
+  })
+
+  it('hydrate backfills events over REST after each session lastSeq, deduping overlap', async () => {
+    const { applyEvent } = useForge.getState()
+    // Seed a session that already has events applied up to seq 2 (lastSeq === 2).
+    applyEvent(ev('session_created', 'aa', 1, { name: 'n', cwd: '/', model: 'm', autonomy: 'yolo' }))
+    applyEvent(ev('user_message', 'aa', 2, { text: 'two' }))
+    expect(useForge.getState().sessions['aa'].stream.lastSeq).toBe(2)
+
+    const meta = { id: 'aa', name: 'n', cwd: '/', model: 'm', autonomy: 'yolo', status: 'idle' }
+    const backfill = [
+      ev('user_message', 'aa', 2, { text: 'DUPLICATE' }), // overlap <= lastSeq, must be deduped
+      ev('user_message', 'aa', 3, { text: 'three' }),
+      ev('user_message', 'aa', 4, { text: 'four' }),
+    ]
+    const fetchSpy = vi.fn(async (url: string) => ({
+      ok: true,
+      json: async () =>
+        url.includes('/models') ? []
+        : url.includes('/health') ? { ok: true }
+        : url.includes('/events') ? backfill
+        : [meta],
+    }))
+    vi.stubGlobal('fetch', fetchSpy as unknown as typeof fetch)
+
+    await useForge.getState().hydrate()
+
+    // Backfill request used the session's lastSeq as the cursor.
+    expect(fetchSpy).toHaveBeenCalledWith('/api/sessions/aa/events?after=2')
+    const stream = useForge.getState().sessions['aa'].stream
+    expect(stream.lastSeq).toBe(4)
+    const texts = stream.items.filter(i => i.kind === 'user').map(i => (i as { text: string }).text)
+    expect(texts).toEqual(['two', 'three', 'four']) // overlap dropped, backfill appended
   })
 
   it('openDrawer fetches changesets and sets state; closeDrawer keeps index', async () => {
