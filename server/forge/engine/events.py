@@ -8,6 +8,13 @@ Autonomy = Literal["yolo", "guarded"]
 Status = Literal["idle", "running", "attention", "queued"]
 RunReason = Literal["completed", "cancelled", "interrupted", "error"]
 Effort = Literal["default", "low", "medium", "high"]
+Mode = Literal["act", "plan"]
+TodoStatus = Literal["pending", "in_progress", "completed"]
+
+
+class Todo(BaseModel):
+    text: str
+    status: TodoStatus = "pending"
 
 
 class ToolCallSpec(BaseModel):
@@ -139,12 +146,36 @@ class EffortChanged(BaseEvent):
     effort: Effort
 
 
+class ModeChanged(BaseEvent):
+    type: Literal["mode_changed"] = "mode_changed"
+    mode: Mode
+
+
+class PlanProposed(BaseEvent):
+    type: Literal["plan_proposed"] = "plan_proposed"
+    call_id: str
+    plan: str
+
+
+class PlanResolved(BaseEvent):
+    type: Literal["plan_resolved"] = "plan_resolved"
+    call_id: str
+    decision: Literal["approve", "revise"]
+    feedback: str = ""
+
+
+class TodosUpdated(BaseEvent):
+    type: Literal["todos_updated"] = "todos_updated"
+    todos: list[Todo]
+
+
 Event = Annotated[
     Union[
         SessionCreated, SessionRenamed, StatusChanged, AutonomyChanged,
         ModelChanged, UserMessage, AssistantMessage, ToolCallStarted, ToolCallFinished,
         ApprovalRequested, ApprovalResolved, PolicyAdded, ContextCompacted,
         RunFinished, ErrorEvent, SessionArchived, SessionUnarchived, EffortChanged,
+        ModeChanged, PlanProposed, PlanResolved, TodosUpdated,
     ],
     Field(discriminator="type"),
 ]

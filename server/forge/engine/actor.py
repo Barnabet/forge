@@ -12,11 +12,11 @@ from forge.engine.bus import EventBus
 from forge.engine.memory import ProjectMemory
 from forge.engine.events import (
     ApprovalRequested, ApprovalResolved, AssistantMessage, Autonomy,
-    AutonomyChanged, ContextCompacted, Effort, EffortChanged, ErrorEvent, ModelChanged,
-    OutputChunk, PolicyAdded, RunFinished, SessionArchived, SessionRenamed,
-    SessionUnarchived, Status, StatusChanged,
-    TextDelta, ToolCallFinished, ToolCallPending, ToolCallSpec, ToolCallStarted,
-    UserMessage,
+    AutonomyChanged, ContextCompacted, Effort, EffortChanged, ErrorEvent, Mode,
+    ModeChanged, ModelChanged, OutputChunk, PlanProposed, PlanResolved, PolicyAdded,
+    RunFinished, SessionArchived, SessionRenamed, SessionUnarchived, Status,
+    StatusChanged, TextDelta, TodosUpdated, ToolCallFinished, ToolCallPending,
+    ToolCallSpec, ToolCallStarted, UserMessage,
 )
 from forge.engine.projection import dangling_call_ids, to_messages
 from forge.engine.scheduler import Scheduler
@@ -25,7 +25,8 @@ from forge.llm.base import LLMClient, LLMError
 from forge.store.changesets import ChangesetStore
 from forge.store.config import ForgeConfig, Policy, policy_matches, save_global_policy
 from forge.store.eventlog import EventLog
-from forge.tools.base import ToolContext, openai_spec
+from forge.tools.base import Tool, ToolContext, openai_spec
+from forge.tools.plan import PLAN_TOOL_NAME
 from forge.tools.registry import default_tools, web_tools_from_config
 from forge.tools.subagents import SpawnAgentsTool
 
@@ -42,6 +43,7 @@ class SessionMeta(BaseModel):
     project_id: str | None = None
     archived: bool = False
     effort: Effort = "default"
+    mode: Mode = "act"
 
 
 class SessionActor:
@@ -74,6 +76,7 @@ class SessionActor:
         self.session_policies: list[Policy] = []
         self.run_task: asyncio.Task | None = None
         self._approvals: dict[str, asyncio.Future] = {}
+        self._plan_gates: dict[str, asyncio.Future] = {}
 
     # -- event helpers ------------------------------------------------------
     def emit(self, event):
@@ -113,6 +116,12 @@ class SessionActor:
         self.meta.effort = effort
         self.emit(self._e(EffortChanged, effort=effort))
 
+    def set_mode(self, mode: Mode) -> None:
+        if self.meta.mode == mode:
+            return
+        self.meta.mode = mode
+        self.emit(self._e(ModeChanged, mode=mode))
+
     def archive(self) -> bool:
         if self.run_task and not self.run_task.done():
             return False
@@ -133,6 +142,11 @@ class SessionActor:
         fut = self._approvals.pop(call_id, None)
         if fut and not fut.done():
             fut.set_result((decision, always))
+
+    async def resolve_plan(self, call_id: str, decision: str, feedback: str = "") -> None:
+        fut = self._plan_gates.pop(call_id, None)
+        if fut and not fut.done():
+            fut.set_result((decision, feedback))
 
     # -- run loop -------------------------------------------------------------
     async def _run(self) -> None:
@@ -172,7 +186,7 @@ class SessionActor:
             result = await self.llm.complete(
                 self.meta.model,
                 to_messages(self.log.read(), self.system_prompt_fn(self.meta)),
-                [openai_spec(t) for t in self.tools.values()],
+                [openai_spec(t) for t in self._active_tools()],
                 on_delta, effort=self.meta.effort, on_tool_start=on_tool_start)
             self.emit(self._e(AssistantMessage, text=result.text,
                               tool_calls=result.tool_calls,
@@ -185,6 +199,14 @@ class SessionActor:
             for call in result.tool_calls:
                 await self._execute_call(call)
             await self._maybe_compact(result.usage_tokens)
+
+    def _active_tools(self) -> list[Tool]:
+        """Plan mode offers only read-only tools (plus spawn_agents, whose tasks
+        are forced read-only at execution). Bash is excluded: it can mutate."""
+        if self.meta.mode != "plan":
+            return list(self.tools.values())
+        return [t for t in self.tools.values()
+                if t.read_only or isinstance(t, SpawnAgentsTool)]
 
     def _run_transcript(self, after_seq: int) -> str:
         lines: list[str] = []
@@ -226,6 +248,22 @@ class SessionActor:
             self.emit(self._e(ToolCallFinished, call_id=call.id, tool=call.name,
                               output=f"Invalid tool arguments JSON: {e}", is_error=True))
             return
+        if call.name == PLAN_TOOL_NAME:
+            await self._plan_gate(call, args)
+            return
+        if self.meta.mode == "plan":
+            if isinstance(tool, SpawnAgentsTool):
+                # Plan mode: workers explore only — force every task read-only.
+                for item in args.get("tasks") or []:
+                    if isinstance(item, dict):
+                        item["mode"] = "read"
+            elif not tool.read_only:
+                self.emit(self._e(
+                    ToolCallFinished, call_id=call.id, tool=call.name,
+                    output="Blocked: session is in plan mode. Only read-only tools "
+                           "are available; finish by calling propose_plan.",
+                    is_error=True))
+                return
         display = tool.display(args)
 
         auto = False
@@ -253,13 +291,43 @@ class SessionActor:
         except asyncio.CancelledError:
             raise
         except Exception as e:  # tool bug → feed back, don't kill the run
-            result_output, is_error, stats = f"Tool crashed: {e!r}", True, None
+            result_output, is_error, stats, todos = f"Tool crashed: {e!r}", True, None, None
         else:
-            result_output, is_error, stats = result.output, result.is_error, result.diff_stats
+            result_output, is_error = result.output, result.is_error
+            stats, todos = result.diff_stats, result.todos
         self.emit(self._e(
             ToolCallFinished, call_id=call.id, tool=call.name,
             output=result_output or "(no output)", is_error=is_error,
             duration_ms=int((time.monotonic() - started) * 1000), diff_stats=stats))
+        if not is_error and todos is not None:
+            self.emit(self._e(TodosUpdated, todos=todos))
+
+    async def _plan_gate(self, call: ToolCallSpec, args: dict) -> None:
+        """propose_plan: durable proposal, await the user's approve/revise."""
+        plan = args.get("plan")
+        if not isinstance(plan, str) or not plan.strip():
+            self.emit(self._e(ToolCallFinished, call_id=call.id, tool=call.name,
+                              output="plan must be a non-empty string", is_error=True))
+            return
+        self.emit(self._e(PlanProposed, call_id=call.id, plan=plan))
+        self._set_status("attention")
+        fut: asyncio.Future = asyncio.get_running_loop().create_future()
+        self._plan_gates[call.id] = fut
+        try:
+            decision, feedback = await fut
+        finally:
+            self._plan_gates.pop(call.id, None)
+            self._set_status("running")
+        self.emit(self._e(PlanResolved, call_id=call.id, decision=decision,
+                          feedback=feedback))
+        if decision == "approve":
+            self.set_mode("act")
+            output = ("Plan approved. You are now in act mode — execute the plan. "
+                      "Start by calling update_todos with the plan's steps.")
+        else:
+            output = f"User requested changes to the plan: {feedback}"
+        self.emit(self._e(ToolCallFinished, call_id=call.id, tool=call.name,
+                          output=output))
 
     async def _gate(self, call: ToolCallSpec, display: str) -> bool:
         self.emit(self._e(ApprovalRequested, call_id=call.id, tool=call.name,
@@ -317,8 +385,9 @@ class SessionActor:
             self.meta.model,
             [{"role": "user", "content":
               "Summarize this agent session so far for continuation. Include the "
-              "original task, key decisions, files touched, current progress, and "
-              "immediate next steps.\n\n" + transcript}],
+              "original task, key decisions, files touched, current progress, "
+              "the approved plan if any, the current todo list with each item's "
+              "status, and immediate next steps.\n\n" + transcript}],
             [], no_delta, effort=self.meta.effort)
         self.emit(self._e(ContextCompacted, summary=summary.text, upto_seq=upto))
 

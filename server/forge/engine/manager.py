@@ -125,6 +125,8 @@ class SessionManager:
                 meta.model = e.model
             elif meta and e.type == "effort_changed":
                 meta.effort = e.effort
+            elif meta and e.type == "mode_changed":
+                meta.mode = e.mode
             elif meta and e.type == "session_archived":
                 meta.archived = True
             elif meta and e.type == "session_unarchived":

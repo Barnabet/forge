@@ -14,7 +14,7 @@ from pydantic import ValidationError
 
 from forge.api.schemas import (
     CreateProject, CreateSession, PostMessage, RenameSession, ResolveApproval,
-    SetAutonomy, SetEffort, SetModel, UpdateProject,
+    ResolvePlan, SetAutonomy, SetEffort, SetMode, SetModel, UpdateProject,
 )
 from forge.engine.bus import EventBus
 from forge.engine.events import Effort, SessionDeleted
@@ -137,6 +137,20 @@ def create_app(home: Path, config: ForgeConfig, llm: LLMClient) -> FastAPI:
         if body.effort not in _EFFORTS:
             raise HTTPException(400, f"invalid effort: {body.effort}")
         _actor(sid).set_effort(body.effort)
+        return {}
+
+    @app.post("/api/sessions/{sid}/mode")
+    async def set_mode(sid: str, body: SetMode):
+        if body.mode not in ("act", "plan"):
+            raise HTTPException(400, f"invalid mode: {body.mode}")
+        _actor(sid).set_mode(body.mode)
+        return {}
+
+    @app.post("/api/sessions/{sid}/plan/{call_id}")
+    async def resolve_plan(sid: str, call_id: str, body: ResolvePlan):
+        if body.decision not in ("approve", "revise"):
+            raise HTTPException(400, f"invalid decision: {body.decision}")
+        await _actor(sid).resolve_plan(call_id, body.decision, body.feedback)
         return {}
 
     @app.post("/api/sessions/{sid}/compact")

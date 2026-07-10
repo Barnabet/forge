@@ -14,7 +14,16 @@ GUIDELINES = """\
 - Use spawn_agents for substantial independent research or implementation tasks; keep small or tightly coupled work local.
 - Prefer read-only subagents. Use write access only for clearly separated changes, since workers share the checkout.
 - Be concise in prose; the user sees your text between tool calls.
+- Use update_todos to track multi-step work: keep exactly one item in_progress and update immediately as steps complete.
 - Save durable user-wide preferences to global memory; project facts are maintained automatically."""
+
+PLAN_MODE = """\
+## Plan mode
+This session is in plan mode: explore with read-only tools and produce a concrete,
+reviewable implementation plan. Do not attempt writes or shell commands — they are
+blocked. When the plan is ready, call propose_plan exactly once with the full plan
+in markdown. The user will approve it (switching you to act mode to execute) or
+request changes (revise and propose again)."""
 
 MEMORY_HOWTO = """\
 ## Memory
@@ -61,4 +70,6 @@ def build_system_prompt(meta, home: Path) -> str:
         parts.append("## Skills\nCall load_skill(name) before tasks a skill covers.\n"
                      + lines)
     parts.append(GUIDELINES)
+    if meta.mode == "plan":
+        parts.append(PLAN_MODE)
     return "\n\n".join(parts)

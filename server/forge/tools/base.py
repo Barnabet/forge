@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Callable
 
 from pydantic import BaseModel
 
-from forge.engine.events import DiffStats
+from forge.engine.events import DiffStats, Todo
 
 if TYPE_CHECKING:
     from forge.store.changesets import ChangesetStore
@@ -17,6 +17,7 @@ class ToolResult(BaseModel):
     output: str
     is_error: bool = False
     diff_stats: DiffStats | None = None
+    todos: list[Todo] | None = None  # update_todos snapshot → durable TodosUpdated
 
 
 @dataclass

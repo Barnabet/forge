@@ -312,3 +312,43 @@ def test_set_autonomy_rejects_bogus_value_400(make_client):
         assert r.status_code == 400
         metas = client.get("/api/sessions").json()
         assert metas[0]["autonomy"] == "yolo"
+
+
+def test_set_mode_emits_event_and_updates_meta(make_client):
+    client = make_client()
+    with client:
+        sid = client.post("/api/sessions", json={}).json()["id"]
+        r = client.post(f"/api/sessions/{sid}/mode", json={"mode": "plan"})
+        assert r.status_code == 200
+        assert client.get("/api/sessions").json()[0]["mode"] == "plan"
+        events = client.get(f"/api/sessions/{sid}/events").json()
+        assert events[-1]["type"] == "mode_changed"
+        assert events[-1]["mode"] == "plan"
+
+
+def test_set_mode_rejects_invalid(make_client):
+    client = make_client()
+    with client:
+        sid = client.post("/api/sessions", json={}).json()["id"]
+        assert client.post(f"/api/sessions/{sid}/mode",
+                           json={"mode": "turbo"}).status_code == 400
+
+
+def test_mode_survives_rehydrate(tmp_path):
+    config = load_config(tmp_path)
+    with TestClient(create_app(tmp_path, config, FakeLLM([]))) as client:
+        sid = client.post("/api/sessions", json={}).json()["id"]
+        client.post(f"/api/sessions/{sid}/mode", json={"mode": "plan"})
+    with TestClient(create_app(tmp_path, load_config(tmp_path), FakeLLM([]))) as client:
+        assert client.get("/api/sessions").json()[0]["mode"] == "plan"
+
+
+def test_resolve_plan_rejects_invalid_decision(make_client):
+    client = make_client()
+    with client:
+        sid = client.post("/api/sessions", json={}).json()["id"]
+        r = client.post(f"/api/sessions/{sid}/plan/xyz", json={"decision": "maybe"})
+        assert r.status_code == 400
+        # unknown call id with a valid decision is a no-op
+        r = client.post(f"/api/sessions/{sid}/plan/xyz", json={"decision": "approve"})
+        assert r.status_code == 200

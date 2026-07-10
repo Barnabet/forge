@@ -38,6 +38,15 @@ class SetEffort(BaseModel):
     effort: str
 
 
+class SetMode(BaseModel):
+    mode: str
+
+
+class ResolvePlan(BaseModel):
+    decision: str  # "approve" | "revise"
+    feedback: str = ""
+
+
 class RenameSession(BaseModel):
     name: str
 
