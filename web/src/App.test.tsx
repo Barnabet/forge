@@ -83,4 +83,17 @@ describe('App', () => {
     expect(await screen.findByText(/No session — create one from the sidebar/)).toBeInTheDocument()
     expect(screen.queryByPlaceholderText('Reply, steer, or queue another task…')).not.toBeInTheDocument()
   })
+
+  it('the top-bar toggle collapses and restores the sidebar, persisting the choice', async () => {
+    const { default: userEvent } = await import('@testing-library/user-event')
+    localStorage.removeItem('forge.sidebar')
+    render(<App />)
+    expect(await screen.findByText('PROJECTS')).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: 'Toggle sidebar' }))
+    expect(screen.queryByText('PROJECTS')).not.toBeInTheDocument()
+    expect(localStorage.getItem('forge.sidebar')).toBe('collapsed')
+    await userEvent.click(screen.getByRole('button', { name: 'Toggle sidebar' }))
+    expect(screen.getByText('PROJECTS')).toBeInTheDocument()
+    expect(localStorage.getItem('forge.sidebar')).toBe('open')
+  })
 })

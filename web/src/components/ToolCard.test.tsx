@@ -52,6 +52,27 @@ describe('ToolCard', () => {
     expect(onOpen).toHaveBeenCalledWith(2)
   })
 
+  it('clicking the header collapses and re-expands the body', async () => {
+    render(<ToolCard item={{ ...base, status: 'done', output: '3 passed' }} onOpenPanel={() => {}} />)
+    expect(screen.getByText('3 passed')).toBeInTheDocument()
+    await userEvent.click(screen.getByText('pytest -q'))
+    expect(screen.queryByText('3 passed')).not.toBeInTheDocument()
+    await userEvent.click(screen.getByText('pytest -q'))
+    expect(screen.getByText('3 passed')).toBeInTheDocument()
+  })
+
+  it('open panel does not toggle the collapse', async () => {
+    const onOpen = vi.fn()
+    render(<ToolCard
+      item={{ ...base, tool: 'edit_file', display: 'app.py', status: 'done', output: 'ok',
+              diffStats: { path: '/w/app.py', added: 1, removed: 0, changeset_index: 0 } }}
+      onOpenPanel={onOpen}
+    />)
+    await userEvent.click(screen.getByRole('button', { name: /open panel/ }))
+    expect(onOpen).toHaveBeenCalled()
+    expect(screen.getByText('ok')).toBeInTheDocument()  // body still visible
+  })
+
   it('hides the body for (no output)', () => {
     render(<ToolCard item={{ ...base, status: 'done', output: '(no output)' }} onOpenPanel={() => {}} />)
     expect(screen.queryByText('(no output)')).not.toBeInTheDocument()

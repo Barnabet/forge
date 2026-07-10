@@ -40,10 +40,11 @@ export default function App() {
   const connection = useForge(st => st.connection)
   const activeId = useForge(st => st.activeId)
   const dialog = useForge(st => st.dialog)
+  const sidebarCollapsed = useForge(st => st.sidebarCollapsed)
 
   return (
     <div className={s.frame}>
-      <Sidebar />
+      {!sidebarCollapsed && <Sidebar />}
       <div className={s.rightCol}>
         <TopBar />
         {connection !== 'open' && <div className={s.connBanner}>reconnecting…</div>}

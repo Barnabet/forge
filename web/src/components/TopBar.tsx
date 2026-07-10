@@ -9,12 +9,16 @@ export default function TopBar() {
   const order = useForge(st => st.order)
   const sessions = useForge(st => st.sessions)
   const activeId = useForge(st => st.activeId)
+  const toggleSidebar = useForge(st => st.toggleSidebar)
 
   const queued = order.filter(id => sessions[id].stream.status === 'queued').length
   const cwd = activeId ? sessions[activeId].stream.cwd : ''
 
   return (
     <header className={s.bar}>
+      <button className={s.sidebarToggle} aria-label="Toggle sidebar" onClick={toggleSidebar}>
+        ☰
+      </button>
       <div className={s.brand}>
         <div className={s.logo} />
         <span className={s.name}>Forge</span>

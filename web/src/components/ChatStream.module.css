@@ -34,6 +34,13 @@
   color: var(--text-body);
 }
 .prose :global(p + p) { margin-top: 8px; }
+.prose :global(ul), .prose :global(ol) {
+  /* the global reset zeroes list padding — restore the indent inside prose */
+  padding-left: 22px;
+  margin: 8px 0;
+}
+.prose :global(li) { margin: 3px 0; }
+.prose :global(li::marker) { color: var(--text-muted); }
 .prose :global(code) {
   font-family: var(--font-mono);
   font-size: 12px;

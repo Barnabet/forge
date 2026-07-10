@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { StreamItem } from '../state/reducer'
 import s from './ToolCard.module.css'
 
@@ -14,15 +15,23 @@ export default function ToolCard({
   item: Extract<StreamItem, { kind: 'tool' }>
   onOpenPanel(changesetIndex: number): void
 }) {
+  const [collapsed, setCollapsed] = useState(false)
   const glyph = item.status === 'running' ? '▸' : item.status === 'done' ? '✓' : '!'
   const output = item.output === '(no output)' ? '' : item.output
   const lines = output ? output.replace(/\n$/, '').split('\n') : []
   const hidden = Math.max(0, lines.length - TAIL)
   const shown = lines.slice(-TAIL)
+  const hasBody = shown.length > 0
+  const bodyVisible = hasBody && !collapsed
 
   return (
     <div className={s.card}>
-      <div className={s.header} data-body={shown.length > 0}>
+      <div
+        className={s.header}
+        data-body={bodyVisible}
+        data-clickable={hasBody}
+        onClick={() => hasBody && setCollapsed(c => !c)}
+      >
         <span className={s.tile} data-status={item.status}>{glyph}</span>
         <span className={s.display}>{item.display}</span>
         {item.diffStats && (
@@ -33,8 +42,13 @@ export default function ToolCard({
         )}
         <span className={s.meta}>
           {item.diffStats && (
-            <button className={s.openPanel}
-                    onClick={() => onOpenPanel(item.diffStats!.changeset_index)}>
+            <button
+              className={s.openPanel}
+              onClick={e => {
+                e.stopPropagation() // panel link must not toggle the collapse
+                onOpenPanel(item.diffStats!.changeset_index)
+              }}
+            >
               open panel →
             </button>
           )}
@@ -42,9 +56,12 @@ export default function ToolCard({
           {item.status !== 'running' && item.durationMs > 0 && (
             <span>{fmtDuration(item.durationMs)}</span>
           )}
+          {hasBody && (
+            <span className={s.chevron} aria-hidden="true">{collapsed ? '›' : '⌄'}</span>
+          )}
         </span>
       </div>
-      {shown.length > 0 && (
+      {bodyVisible && (
         <pre className={s.body}>
           {hidden > 0 && <div className={s.truncated}>… {hidden} earlier lines</div>}
           {shown.join('\n')}

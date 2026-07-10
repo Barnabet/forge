@@ -48,6 +48,7 @@ export interface ForgeState {
   models: ModelInfo[]
   projects: Project[]
   dialog: 'new-session' | 'new-project' | null
+  sidebarCollapsed: boolean
   healthy: boolean
   connection: 'connecting' | 'open' | 'closed'
   upsertSession(id: string, seed?: SessionMeta): void
@@ -66,6 +67,7 @@ export interface ForgeState {
   refreshHealth(): Promise<void>
   openDialog(d: 'new-session' | 'new-project'): void
   closeDialog(): void
+  toggleSidebar(): void
   createProject(body: Parameters<typeof api.createProject>[0]): Promise<void>
   archiveSession(sid: string): Promise<void>
   unarchiveSession(sid: string): Promise<void>
@@ -93,6 +95,7 @@ export const useForge = create<ForgeState>()((set, get) => {
   return {
     sessions: {}, order: [], activeId: null,
     models: [], projects: [], dialog: null,
+    sidebarCollapsed: localStorage.getItem('forge.sidebar') === 'collapsed',
     healthy: false, connection: 'connecting',
 
     upsertSession: (id, seed) =>
@@ -225,6 +228,13 @@ export const useForge = create<ForgeState>()((set, get) => {
 
     openDialog: dialog => set({ dialog }),
     closeDialog: () => set({ dialog: null }),
+
+    toggleSidebar: () =>
+      set(s => {
+        const sidebarCollapsed = !s.sidebarCollapsed
+        localStorage.setItem('forge.sidebar', sidebarCollapsed ? 'collapsed' : 'open')
+        return { sidebarCollapsed }
+      }),
 
     createProject: async body => {
       await api.createProject(body)

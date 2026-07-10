@@ -51,6 +51,16 @@ describe('ChatStream', () => {
     expect(screen.queryByText(/step 1/)).not.toBeInTheDocument()
   })
 
+  it('renders markdown lists as real list items', () => {
+    apply(ev('assistant_message', 2, {
+      text: 'The pull brought in:\n\n- New code: `anchor.py`\n- New tests\n- Docs',
+      tool_calls: [],
+    }))
+    render(<ChatStream />)
+    expect(screen.getAllByRole('listitem')).toHaveLength(3)
+    expect(screen.getByRole('list')).toBeInTheDocument()
+  })
+
   it('renders error, info, and compaction items', () => {
     apply(
       ev('error', 2, { message: 'LLM unreachable' }),

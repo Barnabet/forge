@@ -52,3 +52,6 @@
   margin: 0;
 }
 .truncated { color: var(--text-ghost); }
+
+.header[data-clickable='true'] { cursor: pointer; }
+.chevron { color: var(--text-ghost); font-size: 10px; }
