@@ -57,7 +57,7 @@ export interface ForgeState {
   setActive(id: string): void
   setConnection(c: ForgeState['connection']): void
   hydrate(): Promise<void>
-  send(text: string): Promise<void>
+  send(text: string, images?: string[]): Promise<void>
   openDrawer(changesetIndex: number): Promise<void>
   setDrawerView(view: DrawerState['view']): Promise<void>
   closeDrawer(): void
@@ -147,6 +147,9 @@ export const useForge = create<ForgeState>()((set, get) => {
       // ghosts (present pre-hydrate, absent on the server) and never a session
       // that arrived over the WS while this hydrate was in flight.
       const knownBefore = get().order.slice()
+      // Snapshot before upserting: the first upsert makes an arbitrary session
+      // active, and the persistence subscription would overwrite this key.
+      const remembered = localStorage.getItem('forge.active')
       const [metas, models, health, projects] = await Promise.all([
         api.sessions(), api.models(), api.health(), api.projects(),
       ])
@@ -158,6 +161,10 @@ export const useForge = create<ForgeState>()((set, get) => {
         if (!serverIds.has(id)) get().removeSession(id)
       }
       for (const m of metas) get().upsertSession(m.id, m)
+      // Restore the last-viewed session (upsertSession defaults to whichever
+      // session arrived first, which is arbitrary across refreshes).
+      if (remembered && serverIds.has(remembered) && get().activeId !== remembered)
+        set({ activeId: remembered })
       // Backfill each session's stream over REST from its current cursor. This
       // makes boot ordering vs. the WS replay irrelevant (the reducer dedupes by
       // seq) and closes the reconnect/outage gap when re-run on every WS 'open'.
@@ -168,15 +175,15 @@ export const useForge = create<ForgeState>()((set, get) => {
       }))
     },
 
-    send: async text => {
+    send: async (text, images = []) => {
       const a = active()
-      if (!a || !text.trim()) return
+      if (!a || (!text.trim() && images.length === 0)) return
       // Optimistic: show the working state immediately; the server's
       // status_changed confirms it (or corrects it to queued).
       if (a.stream.status === 'idle')
         patchSession(a.id, { stream: { ...a.stream, status: 'running' } })
       try {
-        await api.sendMessage(a.id, text)
+        await api.sendMessage(a.id, text, images)
       } catch (err) {
         const cur = get().sessions[a.id]
         if (cur) patchSession(a.id, { stream: { ...cur.stream, status: 'idle' } })
@@ -273,6 +280,12 @@ export const useForge = create<ForgeState>()((set, get) => {
       set({ activeId: meta.id })
     },
   }
+})
+
+// Remember the active session across refreshes/restarts (restored in hydrate).
+useForge.subscribe((s, prev) => {
+  if (s.activeId && s.activeId !== prev.activeId)
+    localStorage.setItem('forge.active', s.activeId)
 })
 
 export function cursors(state: ForgeState): Record<string, number> {

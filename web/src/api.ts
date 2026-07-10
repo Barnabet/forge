@@ -36,8 +36,8 @@ export const api = {
       cwd?: string; model?: string; autonomy?: string; project_id?: string; effort?: string
     } = {},
   ) => post<SessionMeta>('/api/sessions', body),
-  sendMessage: (sid: string, text: string) =>
-    post<object>(`/api/sessions/${sid}/messages`, { text }).then(() => undefined),
+  sendMessage: (sid: string, text: string, images: string[] = []) =>
+    post<object>(`/api/sessions/${sid}/messages`, { text, images }).then(() => undefined),
   resolveApproval: (
     sid: string, callId: string, decision: 'allow' | 'deny',
     always?: { pattern: string; scope: 'session' | 'global' },

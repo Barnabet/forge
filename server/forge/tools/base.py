@@ -39,6 +39,9 @@ class Tool(ABC):
     def display(self, args: dict) -> str:
         return args.get("path") or args.get("command") or self.name
 
+    def requires_approval(self, args: dict) -> bool:
+        return not self.read_only
+
     @abstractmethod
     async def run(self, args: dict, ctx: ToolContext) -> ToolResult: ...
 

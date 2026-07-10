@@ -103,7 +103,7 @@ describe('groupLabel', () => {
 describe('segmentItems', () => {
   const prose = (seq: number): StreamItem => ({ kind: 'prose', seq, text: 'p', streaming: false })
 
-  it('groups consecutive tools by family in first-seen order', () => {
+  it('groups only ADJACENT same-family tools (no hoisting up the list)', () => {
     const entries = segmentItems([
       tool({ tool: 'read_file', callId: 'r1' }),
       tool({ tool: 'bash', callId: 'b1' }),
@@ -112,20 +112,31 @@ describe('segmentItems', () => {
     expect(entries).toHaveLength(1)
     const e = entries[0]
     if (e.kind !== 'tools') throw new Error('expected tools entry')
-    expect(e.groups.map(g => g.map(t => t.callId))).toEqual([['r1', 'r2'], ['b1']])
+    expect(e.groups.map(g => g.map(t => t.callId))).toEqual([['r1'], ['b1'], ['r2']])
     expect(e.key).toBe('t:r1')
   })
 
-  it('groups edits per file, not per family', () => {
+  it('rolls up an adjacent same-family run', () => {
+    const entries = segmentItems([
+      tool({ tool: 'read_file', callId: 'r1' }),
+      tool({ tool: 'read_file', callId: 'r2' }),
+      tool({ tool: 'grep', callId: 'g1' }),
+    ])
+    const e = entries[0]
+    if (e.kind !== 'tools') throw new Error('expected tools entry')
+    expect(e.groups.map(g => g.map(t => t.callId))).toEqual([['r1', 'r2'], ['g1']])
+  })
+
+  it('groups adjacent edits per file, not per family', () => {
     const entries = segmentItems([
       tool({ tool: 'edit_file', callId: 'e1', display: 'a.py' }),
-      tool({ tool: 'write_file', callId: 'e2', display: 'b.py' }),
-      tool({ tool: 'edit_file', callId: 'e3', display: 'a.py' }),
+      tool({ tool: 'edit_file', callId: 'e2', display: 'a.py' }),
+      tool({ tool: 'write_file', callId: 'e3', display: 'b.py' }),
     ])
     expect(entries).toHaveLength(1)
     const e = entries[0]
     if (e.kind !== 'tools') throw new Error('expected tools entry')
-    expect(e.groups.map(g => g.map(t => t.callId))).toEqual([['e1', 'e3'], ['e2']])
+    expect(e.groups.map(g => g.map(t => t.callId))).toEqual([['e1', 'e2'], ['e3']])
   })
 
   it('breaks tool runs on any non-tool item', () => {

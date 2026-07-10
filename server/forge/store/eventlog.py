@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from pydantic import ValidationError
+
 from forge.engine.events import Event, parse_event
 
 
@@ -14,9 +16,14 @@ class EventLog:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self._events: list[Event] = []
         if self.path.exists():
-            for line in self.path.read_text().splitlines():
-                if line.strip():
+            lines = [ln for ln in self.path.read_text().splitlines() if ln.strip()]
+            for i, line in enumerate(lines):
+                try:
                     self._events.append(parse_event(json.loads(line)))
+                except (json.JSONDecodeError, ValidationError):
+                    if i == len(lines) - 1:
+                        break  # torn trailing line from a crash mid-append: drop it
+                    raise
 
     @property
     def last_seq(self) -> int:

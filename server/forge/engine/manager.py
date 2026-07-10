@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import shutil
 import time
 from pathlib import Path
@@ -8,6 +9,7 @@ from uuid import uuid4
 from forge.engine.actor import SessionActor, SessionMeta
 from forge.engine.bus import EventBus
 from forge.engine.events import RunFinished, SessionCreated
+from forge.engine.memory import ProjectMemory
 from forge.engine.scheduler import Scheduler
 from forge.engine.sysprompt import build_system_prompt
 from forge.llm.base import LLMClient
@@ -21,6 +23,7 @@ class SessionManager:
         self.llm = llm
         self.bus = bus
         self.scheduler = Scheduler(config.max_concurrent)
+        self.project_memory = ProjectMemory(home, llm)
         self.actors: dict[str, SessionActor] = {}
         self._creation_order: list[str] = []
 
@@ -28,7 +31,8 @@ class SessionManager:
         actor = SessionActor(
             meta=meta, home=self.home, config=self.config, llm=self.llm,
             bus=self.bus, scheduler=self.scheduler,
-            system_prompt_fn=lambda m: build_system_prompt(m, self.home))
+            system_prompt_fn=lambda m: build_system_prompt(m, self.home),
+            project_memory=self.project_memory)
         self.actors[meta.id] = actor
         self._creation_order.append(meta.id)
         return actor
@@ -83,7 +87,12 @@ class SessionManager:
         for sdir in sorted(sessions_dir.iterdir()):
             if not (sdir / "events.jsonl").is_file() or sdir.name in self.actors:
                 continue
-            meta = self._replay_meta(sdir.name)
+            try:
+                meta = self._replay_meta(sdir.name)
+            except Exception:
+                logging.getLogger(__name__).exception(
+                    "skipping session %s: corrupt event log", sdir.name)
+                continue
             if meta is None:
                 continue
             actor = self._make_actor(meta)

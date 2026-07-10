@@ -36,7 +36,10 @@ function Line({
       >
         {running && <span className={s.pulse} aria-hidden="true" />}
         <span className={s.verb}>{toolVerb(item)}</span>
-        <span className={s.object}>{item.display ? relDisplay(item.display, cwd) : '…'}</span>
+        {/* pending: arguments still streaming — name the tool instead of '…' */}
+        <span className={s.object}>
+          {item.display ? relDisplay(item.display, cwd) : `${item.tool} …`}
+        </span>
         {item.diffStats && (
           <span className={s.stats}>
             <span className={s.added}>+{item.diffStats.added}</span>

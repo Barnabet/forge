@@ -49,3 +49,18 @@ def test_system_prompt_sections(tmp_path):
                    "user prefers pnpm", "deploy", "ship it", "load_skill",
                    str(cwd)]:
         assert needle in sp
+
+
+def test_discovery_survives_malformed_skill_md(tmp_path):
+    make_skill(tmp_path / "g", "good")
+    bad = tmp_path / "g" / "bad"
+    bad.mkdir()
+    (bad / "SKILL.md").write_text("---\nname: [unclosed\n---\nbody\n")
+    scalar = tmp_path / "g" / "scalar"
+    scalar.mkdir()
+    (scalar / "SKILL.md").write_text("---\njust a string\n---\nbody\n")
+    skills = discover_skills([tmp_path / "g"])
+    by_name = {s.name: s for s in skills}
+    assert "good" in by_name
+    assert "bad" not in by_name
+    assert by_name["scalar"].name == "scalar"  # non-mapping frontmatter -> dir-name fallback

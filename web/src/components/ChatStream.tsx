@@ -21,21 +21,39 @@ export default function ChatStream() {
     tail?.kind === 'prose' ? tail.text.length
     : tail?.kind === 'tool' ? tail.output.length
     : 0
+  // A new message from the user always snaps to the bottom, even if they had
+  // scrolled up to read history.
+  const lastUserSeq = session?.stream.items.findLast(it => it.kind === 'user')?.seq ?? 0
+  const prevUserSeq = useRef(lastUserSeq)
+  // Opening a conversation lands at the bottom. The flag stays armed until the
+  // session has content: on boot activeId is set before events backfill.
+  const needsBottom = useRef(true)
+  useEffect(() => { needsBottom.current = true }, [activeId])
   useEffect(() => {
     const el = scroller.current
     if (!el) return
+    const userSent = lastUserSeq > prevUserSeq.current
+    prevUserSeq.current = lastUserSeq
+    const opened = needsBottom.current
+    if (opened && itemCount > 0) needsBottom.current = false
     const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 80
-    if (nearBottom) el.scrollTop = el.scrollHeight
-  }, [itemCount, activeId, tailSize])
+    if (nearBottom || userSent || opened) el.scrollTop = el.scrollHeight
+  }, [itemCount, activeId, tailSize, lastUserSeq])
 
   if (!session) return <div ref={scroller} className={s.scroller} />
   const { items, status, steps } = session.stream
 
+  // "Thinking" only fills the silence (reasoning): hide it while text is
+  // streaming in or a tool call is visibly running — the gutter spinner
+  // attaches to those elements instead, marking where execution is.
+  const hasLiveContent = items.some(it =>
+    (it.kind === 'prose' && it.streaming) || (it.kind === 'tool' && it.status === 'running'))
   const statusText =
-    status === 'running' ? (steps > 0 ? `Working · step ${steps}` : 'Working…')
+    status === 'running' ? (hasLiveContent ? null : 'Thinking')
     : status === 'attention' ? `Waiting on approval · step ${steps}`
     : status === 'queued' ? 'Queued — waiting for a slot'
     : null
+  const thinking = statusText === 'Thinking'
 
   return (
     <div ref={scroller} className={s.scroller}>
@@ -58,9 +76,25 @@ export default function ChatStream() {
           const { key, item } = entry
           switch (item.kind) {
             case 'user':
-              return <div key={key} className={s.userRow}><div className={s.userBubble}>{item.text}</div></div>
+              return (
+                <div key={key} className={s.userRow}>
+                  <div className={s.userBubble}>
+                    {item.images.length > 0 && (
+                      <div className={s.userImages}>
+                        {item.images.map((url, i) => <img key={i} src={url} alt="" />)}
+                      </div>
+                    )}
+                    {item.text}
+                  </div>
+                </div>
+              )
             case 'prose':
-              return <div key={key} className={s.prose}><Markdown>{item.text}</Markdown></div>
+              // data-live puts the gutter spinner on the line being written
+              return (
+                <div key={key} className={s.prose} data-live={item.streaming || undefined}>
+                  <Markdown>{item.text}</Markdown>
+                </div>
+              )
             case 'gate':
               return (
                 <ApprovalGate
@@ -80,10 +114,16 @@ export default function ChatStream() {
               return null
           }
         })}
-        {statusText && (
+        {status !== 'idle' && (
+          // The slot is always mounted while a run is active so the status
+          // flashing in/out never shifts the content above it.
           <div className={s.statusLine}>
-            <span className={s.spinner} aria-hidden="true" />
-            {statusText}
+            {statusText && (
+              <>
+                <span className={s.spinner} aria-hidden="true" />
+                <span data-thinking={thinking || undefined}>{statusText}</span>
+              </>
+            )}
           </div>
         )}
       </div>

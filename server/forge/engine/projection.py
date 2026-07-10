@@ -5,6 +5,16 @@ from forge.engine.events import Event
 SUMMARY_PREFIX = "[Summary of the conversation so far]\n"
 
 
+def _user_content(e) -> str | list:
+    """Plain string, or OpenAI multimodal parts when the message has images."""
+    if not e.images:
+        return e.text
+    parts: list[dict] = [{"type": "image_url", "image_url": {"url": u}} for u in e.images]
+    if e.text:
+        parts.insert(0, {"type": "text", "text": e.text})
+    return parts
+
+
 def to_messages(events: list[Event], system_prompt: str) -> list[dict]:
     summary, cut = None, 0
     for e in events:
@@ -15,16 +25,17 @@ def to_messages(events: list[Event], system_prompt: str) -> list[dict]:
     if summary is not None:
         msgs.append({"role": "user", "content": SUMMARY_PREFIX + summary})
 
-    pending_users: list[str] = []
+    pending_users: list[str | list] = []
     open_calls = 0
     for e in events:
         if e.seq <= cut:
             continue
         if e.type == "user_message":
+            content = _user_content(e)
             if open_calls:
-                pending_users.append(e.text)
+                pending_users.append(content)
             else:
-                msgs.append({"role": "user", "content": e.text})
+                msgs.append({"role": "user", "content": content})
         elif e.type == "assistant_message":
             m: dict = {"role": "assistant", "content": e.text or None}
             if e.tool_calls:

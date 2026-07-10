@@ -32,6 +32,8 @@ class ForgeConfig(BaseModel):
     default_model: str = ""
     default_autonomy: str = "yolo"
     max_concurrent: int = 3
+    max_subagents: int = 4
+    subagent_max_turns: int = 12
     policies: list[Policy] = []
 
     def context_window(self, model_id: str) -> int:

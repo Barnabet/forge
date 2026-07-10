@@ -42,3 +42,18 @@ async def test_rehydrate_restores_and_marks_interrupted(tmp_path):
     assert metas[a.meta.id].status == "idle"
     evs = mgr2.get(b.meta.id).log.read()
     assert evs[-1].type == "run_finished" and evs[-1].reason == "interrupted"
+
+
+def test_rehydrate_skips_corrupt_session_dir(tmp_path):
+    mgr = make_manager(tmp_path)
+    a = mgr.create(cwd=str(tmp_path))
+    b = mgr.create()
+    # corrupt session b's log mid-file (a torn *trailing* line is handled by EventLog)
+    log_path = tmp_path / "home" / "sessions" / b.meta.id / "events.jsonl"
+    log_path.write_text("garbage not json\n" + log_path.read_text())
+
+    mgr2 = SessionManager(home=tmp_path / "home", config=ForgeConfig(),
+                          llm=FakeLLM([]), bus=EventBus())
+    mgr2.rehydrate()
+    ids = {m.id for m in mgr2.list()}
+    assert a.meta.id in ids and b.meta.id not in ids

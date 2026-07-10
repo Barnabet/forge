@@ -62,6 +62,7 @@ class ModelChanged(BaseEvent):
 class UserMessage(BaseEvent):
     type: Literal["user_message"] = "user_message"
     text: str
+    images: list[str] = []  # data URLs (base64)
 
 
 class AssistantMessage(BaseEvent):

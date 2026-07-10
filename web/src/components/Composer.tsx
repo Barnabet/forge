@@ -18,8 +18,19 @@ export function atQuery(draft: string): string | null {
   return m ? m[1] : null
 }
 
+function readAsDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader()
+    r.onload = () => resolve(r.result as string)
+    r.onerror = () => reject(r.error as Error)
+    r.readAsDataURL(file)
+  })
+}
+
 export default function Composer() {
   const [draft, setDraft] = useState('')
+  const [images, setImages] = useState<string[]>([])
+  const [dragOver, setDragOver] = useState(false)
   const boxRef = useRef<HTMLTextAreaElement>(null)
   const send = useForge(st => st.send)
   const models = useForge(st => st.models)
@@ -43,9 +54,17 @@ export default function Composer() {
 
   const submit = () => {
     const text = draft.trim()
-    if (!text || palette !== null) return
+    if ((!text && images.length === 0) || palette !== null) return
     setDraft('')
-    void send(text)
+    setImages([])
+    void send(text, images)
+  }
+
+  const addFiles = async (files: Iterable<File>) => {
+    const imgs = [...files].filter(f => f.type.startsWith('image/'))
+    if (imgs.length === 0) return
+    const urls = await Promise.all(imgs.map(readAsDataUrl))
+    setImages(prev => [...prev, ...urls])
   }
 
   const autosize = () => {
@@ -58,7 +77,24 @@ export default function Composer() {
 
   return (
     <div className={s.wrap}>
-      <div className={s.card}>
+      <div
+        className={s.card}
+        data-dragover={dragOver || undefined}
+        onDragOver={e => {
+          if (archived || ![...e.dataTransfer.items].some(i => i.kind === 'file')) return
+          e.preventDefault()
+          setDragOver(true)
+        }}
+        onDragLeave={e => {
+          if (!e.currentTarget.contains(e.relatedTarget as Node)) setDragOver(false)
+        }}
+        onDrop={e => {
+          if (archived) return
+          e.preventDefault()
+          setDragOver(false)
+          void addFiles(e.dataTransfer.files)
+        }}
+      >
         {palette !== null && (
           <CommandPalette query={palette} onClose={() => setDraft('')} />
         )}
@@ -71,6 +107,22 @@ export default function Composer() {
             }}
           />
         )}
+        {images.length > 0 && (
+          <div className={s.attachments}>
+            {images.map((url, i) => (
+              <div key={i} className={s.thumb}>
+                <img src={url} alt={`attachment ${i + 1}`} />
+                <button
+                  className={s.thumbRemove}
+                  aria-label={`Remove attachment ${i + 1}`}
+                  onClick={() => setImages(prev => prev.filter((_, j) => j !== i))}
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
         <textarea
           ref={boxRef}
           className={s.input}
@@ -79,6 +131,13 @@ export default function Composer() {
           placeholder={archived ? 'Archived — unarchive to continue' : 'Reply, steer, or queue another task…'}
           value={draft}
           onChange={e => { setDraft(e.target.value); autosize() }}
+          onPaste={e => {
+            const files = [...e.clipboardData.files]
+            if (files.some(f => f.type.startsWith('image/'))) {
+              e.preventDefault()
+              void addFiles(files)
+            }
+          }}
           onKeyDown={e => {
             if (e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault()
@@ -109,7 +168,7 @@ export default function Composer() {
           <button
             className={s.send}
             aria-label="Send"
-            disabled={archived || !draft.trim()}
+            disabled={archived || (!draft.trim() && images.length === 0)}
             onClick={submit}
           >
             ↑

@@ -302,3 +302,13 @@ def test_assistant_message_carries_usage_tokens(make_client):
         events = client.get(f"/api/sessions/{sid}/events").json()
         assistant = [e for e in events if e["type"] == "assistant_message"]
         assert assistant[-1]["usage_tokens"] == 1234
+
+
+def test_set_autonomy_rejects_bogus_value_400(make_client):
+    client = make_client()
+    with client:
+        sid = client.post("/api/sessions", json={}).json()["id"]
+        r = client.post(f"/api/sessions/{sid}/autonomy", json={"autonomy": "rampage"})
+        assert r.status_code == 400
+        metas = client.get("/api/sessions").json()
+        assert metas[0]["autonomy"] == "yolo"

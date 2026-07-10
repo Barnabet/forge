@@ -34,10 +34,37 @@
   word-break: break-word;
 }
 
+.userImages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.userImages img {
+  max-width: 200px;
+  max-height: 160px;
+  border-radius: 8px;
+  display: block;
+}
+
 .prose {
   font-size: 13.5px;
   line-height: 1.65;
-  color: var(--text-body);
+  color: var(--text-primary);
+}
+/* Streaming prose carries the gutter spinner on its last line — the spinner
+   "follows" the line being written. */
+.prose[data-live] { position: relative; }
+.prose[data-live]::after {
+  content: '';
+  position: absolute;
+  left: -24px;
+  bottom: 5px;
+  width: 12px; height: 12px;
+  border: 1.5px solid var(--hair-2);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
 }
 .prose :global(p + p) { margin-top: 8px; }
 .prose :global(ul), .prose :global(ol) {
@@ -69,12 +96,25 @@
 .compacted { text-align: center; font-size: 11.5px; color: var(--text-ghost); }
 
 .statusLine {
+  position: relative;
   display: flex; align-items: center; gap: 8px;
   font-size: 12px;
   color: var(--text-muted);
+  min-height: 16px; /* holds the row's height when the text toggles off */
+}
+.statusLine [data-thinking] {
+  animation: dim 1.4s ease-in-out infinite;
+}
+@keyframes dim {
+  0%, 100% { color: var(--text-muted); }
+  50% { color: var(--text-ghost-2); }
 }
 .spinner {
-  width: 12px; height: 12px; flex: none;
+  position: absolute; /* gutter: left of the text margin */
+  left: -24px;
+  top: 50%;
+  margin-top: -6px;
+  width: 12px; height: 12px;
   border: 1.5px solid var(--hair-2);
   border-top-color: var(--accent);
   border-radius: 50%;
@@ -82,10 +122,11 @@
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) {
-  .spinner {
+  .spinner, .prose[data-live]::after {
     animation: pulse 1.2s ease-in-out infinite;
     border-color: var(--accent);
   }
+  .statusLine [data-thinking] { animation: none; }
   @keyframes pulse {
     0%, 100% { opacity: 0.3; }
     50% { opacity: 1; }

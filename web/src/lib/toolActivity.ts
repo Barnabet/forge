@@ -84,8 +84,10 @@ export type RenderEntry =
   | { kind: 'item'; key: string; item: StreamItem }
 
 // Partition the stream for rendering: consecutive tool items form one
-// activity block, grouped by family in first-seen order (a run of tools
-// comes from one assistant turn, so ordering within it carries no meaning).
+// activity block, and ADJACENT same-family calls within it roll up into one
+// group. Grouping is strictly consecutive — never hoisted into an earlier
+// group of the same family — so a call arriving live always appends at the
+// tail instead of rewriting lines above it (which flashed and shifted text).
 // Edits group per file — repeated edits to one file roll up; edits to
 // different files stay separate lines. Any non-tool item — prose, user,
 // gate, error — breaks the run.
@@ -95,15 +97,16 @@ export function segmentItems(items: StreamItem[]): RenderEntry[] {
 
   const flush = () => {
     if (!buffer.length) return
-    const byFamily = new Map<string, ToolItem[]>()
+    const groups: ToolItem[][] = []
+    let lastFam: string | null = null
     for (const it of buffer) {
       const f = familyOf(it.tool)
       const fam = f === 'edit' ? `edit:${it.display}` : f
-      const g = byFamily.get(fam)
-      if (g) g.push(it)
-      else byFamily.set(fam, [it])
+      if (fam === lastFam) groups[groups.length - 1].push(it)
+      else groups.push([it])
+      lastFam = fam
     }
-    out.push({ kind: 'tools', key: `t:${buffer[0].callId}`, groups: [...byFamily.values()] })
+    out.push({ kind: 'tools', key: `t:${buffer[0].callId}`, groups })
     buffer = []
   }
 

@@ -67,6 +67,7 @@ export interface UserMessage {
   ts: number;
   type?: "user_message";
   text: string;
+  images?: string[];
 }
 export interface AssistantMessage {
   seq?: number;

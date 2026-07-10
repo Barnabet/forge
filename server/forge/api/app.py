@@ -104,7 +104,7 @@ def create_app(home: Path, config: ForgeConfig, llm: LLMClient) -> FastAPI:
 
     @app.post("/api/sessions/{sid}/messages", status_code=202)
     async def post_message(sid: str, body: PostMessage):
-        await _actor(sid).post_message(body.text)
+        await _actor(sid).post_message(body.text, images=body.images)
         return {}
 
     @app.post("/api/sessions/{sid}/approvals/{call_id}")
@@ -121,6 +121,7 @@ def create_app(home: Path, config: ForgeConfig, llm: LLMClient) -> FastAPI:
 
     @app.post("/api/sessions/{sid}/autonomy")
     async def set_autonomy(sid: str, body: SetAutonomy):
+        _validate_autonomy(body.autonomy)
         _actor(sid).set_autonomy(body.autonomy)
         return {}
 

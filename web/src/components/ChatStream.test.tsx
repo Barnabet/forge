@@ -40,15 +40,29 @@ describe('ChatStream', () => {
       ev('tool_call_started', 4, { call_id: 'c1', tool: 'bash', display: 'ls' }),
     )
     const { rerender } = render(<ChatStream />)
-    expect(screen.getByText('Working · step 1')).toBeInTheDocument()
+    // a running tool card tells the story; no "Thinking" line on top of it
+    expect(screen.queryByText('Thinking')).not.toBeInTheDocument()
 
-    apply(ev('status_changed', 5, { status: 'attention' }))
+    apply(ev('tool_call_finished', 5, { call_id: 'c1', tool: 'bash', output: 'ok', is_error: false }))
+    rerender(<ChatStream />)
+    expect(screen.getByText('Thinking')).toBeInTheDocument()
+
+    apply(ev('status_changed', 6, { status: 'attention' }))
     rerender(<ChatStream />)
     expect(screen.getByText('Waiting on approval · step 1')).toBeInTheDocument()
 
-    apply(ev('run_finished', 6, { reason: 'completed' }))
+    apply(ev('run_finished', 7, { reason: 'completed' }))
     rerender(<ChatStream />)
     expect(screen.queryByText(/step 1/)).not.toBeInTheDocument()
+  })
+
+  it('hides "Thinking" while text is streaming in', () => {
+    apply(
+      ev('status_changed', 2, { status: 'running' }),
+      ev('text_delta', 0, { text: 'Pondering about ' }),
+    )
+    render(<ChatStream />)
+    expect(screen.queryByText('Thinking')).not.toBeInTheDocument()
   })
 
   it('renders markdown lists as real list items', () => {

@@ -9,6 +9,7 @@ from typing import Callable
 from pydantic import BaseModel
 
 from forge.engine.bus import EventBus
+from forge.engine.memory import ProjectMemory
 from forge.engine.events import (
     ApprovalRequested, ApprovalResolved, AssistantMessage, Autonomy,
     AutonomyChanged, ContextCompacted, Effort, EffortChanged, ErrorEvent, ModelChanged,
@@ -25,6 +26,7 @@ from forge.store.config import ForgeConfig, Policy, policy_matches, save_global_
 from forge.store.eventlog import EventLog
 from forge.tools.base import ToolContext, openai_spec
 from forge.tools.registry import default_tools
+from forge.tools.subagents import SpawnAgentsTool
 
 COMPACT_THRESHOLD = 0.75
 
@@ -44,7 +46,8 @@ class SessionMeta(BaseModel):
 class SessionActor:
     def __init__(self, meta: SessionMeta, home: Path, config: ForgeConfig,
                  llm: LLMClient, bus: EventBus, scheduler: Scheduler,
-                 system_prompt_fn: Callable[[SessionMeta], str]):
+                 system_prompt_fn: Callable[[SessionMeta], str],
+                 project_memory: ProjectMemory | None = None):
         self.meta = meta
         self.home = home
         self.config = config
@@ -52,11 +55,17 @@ class SessionActor:
         self.bus = bus
         self.scheduler = scheduler
         self.system_prompt_fn = system_prompt_fn
+        self.project_memory = project_memory
         sdir = home / "sessions" / meta.id
         self.log = EventLog(sdir / "events.jsonl")
         self.changesets = ChangesetStore(sdir)
-        self.tools = default_tools(
-            [home / "skills", Path(meta.cwd) / ".forge" / "skills"])
+        skill_dirs = [home / "skills", Path(meta.cwd) / ".forge" / "skills"]
+        subagents = SpawnAgentsTool(
+            llm=llm, skill_dirs=skill_dirs,
+            model_fn=lambda: self.meta.model, effort_fn=lambda: self.meta.effort,
+            parent_prompt_fn=lambda: self.system_prompt_fn(self.meta),
+            max_concurrent=config.max_subagents, max_turns=config.subagent_max_turns)
+        self.tools = default_tools(skill_dirs, subagents=subagents)
         self.session_policies: list[Policy] = []
         self.run_task: asyncio.Task | None = None
         self._approvals: dict[str, asyncio.Future] = {}
@@ -79,8 +88,8 @@ class SessionActor:
             self.emit(self._e(StatusChanged, status=status))
 
     # -- commands ------------------------------------------------------------
-    async def post_message(self, text: str) -> None:
-        self.emit(self._e(UserMessage, text=text))
+    async def post_message(self, text: str, images: list[str] | None = None) -> None:
+        self.emit(self._e(UserMessage, text=text, images=images or []))
         if self.meta.name == "New session":
             self.meta.name = text[:40]
             self.emit(self._e(SessionRenamed, name=self.meta.name))
@@ -127,7 +136,10 @@ class SessionActor:
             # "queued"); the try must wrap the slot acquisition too.
             async with self.scheduler.slot(lambda: self._set_status("queued")):
                 self._set_status("running")
+                run_start_seq = max(
+                    (e.seq for e in self.log.read() if e.type == "run_finished"), default=0)
                 await self._loop()
+                await self._update_project_memory(run_start_seq)
                 self.emit(self._e(RunFinished, reason="completed"))
         except asyncio.CancelledError:
             self._close_dangling("Cancelled by user")
@@ -169,6 +181,34 @@ class SessionActor:
                 await self._execute_call(call)
             await self._maybe_compact(result.usage_tokens)
 
+    def _run_transcript(self, after_seq: int) -> str:
+        lines: list[str] = []
+        for event in self.log.read(after_seq=after_seq):
+            if event.type == "user_message":
+                lines.append(f"USER: {event.text}")
+            elif event.type == "assistant_message" and event.text:
+                lines.append(f"ASSISTANT: {event.text}")
+            elif event.type == "tool_call_started":
+                lines.append(f"TOOL CALL: {event.tool} — {event.display}")
+            elif event.type == "tool_call_finished":
+                status = "ERROR" if event.is_error else "RESULT"
+                lines.append(f"TOOL {status} ({event.tool}): {event.output}")
+        return "\n\n".join(lines)
+
+    async def _update_project_memory(self, after_seq: int) -> None:
+        if self.project_memory is None or self.meta.project_id is None:
+            return
+        transcript = self._run_transcript(after_seq)
+        if not transcript:
+            return
+        try:
+            await self.project_memory.update(
+                self.meta.project_id, self.meta.model, self.meta.effort, transcript)
+        except Exception:
+            # Memory enrichment is best-effort and must never turn a successful
+            # user run into an error. The next completed run can recover.
+            return
+
     async def _execute_call(self, call: ToolCallSpec) -> None:
         tool = self.tools.get(call.name)
         if tool is None:
@@ -184,7 +224,7 @@ class SessionActor:
         display = tool.display(args)
 
         auto = False
-        if not tool.read_only:
+        if tool.requires_approval(args):
             policies = self.config.policies + self.session_policies
             if policy_matches(policies, call.name, display):
                 auto = True

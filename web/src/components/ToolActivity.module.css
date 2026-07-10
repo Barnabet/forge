@@ -1,6 +1,7 @@
 .line[data-indent] { margin-left: 18px; }
 
 .row {
+  position: relative;
   display: flex;
   align-items: baseline;
   gap: 8px;
@@ -14,20 +15,25 @@
 .row[data-clickable='true']:hover .verb { color: var(--text-muted); }
 .row[data-clickable='true']:hover .chevron { color: var(--text-muted); }
 
+/* Gutter spinner: sits left of the text margin, marking where execution is.
+   Same ring as ChatStream's status spinner. */
 .pulse {
-  width: 6px; height: 6px; flex: none;
-  align-self: center;
+  position: absolute;
+  left: -24px;
+  top: 50%;
+  margin-top: -6px;
+  width: 12px; height: 12px;
+  border: 1.5px solid var(--hair-2);
+  border-top-color: var(--accent);
   border-radius: 50%;
-  background: var(--accent);
-  animation: pulse 1.2s ease-in-out infinite;
+  animation: spin 0.8s linear infinite;
 }
-@keyframes pulse {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 1; }
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) {
-  .pulse { animation: none; opacity: 0.8; }
+  .pulse { animation: none; }
 }
+/* Indented lines inside an expanded group: keep the spinner in the gutter. */
+.line[data-indent] .pulse { left: -42px; }
 
 .verb { flex: none; }
 

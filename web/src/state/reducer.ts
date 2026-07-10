@@ -1,7 +1,7 @@
 import { seqOf, type Autonomy, type DiffStats, type Effort, type Status, type WireEvent } from '../protocol'
 
 export type StreamItem =
-  | { kind: 'user'; seq: number; text: string }
+  | { kind: 'user'; seq: number; text: string; images: string[] }
   | { kind: 'prose'; seq: number; text: string; streaming: boolean }
   | { kind: 'tool'; seq: number; callId: string; tool: string; display: string;
       status: 'running' | 'done' | 'error'; output: string; durationMs: number;
@@ -87,7 +87,7 @@ export function reduce(s: SessionStream, e: WireEvent): SessionStream {
 
     case 'user_message':
       finalizeProse(n.items)
-      n.items.push({ kind: 'user', seq, text: e.text })
+      n.items.push({ kind: 'user', seq, text: e.text, images: e.images ?? [] })
       n.steps = 0
       break
 

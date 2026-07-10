@@ -10,6 +10,48 @@
   box-shadow: var(--shadow-composer);
 }
 
+.card[data-dragover] {
+  border-color: var(--accent);
+  box-shadow: var(--glow-accent);
+}
+
+.attachments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.thumb {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--r-tile);
+  border: 1px solid var(--hair-3);
+  overflow: hidden;
+}
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.thumbRemove {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.65);
+  color: var(--text-primary);
+  font-size: 11px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.thumbRemove:hover { background: rgba(0, 0, 0, 0.85); }
+
 .input {
   width: 100%;
   resize: none;

@@ -13,6 +13,7 @@ class CreateSession(BaseModel):
 
 class PostMessage(BaseModel):
     text: str
+    images: list[str] = []  # data URLs (base64)
 
 
 class AlwaysPolicy(BaseModel):

@@ -25,7 +25,7 @@ describe('Composer', () => {
     render(<Composer />)
     const box = screen.getByPlaceholderText('Reply, steer, or queue another task…')
     await userEvent.type(box, 'run the tests{Enter}')
-    expect(send).toHaveBeenCalledWith('run the tests')
+    expect(send).toHaveBeenCalledWith('run the tests', [])
     expect(box).toHaveValue('')
   })
 

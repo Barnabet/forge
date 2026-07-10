@@ -17,7 +17,10 @@ def parse_skill_md(text: str) -> tuple[dict, str]:
     if text.startswith("---"):
         parts = text.split("---", 2)
         if len(parts) == 3:
-            return yaml.safe_load(parts[1]) or {}, parts[2].strip()
+            fm = yaml.safe_load(parts[1])
+            if not isinstance(fm, dict):
+                fm = {}
+            return fm, parts[2].strip()
     return {}, text.strip()
 
 
@@ -30,7 +33,10 @@ def discover_skills(dirs: list[Path]) -> list[SkillMeta]:
             md = d / "SKILL.md"
             if not md.is_file():
                 continue
-            fm, _ = parse_skill_md(md.read_text())
+            try:
+                fm, _ = parse_skill_md(md.read_text())
+            except (yaml.YAMLError, OSError, UnicodeDecodeError):
+                continue  # a broken skill must not take down system prompt build
             name = fm.get("name", d.name)
             found[name] = SkillMeta(
                 name=name, description=fm.get("description", ""), path=str(d))
