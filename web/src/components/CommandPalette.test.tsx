@@ -45,4 +45,25 @@ describe('CommandPalette', () => {
     expect(await screen.findByText(/Session is running/)).toBeInTheDocument()
     expect(onClose).not.toHaveBeenCalled()
   })
+
+  it('/effort steps into the levels and posts the choice', async () => {
+    const fetchMock = vi.fn(async () => ({ ok: true, json: async () => ({}) }))
+    vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch)
+    const onClose = vi.fn()
+    render(<CommandPalette query="" onClose={onClose} />)
+    await userEvent.click(screen.getByText('/effort'))
+    await userEvent.click(screen.getByText('high'))
+    expect(fetchMock).toHaveBeenCalledWith('/api/sessions/aa/effort', expect.objectContaining({
+      method: 'POST', body: JSON.stringify({ effort: 'high' }),
+    }))
+    expect(onClose).toHaveBeenCalled()
+  })
+
+  it('/new opens the new-session dialog', async () => {
+    const onClose = vi.fn()
+    render(<CommandPalette query="ne" onClose={onClose} />)
+    await userEvent.click(screen.getByText('/new'))
+    expect(useForge.getState().dialog).toBe('new-session')
+    expect(onClose).toHaveBeenCalled()
+  })
 })

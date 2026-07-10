@@ -7,6 +7,7 @@ const COMMANDS = [
   { cmd: 'new', hint: 'start a new session' },
   { cmd: 'model', hint: 'switch model' },
   { cmd: 'autonomy', hint: 'yolo / guarded' },
+  { cmd: 'effort', hint: 'reasoning effort' },
   { cmd: 'compact', hint: 'compact context now' },
   { cmd: 'cancel', hint: 'stop the current run' },
 ]
@@ -18,11 +19,11 @@ export default function CommandPalette({
   query: string
   onClose(): void
 }) {
-  const [step, setStep] = useState<'root' | 'model' | 'autonomy'>('root')
+  const [step, setStep] = useState<'root' | 'model' | 'autonomy' | 'effort'>('root')
   const [error, setError] = useState<string | null>(null)
   const activeId = useForge(st => st.activeId)
   const models = useForge(st => st.models)
-  const newSession = useForge(st => st.newSession)
+  const openDialog = useForge(st => st.openDialog)
 
   const run = async (fn: () => Promise<void>) => {
     try {
@@ -38,9 +39,13 @@ export default function CommandPalette({
   const pick = (cmd: string) => {
     if (!activeId && cmd !== 'new') return
     switch (cmd) {
-      case 'new': return void run(() => newSession())
+      case 'new':
+        openDialog('new-session')
+        onClose()
+        return
       case 'model': return setStep('model')
       case 'autonomy': return setStep('autonomy')
+      case 'effort': return setStep('effort')
       case 'compact': return void run(() => api.compact(activeId!))
       case 'cancel': return void run(() => api.cancel(activeId!))
     }
@@ -69,6 +74,13 @@ export default function CommandPalette({
           <button key={a} className={s.row}
                   onClick={() => void run(() => api.setAutonomy(activeId!, a))}>
             {a}
+          </button>
+        ))}
+      {step === 'effort' &&
+        (['default', 'low', 'medium', 'high'] as const).map(lvl => (
+          <button key={lvl} className={s.row}
+                  onClick={() => void run(() => api.setEffort(activeId!, lvl))}>
+            {lvl}
           </button>
         ))}
     </div>

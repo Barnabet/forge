@@ -46,6 +46,20 @@ describe('Composer', () => {
     render(<Composer />)
     expect(screen.getAllByTitle('CLIProxyAPI unreachable').length).toBeGreaterThan(0)
   })
+
+  it('pill includes non-default effort', () => {
+    useForge.getState().applyEvent(ev('effort_changed', 2, { effort: 'high' }))
+    render(<Composer />)
+    expect(screen.getByText('opus-5 · high · yolo')).toBeInTheDocument()
+  })
+
+  it('archived session locks the composer', () => {
+    useForge.getState().applyEvent(ev('session_archived', 2, {}))
+    render(<Composer />)
+    const box = screen.getByPlaceholderText('Archived — unarchive to continue')
+    expect(box).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Send' })).toBeDisabled()
+  })
 })
 
 describe('draft triggers', () => {

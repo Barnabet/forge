@@ -56,7 +56,6 @@ export interface ForgeState {
   setActive(id: string): void
   setConnection(c: ForgeState['connection']): void
   hydrate(): Promise<void>
-  newSession(): Promise<void>
   send(text: string): Promise<void>
   openDrawer(changesetIndex: number): Promise<void>
   setDrawerView(view: DrawerState['view']): Promise<void>
@@ -154,12 +153,6 @@ export const useForge = create<ForgeState>()((set, get) => {
         const events = await api.events(m.id, after)
         for (const e of events) get().applyEvent(e)
       }))
-    },
-
-    newSession: async () => {
-      const meta = await api.createSession()
-      get().upsertSession(meta.id, meta)
-      set({ activeId: meta.id })
     },
 
     send: async text => {

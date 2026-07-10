@@ -25,8 +25,11 @@ export default function Composer() {
   const modelName =
     models.find(m => m.id === stream?.model)?.display_name ?? stream?.model ?? ''
 
-  const palette = paletteQuery(draft)
-  const at = palette === null ? atQuery(draft) : null
+  const archived = stream?.archived ?? false
+  const effortPart = stream && stream.effort !== 'default' ? `${stream.effort} · ` : ''
+
+  const palette = archived ? null : paletteQuery(draft)
+  const at = archived || palette !== null ? null : atQuery(draft)
 
   const submit = () => {
     const text = draft.trim()
@@ -61,7 +64,8 @@ export default function Composer() {
           ref={boxRef}
           className={s.input}
           rows={1}
-          placeholder="Reply, steer, or queue another task…"
+          disabled={archived}
+          placeholder={archived ? 'Archived — unarchive to continue' : 'Reply, steer, or queue another task…'}
           value={draft}
           onChange={e => { setDraft(e.target.value); autosize() }}
           onKeyDown={e => {
@@ -80,12 +84,12 @@ export default function Composer() {
             title={healthy ? undefined : 'CLIProxyAPI unreachable'}
           >
             {!healthy && <span className={s.healthDot} />}
-            {modelName} · {stream?.autonomy ?? 'yolo'}
+            {modelName} · {effortPart}{stream?.autonomy ?? 'yolo'}
           </span>
           <button
             className={s.send}
             aria-label="Send"
-            disabled={!draft.trim()}
+            disabled={archived || !draft.trim()}
             onClick={submit}
           >
             ↑
