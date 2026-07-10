@@ -81,6 +81,17 @@ async def test_llm_error_ends_run_with_error(tmp_path):
     assert fin[0].reason == "error" and actor.meta.status == "idle"
 
 
+async def test_unexpected_error_ends_run_with_error(tmp_path):
+    actor, _ = make_actor(tmp_path, [RuntimeError("boom")])
+    await actor.post_message("go")
+    await wait_idle(actor)  # backstop caught it → task did not raise
+    assert "error" in types(actor)
+    err = next(e for e in actor.log.read() if e.type == "error")
+    assert "boom" in err.message
+    fin = [e for e in actor.log.read() if e.type == "run_finished"]
+    assert fin[0].reason == "error" and actor.meta.status == "idle"
+
+
 async def test_message_during_final_stream_is_consumed(tmp_path):
     actor, llm = make_actor(tmp_path, [
         CompletionResult(text="first", usage_tokens=10),

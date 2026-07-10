@@ -109,6 +109,9 @@ class SessionActor:
             except LLMError as e:
                 self.emit(self._e(ErrorEvent, message=str(e)))
                 self.emit(self._e(RunFinished, reason="error"))
+            except Exception as e:  # backstop: projection/summarizer/other crashes
+                self.emit(self._e(ErrorEvent, message=f"Unexpected error: {e!r}"))
+                self.emit(self._e(RunFinished, reason="error"))
             finally:
                 self._set_status("idle")
 

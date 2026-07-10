@@ -1,7 +1,7 @@
 from types import SimpleNamespace as NS
 
 import pytest
-from openai import APIConnectionError
+from openai import APIConnectionError, AuthenticationError
 
 from forge.llm.base import LLMError
 from forge.llm.openai_client import OpenAILLM
@@ -71,3 +71,16 @@ async def test_retries_then_raises_llm_error():
     with pytest.raises(LLMError):
         await llm.complete("m", [], [], on_delta)
     assert len(calls) == 2  # first try + one retry (retry_delays=(0,))
+
+
+async def test_non_retryable_error_fails_fast():
+    auth_err = AuthenticationError(
+        message="bad key",
+        response=NS(request=NS(), headers={}, status_code=401), body=None)
+    llm, calls = make_llm([auth_err])
+
+    async def on_delta(t): ...
+
+    with pytest.raises(LLMError):
+        await llm.complete("m", [], [], on_delta)
+    assert len(calls) == 1  # non-retryable → no retries

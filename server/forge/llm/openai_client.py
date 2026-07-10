@@ -2,7 +2,10 @@ from __future__ import annotations
 
 import asyncio
 
-from openai import APIConnectionError, AsyncOpenAI, InternalServerError, RateLimitError
+from openai import (
+    APIConnectionError, AsyncOpenAI, InternalServerError, OpenAIError,
+    RateLimitError,
+)
 
 from forge.engine.events import ToolCallSpec
 from forge.llm.base import CompletionResult, LLMError, OnTextDelta
@@ -26,6 +29,8 @@ class OpenAILLM:
                 return await self._stream_once(model, messages, tools, on_text_delta)
             except RETRYABLE as e:
                 last = e
+            except OpenAIError as e:  # non-retryable (auth, bad model) → fail fast
+                raise LLMError(f"LLM call failed: {e}") from e
         raise LLMError(f"LLM call failed after retries: {last}")
 
     async def _stream_once(self, model, messages, tools, on_text_delta):
