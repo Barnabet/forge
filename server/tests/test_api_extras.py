@@ -163,3 +163,27 @@ def test_old_logs_without_new_fields_still_parse(tmp_path):
                      "ts": 0, "name": "n", "cwd": "/w", "model": "m",
                      "autonomy": "yolo"})
     assert e.project_id is None and e.effort == "default"
+
+
+def test_archive_unarchive_roundtrip_and_replay(tmp_path):
+    config = load_config(tmp_path)
+    with TestClient(create_app(tmp_path, config, FakeLLM([]))) as client:
+        sid = client.post("/api/sessions", json={}).json()["id"]
+        assert client.post(f"/api/sessions/{sid}/archive").status_code == 200
+        assert client.get("/api/sessions").json()[0]["archived"] is True
+        events = client.get(f"/api/sessions/{sid}/events").json()
+        assert events[-1]["type"] == "session_archived"
+    with TestClient(create_app(tmp_path, load_config(tmp_path), FakeLLM([]))) as client:
+        assert client.get("/api/sessions").json()[0]["archived"] is True
+        client.post(f"/api/sessions/{sid}/unarchive")
+        assert client.get("/api/sessions").json()[0]["archived"] is False
+
+
+def test_archive_while_running_is_409(make_client):
+    client = make_client(script=[
+        CompletionResult(text="slow", tool_calls=[], usage_tokens=1),
+    ], delay=0.3)
+    with client:
+        sid = client.post("/api/sessions", json={}).json()["id"]
+        client.post(f"/api/sessions/{sid}/messages", json={"text": "go"})
+        assert client.post(f"/api/sessions/{sid}/archive").status_code == 409

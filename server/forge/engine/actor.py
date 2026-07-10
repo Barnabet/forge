@@ -12,7 +12,8 @@ from forge.engine.bus import EventBus
 from forge.engine.events import (
     ApprovalRequested, ApprovalResolved, AssistantMessage, Autonomy,
     AutonomyChanged, ContextCompacted, Effort, ErrorEvent, ModelChanged,
-    OutputChunk, PolicyAdded, RunFinished, SessionRenamed, Status, StatusChanged,
+    OutputChunk, PolicyAdded, RunFinished, SessionArchived, SessionRenamed,
+    SessionUnarchived, Status, StatusChanged,
     TextDelta, ToolCallFinished, ToolCallSpec, ToolCallStarted, UserMessage,
 )
 from forge.engine.projection import dangling_call_ids, to_messages
@@ -92,6 +93,17 @@ class SessionActor:
     def set_model(self, model: str) -> None:
         self.meta.model = model
         self.emit(self._e(ModelChanged, model=model))
+
+    def archive(self) -> bool:
+        if self.run_task and not self.run_task.done():
+            return False
+        self.meta.archived = True
+        self.emit(self._e(SessionArchived))
+        return True
+
+    def unarchive(self) -> None:
+        self.meta.archived = False
+        self.emit(self._e(SessionUnarchived))
 
     def cancel(self) -> None:
         if self.run_task and not self.run_task.done():

@@ -109,6 +109,17 @@ def create_app(home: Path, config: ForgeConfig, llm: LLMClient) -> FastAPI:
             raise HTTPException(409, "session is running; compact after the run finishes")
         return {}
 
+    @app.post("/api/sessions/{sid}/archive")
+    async def archive(sid: str):
+        if not _actor(sid).archive():
+            raise HTTPException(409, "session is running; cancel before archiving")
+        return {}
+
+    @app.post("/api/sessions/{sid}/unarchive")
+    async def unarchive(sid: str):
+        _actor(sid).unarchive()
+        return {}
+
     @app.patch("/api/sessions/{sid}")
     async def rename(sid: str, body: RenameSession):
         actor = _actor(sid)
