@@ -5,7 +5,10 @@ export type StreamItem =
   | { kind: 'prose'; seq: number; text: string; streaming: boolean }
   | { kind: 'tool'; seq: number; callId: string; tool: string; display: string;
       status: 'running' | 'done' | 'error'; output: string; durationMs: number;
-      diffStats: DiffStats | null; autoApproved: boolean }
+      diffStats: DiffStats | null; autoApproved: boolean;
+      // Announced from the live stream before arguments finished; superseded
+      // by tool_call_started (or a gate) and pruned if the turn drops it.
+      pending?: boolean }
   | { kind: 'gate'; seq: number; callId: string; tool: string; display: string; denied: boolean }
   | { kind: 'error'; seq: number; message: string }
   | { kind: 'info'; seq: number; text: string }
@@ -40,6 +43,10 @@ export function emptyStream(): SessionStream {
 function finalizeProse(items: StreamItem[]): void {
   const i = items.findLastIndex(it => it.kind === 'prose' && it.streaming)
   if (i >= 0) items[i] = { ...(items[i] as Extract<StreamItem, { kind: 'prose' }>), streaming: false }
+}
+
+function prunePending(items: StreamItem[], keep?: (callId: string) => boolean): StreamItem[] {
+  return items.filter(it => it.kind !== 'tool' || !it.pending || (keep?.(it.callId) ?? false))
 }
 
 export function reduce(s: SessionStream, e: WireEvent): SessionStream {
@@ -95,6 +102,10 @@ export function reduce(s: SessionStream, e: WireEvent): SessionStream {
     case 'assistant_message': {
       // Keep the latest nonzero usage (old V1 logs carry no usage_tokens).
       if ((e.usage_tokens ?? 0) > 0) n.usageTokens = e.usage_tokens ?? 0
+      // The durable tool_calls list is authoritative: drop pending lines a
+      // retried stream announced but the final completion didn't keep.
+      const kept = new Set((e.tool_calls ?? []).map(c => c.id))
+      n.items = prunePending(n.items, id => kept.has(id))
       // Final text replaces any accumulated deltas (contract #4).
       const i = n.items.findLastIndex(it => it.kind === 'prose' && it.streaming)
       if (i >= 0) {
@@ -106,14 +117,33 @@ export function reduce(s: SessionStream, e: WireEvent): SessionStream {
       break
     }
 
-    case 'tool_call_started':
+    case 'tool_call_pending': {
+      if (n.items.some(it => it.kind === 'tool' && it.callId === e.call_id)) break
       n.items.push({
-        kind: 'tool', seq, callId: e.call_id, tool: e.tool, display: e.display,
+        kind: 'tool', seq: 0, callId: e.call_id, tool: e.tool, display: '',
         status: 'running', output: '', durationMs: 0, diffStats: null,
-        autoApproved: e.auto_approved ?? false,
+        autoApproved: false, pending: true,
       })
       n.steps += 1
       break
+    }
+
+    case 'tool_call_started': {
+      const item: StreamItem = {
+        kind: 'tool', seq, callId: e.call_id, tool: e.tool, display: e.display,
+        status: 'running', output: '', durationMs: 0, diffStats: null,
+        autoApproved: e.auto_approved ?? false,
+      }
+      const i = n.items.findLastIndex(
+        it => it.kind === 'tool' && it.callId === e.call_id && it.pending)
+      if (i >= 0) {
+        n.items[i] = item // upgrade the pending line in place; step already counted
+      } else {
+        n.items.push(item)
+        n.steps += 1
+      }
+      break
+    }
 
     case 'output_chunk': {
       const i = n.items.findLastIndex(it => it.kind === 'tool' && it.callId === e.call_id)
@@ -142,9 +172,15 @@ export function reduce(s: SessionStream, e: WireEvent): SessionStream {
       break
     }
 
-    case 'approval_requested':
+    case 'approval_requested': {
+      // The gate takes over the pending line's story (deny would otherwise
+      // leave both a denied gate and an orphaned tool line).
+      const i = n.items.findLastIndex(
+        it => it.kind === 'tool' && it.callId === e.call_id && it.pending)
+      if (i >= 0) n.items.splice(i, 1)
       n.items.push({ kind: 'gate', seq, callId: e.call_id, tool: e.tool, display: e.display, denied: false })
       break
+    }
 
     case 'approval_resolved': {
       const i = n.items.findLastIndex(it => it.kind === 'gate' && it.callId === e.call_id)
@@ -161,12 +197,14 @@ export function reduce(s: SessionStream, e: WireEvent): SessionStream {
 
     case 'run_finished':
       finalizeProse(n.items)
+      n.items = prunePending(n.items) // a dead run leaves no ghost tool lines
       n.status = 'idle' // contract #3: rehydrate emits no status_changed
       if (e.reason === 'cancelled') n.items.push({ kind: 'info', seq, text: 'Run cancelled' })
       if (e.reason === 'interrupted') n.items.push({ kind: 'info', seq, text: 'Interrupted by server restart' })
       break
 
     case 'error':
+      n.items = prunePending(n.items)
       n.items.push({ kind: 'error', seq, message: e.message })
       break
 

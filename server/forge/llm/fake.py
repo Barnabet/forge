@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import asyncio
 
-from forge.llm.base import CompletionResult, OnTextDelta
+from forge.llm.base import CompletionResult, OnTextDelta, OnToolCallStart
 
 
 class FakeLLM:
@@ -17,6 +17,7 @@ class FakeLLM:
     async def complete(
         self, model: str, messages: list[dict], tools: list[dict],
         on_text_delta: OnTextDelta, effort: str = "default",
+        on_tool_start: OnToolCallStart | None = None,
     ) -> CompletionResult:
         self.calls.append(messages)
         self.efforts.append(effort)
@@ -27,6 +28,9 @@ class FakeLLM:
             raise item
         if item.text:
             await on_text_delta(item.text)
+        if on_tool_start:  # mimic the stream announcing each call up front
+            for call in item.tool_calls:
+                await on_tool_start(call.id, call.name)
         return item
 
     async def healthy(self) -> bool:

@@ -32,7 +32,7 @@ export default function ChatStream() {
   const { items, status, steps } = session.stream
 
   const statusText =
-    status === 'running' ? `Working · step ${steps}`
+    status === 'running' ? (steps > 0 ? `Working · step ${steps}` : 'Working…')
     : status === 'attention' ? `Waiting on approval · step ${steps}`
     : status === 'queued' ? 'Queued — waiting for a slot'
     : null
@@ -81,7 +81,7 @@ export default function ChatStream() {
         })}
         {statusText && (
           <div className={s.statusLine}>
-            <span className={s.statusDot} />
+            <span className={s.spinner} aria-hidden="true" />
             {statusText}
           </div>
         )}

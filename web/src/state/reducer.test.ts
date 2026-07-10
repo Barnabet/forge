@@ -262,3 +262,78 @@ describe('reducer: context usage', () => {
     expect(s.usageTokens).toBe(1200)
   })
 })
+
+describe('reducer: pending tool calls (live stream announcements)', () => {
+  it('pending pushes a running placeholder and counts the step', () => {
+    seq = 0
+    const s = run([eph('tool_call_pending', { call_id: 'c1', tool: 'edit_file' })])
+    expect(s.items[0]).toMatchObject({
+      kind: 'tool', callId: 'c1', tool: 'edit_file', display: '',
+      status: 'running', pending: true,
+    })
+    expect(s.steps).toBe(1)
+  })
+
+  it('ignores a duplicate announcement for the same call', () => {
+    seq = 0
+    const s = run([
+      eph('tool_call_pending', { call_id: 'c1', tool: 'bash' }),
+      eph('tool_call_pending', { call_id: 'c1', tool: 'bash' }),
+    ])
+    expect(s.items).toHaveLength(1)
+    expect(s.steps).toBe(1)
+  })
+
+  it('tool_call_started upgrades the pending line in place, step counted once', () => {
+    seq = 0
+    const s = run([
+      eph('tool_call_pending', { call_id: 'c1', tool: 'edit_file' }),
+      ev('tool_call_started', { call_id: 'c1', tool: 'edit_file', display: 'a.py', auto_approved: true }),
+    ])
+    expect(s.items).toHaveLength(1)
+    expect(s.items[0]).toMatchObject({
+      kind: 'tool', callId: 'c1', display: 'a.py', status: 'running', autoApproved: true,
+    })
+    expect((s.items[0] as { pending?: boolean }).pending).toBeUndefined()
+    expect(s.steps).toBe(1)
+  })
+
+  it('approval_requested replaces the pending line with the gate', () => {
+    seq = 0
+    const s = run([
+      eph('tool_call_pending', { call_id: 'c1', tool: 'bash' }),
+      ev('approval_requested', { call_id: 'c1', tool: 'bash', display: 'rm -rf' }),
+    ])
+    expect(s.items).toHaveLength(1)
+    expect(s.items[0]).toMatchObject({ kind: 'gate', callId: 'c1' })
+  })
+
+  it('assistant_message prunes pending lines its tool_calls list dropped', () => {
+    seq = 0
+    const s = run([
+      eph('tool_call_pending', { call_id: 'ghost', tool: 'bash' }),
+      eph('tool_call_pending', { call_id: 'kept', tool: 'bash' }),
+      ev('assistant_message', {
+        text: '', tool_calls: [{ id: 'kept', name: 'bash', arguments: '{}' }],
+      }),
+    ])
+    expect(s.items).toHaveLength(1)
+    expect(s.items[0]).toMatchObject({ kind: 'tool', callId: 'kept', pending: true })
+  })
+
+  it('run_finished and error prune all pending lines', () => {
+    seq = 0
+    const s = run([
+      eph('tool_call_pending', { call_id: 'c1', tool: 'bash' }),
+      ev('error', { message: 'boom' }),
+    ])
+    expect(s.items.map(i => i.kind)).toEqual(['error'])
+
+    seq = 0
+    const s2 = run([
+      eph('tool_call_pending', { call_id: 'c1', tool: 'bash' }),
+      ev('run_finished', { reason: 'cancelled' }),
+    ])
+    expect(s2.items.map(i => i.kind)).toEqual(['info'])
+  })
+})

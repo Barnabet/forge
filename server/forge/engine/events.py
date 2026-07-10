@@ -175,3 +175,14 @@ class SessionDeleted(BaseModel):
     seq: int = 0
     session_id: str
     type: Literal["session_deleted"] = "session_deleted"
+
+
+class ToolCallPending(BaseModel):
+    """Announced the moment the model starts streaming a tool call, before
+    its arguments have finished arriving. The durable ToolCallStarted (or an
+    approval gate) supersedes it."""
+    seq: int = 0
+    session_id: str
+    type: Literal["tool_call_pending"] = "tool_call_pending"
+    call_id: str
+    tool: str

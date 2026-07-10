@@ -98,3 +98,23 @@ async def test_passes_reasoning_effort_only_when_set():
     assert calls[0]["reasoning_effort"] == "high"
     await llm.complete("m", [], [], on_delta)
     assert "reasoning_effort" not in calls[1]
+
+
+async def test_announces_tool_calls_as_the_stream_starts_them():
+    llm, _ = make_llm([[
+        chunk(tool_calls=[tc(0, id="c1", name="edit_file", arguments='{"path')]),
+        chunk(tool_calls=[tc(0, arguments='": "a.py"}')]),
+        chunk(tool_calls=[tc(1, id="c2", name="bash", arguments="{}")]),
+        chunk(usage=NS(total_tokens=1)),
+    ]])
+    starts = []
+
+    async def on_delta(t): ...
+
+    async def on_start(call_id, name): starts.append((call_id, name))
+
+    r = await llm.complete("m", [], [{"type": "function"}], on_delta,
+                           on_tool_start=on_start)
+    # each call announced exactly once, despite arguments spanning chunks
+    assert starts == [("c1", "edit_file"), ("c2", "bash")]
+    assert r.tool_calls[0].arguments == '{"path": "a.py"}'

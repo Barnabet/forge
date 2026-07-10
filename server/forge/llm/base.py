@@ -7,6 +7,7 @@ from pydantic import BaseModel
 from forge.engine.events import ToolCallSpec
 
 OnTextDelta = Callable[[str], Awaitable[None]]
+OnToolCallStart = Callable[[str, str], Awaitable[None]]  # (call_id, tool_name)
 
 
 class CompletionResult(BaseModel):
@@ -23,6 +24,7 @@ class LLMClient(Protocol):
     async def complete(
         self, model: str, messages: list[dict], tools: list[dict],
         on_text_delta: OnTextDelta, effort: str = "default",
+        on_tool_start: OnToolCallStart | None = None,
     ) -> CompletionResult: ...
 
     async def healthy(self) -> bool: ...

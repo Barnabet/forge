@@ -170,7 +170,18 @@ export const useForge = create<ForgeState>()((set, get) => {
 
     send: async text => {
       const a = active()
-      if (a && text.trim()) await api.sendMessage(a.id, text)
+      if (!a || !text.trim()) return
+      // Optimistic: show the working state immediately; the server's
+      // status_changed confirms it (or corrects it to queued).
+      if (a.stream.status === 'idle')
+        patchSession(a.id, { stream: { ...a.stream, status: 'running' } })
+      try {
+        await api.sendMessage(a.id, text)
+      } catch (err) {
+        const cur = get().sessions[a.id]
+        if (cur) patchSession(a.id, { stream: { ...cur.stream, status: 'idle' } })
+        throw err
+      }
     },
 
     openDrawer: async changesetIndex => {

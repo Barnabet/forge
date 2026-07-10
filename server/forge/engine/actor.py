@@ -14,7 +14,8 @@ from forge.engine.events import (
     AutonomyChanged, ContextCompacted, Effort, EffortChanged, ErrorEvent, ModelChanged,
     OutputChunk, PolicyAdded, RunFinished, SessionArchived, SessionRenamed,
     SessionUnarchived, Status, StatusChanged,
-    TextDelta, ToolCallFinished, ToolCallSpec, ToolCallStarted, UserMessage,
+    TextDelta, ToolCallFinished, ToolCallPending, ToolCallSpec, ToolCallStarted,
+    UserMessage,
 )
 from forge.engine.projection import dangling_call_ids, to_messages
 from forge.engine.scheduler import Scheduler
@@ -147,11 +148,15 @@ class SessionActor:
             async def on_delta(text: str) -> None:
                 self.publish_ephemeral(self._e(TextDelta, text=text))
 
+            async def on_tool_start(call_id: str, tool: str) -> None:
+                self.publish_ephemeral(
+                    self._e(ToolCallPending, call_id=call_id, tool=tool))
+
             result = await self.llm.complete(
                 self.meta.model,
                 to_messages(self.log.read(), self.system_prompt_fn(self.meta)),
                 [openai_spec(t) for t in self.tools.values()],
-                on_delta, effort=self.meta.effort)
+                on_delta, effort=self.meta.effort, on_tool_start=on_tool_start)
             self.emit(self._e(AssistantMessage, text=result.text,
                               tool_calls=result.tool_calls,
                               usage_tokens=result.usage_tokens))

@@ -34,7 +34,7 @@ function Line({
       >
         {running && <span className={s.pulse} aria-hidden="true" />}
         <span className={s.verb}>{toolVerb(item)}</span>
-        <span className={s.object}>{item.display}</span>
+        <span className={s.object}>{item.display || '…'}</span>
         {item.diffStats && (
           <span className={s.stats}>
             <span className={s.added}>+{item.diffStats.added}</span>

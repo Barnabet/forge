@@ -8,7 +8,7 @@ from openai import (
 )
 
 from forge.engine.events import ToolCallSpec
-from forge.llm.base import CompletionResult, LLMError, OnTextDelta
+from forge.llm.base import CompletionResult, LLMError, OnTextDelta, OnToolCallStart
 
 RETRYABLE = (APIConnectionError, RateLimitError, InternalServerError)
 
@@ -20,15 +20,16 @@ class OpenAILLM:
         self.retry_delays = retry_delays
 
     async def complete(self, model: str, messages: list[dict], tools: list[dict],
-                       on_text_delta: OnTextDelta,
-                       effort: str = "default") -> CompletionResult:
+                       on_text_delta: OnTextDelta, effort: str = "default",
+                       on_tool_start: OnToolCallStart | None = None,
+                       ) -> CompletionResult:
         last: Exception | None = None
         for delay in (0, *self.retry_delays):
             if delay:
                 await asyncio.sleep(delay)
             try:
                 return await self._stream_once(
-                    model, messages, tools, on_text_delta, effort)
+                    model, messages, tools, on_text_delta, effort, on_tool_start)
             except RETRYABLE as e:
                 last = e
             except OpenAIError as e:  # non-retryable (auth, bad model) → fail fast
@@ -36,7 +37,7 @@ class OpenAILLM:
         raise LLMError(f"LLM call failed after retries: {last}")
 
     async def _stream_once(self, model, messages, tools, on_text_delta,
-                           effort="default"):
+                           effort="default", on_tool_start=None):
         kwargs: dict = {"model": model, "messages": messages, "stream": True,
                         "stream_options": {"include_usage": True}}
         if tools:
@@ -47,6 +48,7 @@ class OpenAILLM:
 
         text_parts: list[str] = []
         calls: dict[int, dict] = {}
+        announced: set[int] = set()
         usage = 0
         async for chunk in stream:
             if getattr(chunk, "usage", None):
@@ -67,6 +69,12 @@ class OpenAILLM:
                     c["name"] += tc.function.name
                 if tc.function and tc.function.arguments:
                     c["arguments"] += tc.function.arguments
+                # Announce each call the moment id+name are known — long
+                # argument streams (big edits) follow for seconds after.
+                if on_tool_start and tc.index not in announced \
+                        and c["id"] and c["name"]:
+                    announced.add(tc.index)
+                    await on_tool_start(c["id"], c["name"])
         return CompletionResult(
             text="".join(text_parts),
             tool_calls=[ToolCallSpec(**calls[i]) for i in sorted(calls)],

@@ -199,6 +199,19 @@ export interface SessionDeleted {
   type?: "session_deleted";
 }
 
+/**
+ * Announced the moment the model starts streaming a tool call, before
+ * its arguments have finished arriving. The durable ToolCallStarted (or an
+ * approval gate) supersedes it.
+ */
+export interface ToolCallPending {
+  seq?: number;
+  session_id: string;
+  type?: "tool_call_pending";
+  call_id: string;
+  tool: string;
+}
+
 export interface SessionMeta {
   id: string;
   name?: string;

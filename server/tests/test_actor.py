@@ -132,3 +132,22 @@ async def test_message_during_final_stream_is_consumed(tmp_path):
     assert len(llm.calls) == 2  # loop continued instead of finishing
     assert [e.text for e in actor.log.read() if e.type == "assistant_message"] == [
         "first", "second"]
+
+
+async def test_tool_call_pending_published_before_started(tmp_path):
+    actor, llm = make_actor(tmp_path, [
+        CompletionResult(text="", tool_calls=[
+            ToolCallSpec(id="c1", name="bash", arguments='{"command": "echo ok"}')],
+            usage_tokens=10),
+        CompletionResult(text="done", usage_tokens=20),
+    ])
+    q = actor.bus.subscribe()
+    await actor.post_message("run echo")
+    await wait_idle(actor)
+    seen = []
+    while not q.empty():
+        seen.append(q.get_nowait())
+    pending = next(e for e in seen if e.type == "tool_call_pending")
+    assert pending.call_id == "c1" and pending.tool == "bash" and pending.seq == 0
+    order = [e.type for e in seen]
+    assert order.index("tool_call_pending") < order.index("tool_call_started")
