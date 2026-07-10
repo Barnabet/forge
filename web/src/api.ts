@@ -9,7 +9,7 @@ export class ApiError extends Error {
 }
 
 async function req<T>(path: string, init?: RequestInit): Promise<T> {
-  const r = await fetch(path, init)
+  const r = init ? await fetch(path, init) : await fetch(path)
   if (!r.ok) throw new ApiError(r.status, `${init?.method ?? 'GET'} ${path} → ${r.status}`)
   return r.json() as Promise<T>
 }
