@@ -73,4 +73,17 @@ describe('startWs', () => {
     vi.advanceTimersByTime(60_000)
     expect(FakeWebSocket.instances).toHaveLength(2)  // no zombie reconnect
   })
+
+  it('stop() during the backoff window cancels the pending reconnect', () => {
+    const stop = startWs({
+      url: 'ws://x/ws', cursors: () => ({}),
+      onEvent: () => {}, onStatus: () => {}, minDelayMs: 1,
+    })
+    const ws = FakeWebSocket.instances[0]
+    ws.onopen!()
+    ws.onclose!()                       // dropped: reconnect timer armed
+    stop()                              // stop while backoff is pending
+    vi.advanceTimersByTime(60_000)
+    expect(FakeWebSocket.instances).toHaveLength(1)  // no zombie reconnect
+  })
 })

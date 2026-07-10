@@ -13,8 +13,10 @@ export function startWs(opts: WsOptions): () => void {
   let delay = min
   let stopped = false
   let ws: WebSocket | null = null
+  let timer: ReturnType<typeof setTimeout> | null = null
 
   const connect = () => {
+    if (stopped) return
     opts.onStatus('connecting')
     ws = new WebSocket(opts.url)
     ws.onopen = () => {
@@ -27,7 +29,7 @@ export function startWs(opts: WsOptions): () => void {
     ws.onclose = () => {
       opts.onStatus('closed')
       if (stopped) return
-      setTimeout(connect, delay)
+      timer = setTimeout(connect, delay)
       delay = Math.min(delay * 2, 8000)
     }
   }
@@ -35,6 +37,7 @@ export function startWs(opts: WsOptions): () => void {
   connect()
   return () => {
     stopped = true
+    if (timer !== null) clearTimeout(timer)
     ws?.close()
   }
 }
