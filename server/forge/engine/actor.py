@@ -11,9 +11,9 @@ from pydantic import BaseModel
 from forge.engine.bus import EventBus
 from forge.engine.events import (
     ApprovalRequested, ApprovalResolved, AssistantMessage, Autonomy,
-    AutonomyChanged, ContextCompacted, ErrorEvent, ModelChanged, OutputChunk,
-    PolicyAdded, RunFinished, SessionRenamed, Status, StatusChanged, TextDelta,
-    ToolCallFinished, ToolCallSpec, ToolCallStarted, UserMessage,
+    AutonomyChanged, ContextCompacted, Effort, ErrorEvent, ModelChanged,
+    OutputChunk, PolicyAdded, RunFinished, SessionRenamed, Status, StatusChanged,
+    TextDelta, ToolCallFinished, ToolCallSpec, ToolCallStarted, UserMessage,
 )
 from forge.engine.projection import dangling_call_ids, to_messages
 from forge.engine.scheduler import Scheduler
@@ -34,6 +34,9 @@ class SessionMeta(BaseModel):
     model: str
     autonomy: Autonomy = "yolo"
     status: Status = "idle"
+    project_id: str | None = None
+    archived: bool = False
+    effort: Effort = "default"
 
 
 class SessionActor:

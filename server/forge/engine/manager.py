@@ -33,18 +33,21 @@ class SessionManager:
         return actor
 
     def create(self, cwd: str | None = None, model: str | None = None,
-               autonomy: str | None = None) -> SessionActor:
+               autonomy: str | None = None, project_id: str | None = None,
+               effort: str | None = None) -> SessionActor:
         if cwd is None:
             last = self.actors.get(self._creation_order[-1]) if self._creation_order else None
             cwd = last.meta.cwd if last else str(Path.home())
         meta = SessionMeta(
             id=uuid4().hex[:8], cwd=cwd,
             model=model or self.config.default_model,
-            autonomy=autonomy or self.config.default_autonomy)
+            autonomy=autonomy or self.config.default_autonomy,
+            project_id=project_id, effort=effort or "default")
         actor = self._make_actor(meta)
         actor.emit(SessionCreated(
             session_id=meta.id, ts=time.time(), name=meta.name, cwd=meta.cwd,
-            model=meta.model, autonomy=meta.autonomy))
+            model=meta.model, autonomy=meta.autonomy,
+            project_id=meta.project_id, effort=meta.effort))
         return actor
 
     def get(self, session_id: str) -> SessionActor:
@@ -93,13 +96,20 @@ class SessionManager:
         for e in log.read():
             if e.type == "session_created":
                 meta = SessionMeta(id=session_id, name=e.name, cwd=e.cwd,
-                                   model=e.model, autonomy=e.autonomy)
+                                   model=e.model, autonomy=e.autonomy,
+                                   project_id=e.project_id, effort=e.effort)
             elif meta and e.type == "session_renamed":
                 meta.name = e.name
             elif meta and e.type == "autonomy_changed":
                 meta.autonomy = e.autonomy
             elif meta and e.type == "model_changed":
                 meta.model = e.model
+            elif meta and e.type == "effort_changed":
+                meta.effort = e.effort
+            elif meta and e.type == "session_archived":
+                meta.archived = True
+            elif meta and e.type == "session_unarchived":
+                meta.archived = False
         if meta:
             meta.status = "idle"
         return meta

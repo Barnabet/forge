@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field, TypeAdapter
 Autonomy = Literal["yolo", "guarded"]
 Status = Literal["idle", "running", "attention", "queued"]
 RunReason = Literal["completed", "cancelled", "interrupted", "error"]
+Effort = Literal["default", "low", "medium", "high"]
 
 
 class ToolCallSpec(BaseModel):
@@ -34,6 +35,8 @@ class SessionCreated(BaseEvent):
     cwd: str
     model: str
     autonomy: Autonomy
+    project_id: str | None = None
+    effort: Effort = "default"
 
 
 class SessionRenamed(BaseEvent):
@@ -121,12 +124,25 @@ class ErrorEvent(BaseEvent):
     message: str
 
 
+class SessionArchived(BaseEvent):
+    type: Literal["session_archived"] = "session_archived"
+
+
+class SessionUnarchived(BaseEvent):
+    type: Literal["session_unarchived"] = "session_unarchived"
+
+
+class EffortChanged(BaseEvent):
+    type: Literal["effort_changed"] = "effort_changed"
+    effort: Effort
+
+
 Event = Annotated[
     Union[
         SessionCreated, SessionRenamed, StatusChanged, AutonomyChanged,
         ModelChanged, UserMessage, AssistantMessage, ToolCallStarted, ToolCallFinished,
         ApprovalRequested, ApprovalResolved, PolicyAdded, ContextCompacted,
-        RunFinished, ErrorEvent,
+        RunFinished, ErrorEvent, SessionArchived, SessionUnarchived, EffortChanged,
     ],
     Field(discriminator="type"),
 ]
@@ -152,3 +168,9 @@ class OutputChunk(BaseModel):
     type: Literal["output_chunk"] = "output_chunk"
     call_id: str
     text: str
+
+
+class SessionDeleted(BaseModel):
+    seq: int = 0
+    session_id: str
+    type: Literal["session_deleted"] = "session_deleted"

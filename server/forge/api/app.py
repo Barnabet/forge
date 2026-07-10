@@ -61,7 +61,17 @@ def create_app(home: Path, config: ForgeConfig, llm: LLMClient) -> FastAPI:
 
     @app.post("/api/sessions")
     async def create_session(body: CreateSession):
-        actor = manager.create(cwd=body.cwd, model=body.model, autonomy=body.autonomy)
+        project = None
+        if body.project_id is not None:
+            project = projects.get(body.project_id)
+            if project is None:
+                raise HTTPException(400, f"unknown project: {body.project_id}")
+        actor = manager.create(
+            cwd=body.cwd or (project.cwd if project else None),
+            model=body.model or (project.default_model if project else None) or None,
+            autonomy=body.autonomy or (project.default_autonomy if project else None) or None,
+            project_id=body.project_id,
+            effort=body.effort or (project.default_effort if project else None) or None)
         return actor.meta.model_dump()
 
     @app.post("/api/sessions/{sid}/messages", status_code=202)

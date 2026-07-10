@@ -114,3 +114,52 @@ def test_ws_malformed_first_payload_closes_4400(make_client):
                 ws.send_text("this is not json")
                 ws.receive_text()
         assert excinfo.value.code == 4400
+
+
+def test_create_session_resolves_project_defaults(make_client, tmp_path):
+    client = make_client()
+    with client:
+        work = tmp_path / "proj"
+        work.mkdir()
+        pid = client.post("/api/projects", json={
+            "name": "p", "cwd": str(work),
+            "default_model": "gpt-5.2", "default_autonomy": "guarded",
+            "default_effort": "high",
+        }).json()["id"]
+        meta = client.post("/api/sessions", json={"project_id": pid}).json()
+        assert meta["cwd"] == str(work)
+        assert meta["model"] == "gpt-5.2"
+        assert meta["autonomy"] == "guarded"
+        assert meta["effort"] == "high"
+        assert meta["project_id"] == pid
+        assert meta["archived"] is False
+        # explicit beats project default
+        meta2 = client.post("/api/sessions", json={
+            "project_id": pid, "effort": "low"}).json()
+        assert meta2["effort"] == "low" and meta2["model"] == "gpt-5.2"
+        # unknown project
+        assert client.post("/api/sessions",
+                           json={"project_id": "zzzz"}).status_code == 400
+
+
+def test_project_fields_survive_rehydrate(tmp_path):
+    config = load_config(tmp_path)
+    with TestClient(create_app(tmp_path, config, FakeLLM([]))) as client:
+        work = tmp_path / "proj"
+        work.mkdir()
+        pid = client.post("/api/projects", json={
+            "name": "p", "cwd": str(work), "default_effort": "high"}).json()["id"]
+        sid = client.post("/api/sessions", json={"project_id": pid}).json()["id"]
+    with TestClient(create_app(tmp_path, load_config(tmp_path), FakeLLM([]))) as client:
+        metas = {m["id"]: m for m in client.get("/api/sessions").json()}
+        assert metas[sid]["project_id"] == pid
+        assert metas[sid]["effort"] == "high"
+
+
+def test_old_logs_without_new_fields_still_parse(tmp_path):
+    # V1 logs have session_created without project_id/effort — must default
+    from forge.engine.events import parse_event
+    e = parse_event({"type": "session_created", "seq": 1, "session_id": "x",
+                     "ts": 0, "name": "n", "cwd": "/w", "model": "m",
+                     "autonomy": "yolo"})
+    assert e.project_id is None and e.effort == "default"

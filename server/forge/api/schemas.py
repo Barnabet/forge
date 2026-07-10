@@ -7,6 +7,8 @@ class CreateSession(BaseModel):
     cwd: str | None = None
     model: str | None = None
     autonomy: str | None = None
+    project_id: str | None = None
+    effort: str | None = None
 
 
 class PostMessage(BaseModel):
