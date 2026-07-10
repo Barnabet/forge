@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { useForge } from '../state/store'
 import type { WireEvent } from '../protocol'
 import ChatStream from './ChatStream'
@@ -61,5 +61,31 @@ describe('ChatStream', () => {
     expect(screen.getByText('LLM unreachable')).toBeInTheDocument()
     expect(screen.getByText('Run cancelled')).toBeInTheDocument()
     expect(screen.getByText('· context compacted ·')).toBeInTheDocument()
+  })
+
+  it('does not leak dropdown state to the next gate when a gate resolves', () => {
+    apply(
+      ev('approval_requested', 2, { call_id: 'c1', tool: 'bash', display: 'cmd-a' }),
+      ev('approval_requested', 3, { call_id: 'c2', tool: 'bash', display: 'cmd-b' }),
+    )
+    const { rerender } = render(<ChatStream />)
+
+    // open the FIRST gate's "Always" dropdown
+    fireEvent.click(screen.getAllByText('Always ⌄')[0])
+    expect(screen.getByText('Always allow this command (session)')).toBeInTheDocument()
+
+    // gate c1 resolves allow (reducer splices it out); its tool call runs
+    apply(
+      ev('approval_resolved', 4, { call_id: 'c1', decision: 'allow' }),
+      ev('tool_call_started', 5, { call_id: 'c1', tool: 'bash', display: 'cmd-a' }),
+      ev('tool_call_finished', 6, { call_id: 'c1', tool: 'bash', output: 'ok', is_error: false }),
+    )
+    rerender(<ChatStream />)
+
+    // surviving gate c2 must NOT inherit c1's open menu
+    expect(screen.getByText('cmd-b')).toBeInTheDocument()
+    expect(screen.queryByText('Always allow this command (session)')).not.toBeInTheDocument()
+    expect(screen.queryByText('Always allow bash (session)')).not.toBeInTheDocument()
+    expect(screen.queryByText('Always allow bash (global)')).not.toBeInTheDocument()
   })
 })
