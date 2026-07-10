@@ -1,13 +1,16 @@
-import type { Changeset, Event, OutputChunk, SessionMeta, TextDelta } from './generated'
+import type {
+  Changeset, Event, OutputChunk, Project, SessionDeleted, SessionMeta, TextDelta,
+} from './generated'
 
 export type DurableEvent = Event
-export type WireEvent = Event | TextDelta | OutputChunk
-export type { Changeset, OutputChunk, SessionMeta, TextDelta }
+export type WireEvent = Event | TextDelta | OutputChunk | SessionDeleted
+export type { Changeset, OutputChunk, Project, SessionDeleted, SessionMeta, TextDelta }
 
 // Pydantic defaults make autonomy/status optional in the generated SessionMeta;
 // NonNullable recovers the closed unions the rest of the app consumes.
 export type Autonomy = NonNullable<SessionMeta['autonomy']>
 export type Status = NonNullable<SessionMeta['status']>
+export type Effort = NonNullable<SessionMeta['effort']>
 
 export interface DiffStats {
   path: string

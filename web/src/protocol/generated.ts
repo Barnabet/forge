@@ -16,7 +16,10 @@ export type Event =
   | PolicyAdded
   | ContextCompacted
   | RunFinished
-  | ErrorEvent;
+  | ErrorEvent
+  | SessionArchived
+  | SessionUnarchived
+  | EffortChanged;
 
 export interface SessionCreated {
   seq?: number;
@@ -27,6 +30,8 @@ export interface SessionCreated {
   cwd: string;
   model: string;
   autonomy: "yolo" | "guarded";
+  project_id?: string | null;
+  effort?: "default" | "low" | "medium" | "high";
 }
 export interface SessionRenamed {
   seq?: number;
@@ -152,6 +157,25 @@ export interface ErrorEvent {
   type?: "error";
   message: string;
 }
+export interface SessionArchived {
+  seq?: number;
+  session_id: string;
+  ts: number;
+  type?: "session_archived";
+}
+export interface SessionUnarchived {
+  seq?: number;
+  session_id: string;
+  ts: number;
+  type?: "session_unarchived";
+}
+export interface EffortChanged {
+  seq?: number;
+  session_id: string;
+  ts: number;
+  type?: "effort_changed";
+  effort: "default" | "low" | "medium" | "high";
+}
 
 export interface TextDelta {
   seq?: number;
@@ -168,6 +192,12 @@ export interface OutputChunk {
   text: string;
 }
 
+export interface SessionDeleted {
+  seq?: number;
+  session_id: string;
+  type?: "session_deleted";
+}
+
 export interface SessionMeta {
   id: string;
   name?: string;
@@ -175,6 +205,9 @@ export interface SessionMeta {
   model: string;
   autonomy?: "yolo" | "guarded";
   status?: "idle" | "running" | "attention" | "queued";
+  project_id?: string | null;
+  archived?: boolean;
+  effort?: "default" | "low" | "medium" | "high";
 }
 
 export interface Changeset {
@@ -184,5 +217,14 @@ export interface Changeset {
   removed: number;
   diff: string;
   status?: "pending" | "kept" | "reverted";
+}
+
+export interface Project {
+  id: string;
+  name: string;
+  cwd: string;
+  default_model?: string;
+  default_autonomy?: string;
+  default_effort?: string;
 }
 

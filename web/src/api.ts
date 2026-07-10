@@ -1,4 +1,6 @@
-import type { Autonomy, Changeset, ModelInfo, SessionMeta, WireEvent } from './protocol'
+import type {
+  Autonomy, Changeset, Effort, ModelInfo, Project, SessionMeta, WireEvent,
+} from './protocol'
 
 export class ApiError extends Error {
   status: number
@@ -21,14 +23,19 @@ const post = <T,>(path: string, body?: object) =>
     body: JSON.stringify(body ?? {}),
   })
 
+const del = <T,>(path: string) => req<T>(path, { method: 'DELETE' })
+
 export const api = {
   health: () => req<{ ok: boolean }>('/api/health'),
   models: () => req<ModelInfo[]>('/api/models'),
   sessions: () => req<SessionMeta[]>('/api/sessions'),
   events: (sid: string, after: number) =>
     req<WireEvent[]>(`/api/sessions/${sid}/events?after=${after}`),
-  createSession: (body: { cwd?: string; model?: string; autonomy?: string } = {}) =>
-    post<SessionMeta>('/api/sessions', body),
+  createSession: (
+    body: {
+      cwd?: string; model?: string; autonomy?: string; project_id?: string; effort?: string
+    } = {},
+  ) => post<SessionMeta>('/api/sessions', body),
   sendMessage: (sid: string, text: string) =>
     post<object>(`/api/sessions/${sid}/messages`, { text }).then(() => undefined),
   resolveApproval: (
@@ -55,4 +62,19 @@ export const api = {
     req<{ path: string; content: string }>(`/api/sessions/${sid}/changesets/${index}/file`),
   searchFiles: (sid: string, q: string) =>
     req<string[]>(`/api/sessions/${sid}/files?q=${encodeURIComponent(q)}`),
+  projects: () => req<Project[]>('/api/projects'),
+  createProject: (body: {
+    name: string; cwd: string; default_model?: string;
+    default_autonomy?: string; default_effort?: string
+  }) => post<Project>('/api/projects', body),
+  deleteProject: (pid: string) => del<object>(`/api/projects/${pid}`).then(() => undefined),
+  recentDirs: () => req<string[]>('/api/recent_dirs'),
+  archiveSession: (sid: string) =>
+    post<object>(`/api/sessions/${sid}/archive`).then(() => undefined),
+  unarchiveSession: (sid: string) =>
+    post<object>(`/api/sessions/${sid}/unarchive`).then(() => undefined),
+  deleteSession: (sid: string) =>
+    del<object>(`/api/sessions/${sid}`).then(() => undefined),
+  setEffort: (sid: string, effort: Effort) =>
+    post<object>(`/api/sessions/${sid}/effort`, { effort }).then(() => undefined),
 }

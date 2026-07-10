@@ -18,7 +18,14 @@ describe('protocol', () => {
       'tool_call_finished', 'approval_requested', 'approval_resolved',
       'policy_added', 'context_compacted', 'run_finished', 'error',
       'text_delta', 'output_chunk',
+      'session_archived', 'session_unarchived', 'effort_changed', 'session_deleted',
     ]) expect(src).toContain(`"${t}"`)
+  })
+
+  it('exports the project and new meta fields', () => {
+    const src = readFileSync(join(here, 'generated.ts'), 'utf8')
+    for (const s of ['export interface Project', 'project_id', 'archived', 'effort'])
+      expect(src).toContain(s)
   })
 
   it('seqOf defaults missing seq to 0', () => {
