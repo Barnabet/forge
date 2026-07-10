@@ -16,6 +16,7 @@ from forge.api.schemas import (
     SetAutonomy, SetModel, UpdateProject,
 )
 from forge.engine.bus import EventBus
+from forge.engine.events import SessionDeleted
 from forge.engine.manager import SessionManager
 from forge.engine.skills import discover_skills
 from forge.llm.base import LLMClient
@@ -118,6 +119,14 @@ def create_app(home: Path, config: ForgeConfig, llm: LLMClient) -> FastAPI:
     @app.post("/api/sessions/{sid}/unarchive")
     async def unarchive(sid: str):
         _actor(sid).unarchive()
+        return {}
+
+    @app.delete("/api/sessions/{sid}")
+    async def delete_session(sid: str):
+        _actor(sid)  # 404 for unknown ids
+        if not manager.delete(sid):
+            raise HTTPException(409, "session is running; cancel before deleting")
+        bus.publish(SessionDeleted(session_id=sid))
         return {}
 
     @app.patch("/api/sessions/{sid}")

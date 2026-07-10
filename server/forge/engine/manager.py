@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import shutil
 import time
 from pathlib import Path
 from uuid import uuid4
@@ -52,6 +53,15 @@ class SessionManager:
 
     def get(self, session_id: str) -> SessionActor:
         return self.actors[session_id]
+
+    def delete(self, session_id: str) -> bool:
+        actor = self.actors[session_id]
+        if actor.run_task and not actor.run_task.done():
+            return False
+        del self.actors[session_id]
+        self._creation_order.remove(session_id)
+        shutil.rmtree(self.home / "sessions" / session_id, ignore_errors=True)
+        return True
 
     def list(self) -> list[SessionMeta]:
         return [self.actors[i].meta for i in self._creation_order]

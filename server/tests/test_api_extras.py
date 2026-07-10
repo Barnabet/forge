@@ -1,3 +1,5 @@
+import json
+
 import pytest
 from fastapi.testclient import TestClient
 from starlette.websockets import WebSocketDisconnect
@@ -187,3 +189,44 @@ def test_archive_while_running_is_409(make_client):
         sid = client.post("/api/sessions", json={}).json()["id"]
         client.post(f"/api/sessions/{sid}/messages", json={"text": "go"})
         assert client.post(f"/api/sessions/{sid}/archive").status_code == 409
+
+
+def test_delete_session_removes_everything(tmp_path):
+    config = load_config(tmp_path)
+    with TestClient(create_app(tmp_path, config, FakeLLM([]))) as client:
+        sid = client.post("/api/sessions", json={}).json()["id"]
+        assert (tmp_path / "sessions" / sid).is_dir()
+        assert client.delete(f"/api/sessions/{sid}").status_code == 200
+        assert not (tmp_path / "sessions" / sid).exists()
+        assert client.get(f"/api/sessions/{sid}/events").status_code == 404
+        assert client.get("/api/sessions").json() == []
+    # survives restart: nothing to rehydrate
+    with TestClient(create_app(tmp_path, load_config(tmp_path), FakeLLM([]))) as client:
+        assert client.get("/api/sessions").json() == []
+
+
+def test_delete_while_running_is_409(make_client):
+    client = make_client(script=[
+        CompletionResult(text="slow", tool_calls=[], usage_tokens=1),
+    ], delay=0.3)
+    with client:
+        sid = client.post("/api/sessions", json={}).json()["id"]
+        client.post(f"/api/sessions/{sid}/messages", json={"text": "go"})
+        assert client.delete(f"/api/sessions/{sid}").status_code == 409
+    # unknown session
+    client2 = make_client()
+    with client2:
+        assert client2.delete("/api/sessions/zzzz").status_code == 404
+
+
+def test_delete_broadcasts_ephemeral_event(make_client):
+    client = make_client()
+    with client:
+        sid = client.post("/api/sessions", json={}).json()["id"]
+        with client.websocket_connect("/ws") as ws:
+            ws.send_text('{"cursors": {}}')
+            client.delete(f"/api/sessions/{sid}")
+            msg = json.loads(ws.receive_text())
+            assert msg["type"] == "session_deleted"
+            assert msg["session_id"] == sid
+            assert msg["seq"] == 0
