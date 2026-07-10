@@ -112,3 +112,106 @@ describe('reducer: messages and tool calls', () => {
     expect(s.items[0]).toMatchObject({ autoApproved: false, status: 'done', durationMs: 0, diffStats: null })
   })
 })
+
+describe('reducer: streaming text (contract #4)', () => {
+  it('deltas accumulate, final assistant_message replaces them', () => {
+    seq = 0
+    const s = run([
+      eph('text_delta', { text: 'Wor' }),
+      eph('text_delta', { text: 'king…' }),
+      ev('assistant_message', { text: 'Working on it, done.', tool_calls: [] }),
+    ])
+    expect(s.items).toHaveLength(1)
+    expect(s.items[0]).toMatchObject({ kind: 'prose', text: 'Working on it, done.', streaming: false })
+  })
+
+  it('deltas followed by a tool-only final leave no empty prose', () => {
+    seq = 0
+    const s = run([
+      eph('text_delta', { text: 'hmm' }),
+      ev('assistant_message', { text: '', tool_calls: [{ id: 'c1', name: 'bash', arguments: '{}' }] }),
+    ])
+    expect(s.items).toHaveLength(0)
+  })
+
+  it('a new turn starts a new prose item', () => {
+    seq = 0
+    const s = run([
+      ev('assistant_message', { text: 'first', tool_calls: [] }),
+      eph('text_delta', { text: 'second…' }),
+    ])
+    expect(s.items).toHaveLength(2)
+    expect(s.items[1]).toMatchObject({ kind: 'prose', text: 'second…', streaming: true })
+  })
+})
+
+describe('reducer: approvals', () => {
+  it('requested → allow: gate disappears, tool card follows', () => {
+    seq = 0
+    const s = run([
+      ev('approval_requested', { call_id: 'c1', tool: 'bash', display: 'rm -rf build' }),
+      ev('approval_resolved', { call_id: 'c1', decision: 'allow' }),
+      ev('tool_call_started', { call_id: 'c1', tool: 'bash', display: 'rm -rf build' }),
+      ev('tool_call_finished', { call_id: 'c1', tool: 'bash', output: 'ok' }),
+    ])
+    expect(s.items).toHaveLength(1)
+    expect(s.items[0]).toMatchObject({ kind: 'tool', status: 'done' })
+  })
+
+  it('requested → deny: gate stays denied, denial result event is suppressed', () => {
+    seq = 0
+    const s = run([
+      ev('approval_requested', { call_id: 'c1', tool: 'bash', display: 'rm -rf /' }),
+      ev('approval_resolved', { call_id: 'c1', decision: 'deny' }),
+      ev('tool_call_finished', { call_id: 'c1', tool: 'bash', output: 'User denied this action.', is_error: true }),
+    ])
+    expect(s.items).toHaveLength(1)
+    expect(s.items[0]).toMatchObject({ kind: 'gate', denied: true, display: 'rm -rf /' })
+  })
+})
+
+describe('reducer: run lifecycle', () => {
+  it('run_finished(completed) sets idle silently', () => {
+    seq = 0
+    const s = run([
+      ev('status_changed', { status: 'running' }),
+      ev('run_finished', { reason: 'completed' }),
+    ])
+    expect(s.status).toBe('idle')
+    expect(s.items).toHaveLength(0)
+  })
+
+  it('run_finished(interrupted) sets idle and notes it (contract #3)', () => {
+    seq = 0
+    const s = run([
+      ev('status_changed', { status: 'running' }),
+      ev('run_finished', { reason: 'interrupted' }),
+    ])
+    expect(s.status).toBe('idle')
+    expect(s.items[0]).toMatchObject({ kind: 'info', text: 'Interrupted by server restart' })
+  })
+
+  it('cancelled adds an info line; error events render', () => {
+    seq = 0
+    const s = run([
+      ev('error', { message: 'LLM connection failed' }),
+      ev('run_finished', { reason: 'error' }),
+      ev('run_finished', { reason: 'cancelled' }),
+    ])
+    expect(s.items[0]).toMatchObject({ kind: 'error', message: 'LLM connection failed' })
+    expect(s.items[1]).toMatchObject({ kind: 'info', text: 'Run cancelled' })
+  })
+
+  it('context_compacted adds a divider; steps count tool calls per turn', () => {
+    seq = 0
+    const s = run([
+      ev('user_message', { text: 'go' }),
+      ev('tool_call_started', { call_id: 'c1', tool: 'bash', display: 'a' }),
+      ev('tool_call_started', { call_id: 'c2', tool: 'bash', display: 'b' }),
+      ev('context_compacted', { summary: 'sum', upto_seq: 3 }),
+      ev('user_message', { text: 'more' }),
+    ])
+    expect(s.items.map(i => i.kind)).toEqual(['user', 'tool', 'tool', 'compacted', 'user'])
+    expect(s.steps).toBe(0) // reset by the second user message
+  })
+})
