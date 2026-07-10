@@ -11,14 +11,15 @@ from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.staticfiles import StaticFiles
 
 from forge.api.schemas import (
-    CreateSession, PostMessage, RenameSession, ResolveApproval, SetAutonomy,
-    SetModel,
+    CreateProject, CreateSession, PostMessage, RenameSession, ResolveApproval,
+    SetAutonomy, SetModel, UpdateProject,
 )
 from forge.engine.bus import EventBus
 from forge.engine.manager import SessionManager
 from forge.engine.skills import discover_skills
 from forge.llm.base import LLMClient
 from forge.store.config import ForgeConfig
+from forge.store.projects import ProjectStore
 from forge.tools.search import SKIP_DIRS
 
 WEB_DIST = Path(__file__).resolve().parents[3] / "web" / "dist"
@@ -35,6 +36,9 @@ def create_app(home: Path, config: ForgeConfig, llm: LLMClient) -> FastAPI:
 
     app = FastAPI(title="Forge", lifespan=lifespan)
     app.state.manager = manager
+
+    projects = ProjectStore(home)
+    app.state.projects = projects
 
     def _actor(sid: str):
         try:
@@ -133,6 +137,37 @@ def create_app(home: Path, config: ForgeConfig, llm: LLMClient) -> FastAPI:
     async def file_search(sid: str, q: str = ""):
         cwd = Path(_actor(sid).meta.cwd)
         return await asyncio.to_thread(_walk_files, cwd, q)
+
+    @app.get("/api/projects")
+    async def list_projects():
+        return [p.model_dump() for p in projects.list()]
+
+    @app.post("/api/projects")
+    async def create_project(body: CreateProject):
+        cwd = Path(body.cwd).expanduser()
+        if not cwd.is_dir():
+            raise HTTPException(400, f"not a directory: {body.cwd}")
+        return projects.create(
+            name=body.name, cwd=str(cwd), default_model=body.default_model,
+            default_autonomy=body.default_autonomy,
+            default_effort=body.default_effort).model_dump()
+
+    @app.patch("/api/projects/{pid}")
+    async def update_project(pid: str, body: UpdateProject):
+        p = projects.update(pid, body.model_dump(exclude_unset=True))
+        if p is None:
+            raise HTTPException(404, f"unknown project: {pid}")
+        return p.model_dump()
+
+    @app.delete("/api/projects/{pid}")
+    async def delete_project(pid: str):
+        if not projects.delete(pid):
+            raise HTTPException(404, f"unknown project: {pid}")
+        return {}
+
+    @app.get("/api/recent_dirs")
+    async def recent_dirs():
+        return manager.recent_cwds()
 
     @app.get("/api/skills")
     async def skills():

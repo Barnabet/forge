@@ -53,6 +53,16 @@ class SessionManager:
     def list(self) -> list[SessionMeta]:
         return [self.actors[i].meta for i in self._creation_order]
 
+    def recent_cwds(self, limit: int = 10) -> list[str]:
+        seen: list[str] = []
+        for sid in reversed(self._creation_order):
+            cwd = self.actors[sid].meta.cwd
+            if cwd not in seen:
+                seen.append(cwd)
+            if len(seen) >= limit:
+                break
+        return seen
+
     def rehydrate(self) -> None:
         sessions_dir = self.home / "sessions"
         if not sessions_dir.is_dir():

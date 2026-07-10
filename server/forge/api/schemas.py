@@ -33,3 +33,19 @@ class SetModel(BaseModel):
 
 class RenameSession(BaseModel):
     name: str
+
+
+class CreateProject(BaseModel):
+    name: str
+    cwd: str
+    default_model: str = ""
+    default_autonomy: str = ""
+    default_effort: str = ""
+
+
+class UpdateProject(BaseModel):
+    name: str | None = None
+    cwd: str | None = None
+    default_model: str | None = None
+    default_autonomy: str | None = None
+    default_effort: str | None = None
