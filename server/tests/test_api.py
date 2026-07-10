@@ -107,7 +107,9 @@ def test_file_search_and_misc_endpoints(tmp_path):
         assert ".git/main_app.py" not in hits
         assert client.get("/api/health").json() == {"ok": True}
         assert client.get("/api/models").json()[0]["id"] == "m"
-        assert client.get("/api/skills").json() == []
+        # Stock skills ship with the app, so the list is never empty.
+        skill_names = {s["name"] for s in client.get("/api/skills").json()}
+        assert "creating-skills" in skill_names
 
 
 def test_ws_rejects_cross_origin(tmp_path):

@@ -20,6 +20,7 @@ from forge.engine.events import (
 )
 from forge.engine.projection import dangling_call_ids, to_messages
 from forge.engine.scheduler import Scheduler
+from forge.engine.skills import stock_skills_dir
 from forge.llm.base import LLMClient, LLMError
 from forge.store.changesets import ChangesetStore
 from forge.store.config import ForgeConfig, Policy, policy_matches, save_global_policy
@@ -59,7 +60,8 @@ class SessionActor:
         sdir = home / "sessions" / meta.id
         self.log = EventLog(sdir / "events.jsonl")
         self.changesets = ChangesetStore(sdir)
-        skill_dirs = [home / "skills", Path(meta.cwd) / ".forge" / "skills"]
+        skill_dirs = [stock_skills_dir(), home / "skills",
+                      Path(meta.cwd) / ".forge" / "skills"]
         web_tools = web_tools_from_config(
             config.serper_api_key, config.firecrawl_api_key)
         subagents = SpawnAgentsTool(

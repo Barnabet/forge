@@ -24,6 +24,11 @@ def parse_skill_md(text: str) -> tuple[dict, str]:
     return {}, text.strip()
 
 
+def stock_skills_dir() -> Path:
+    """Skills bundled with the app (forge/skills/); lowest precedence."""
+    return Path(__file__).resolve().parent.parent / "skills"
+
+
 def discover_skills(dirs: list[Path]) -> list[SkillMeta]:
     found: dict[str, SkillMeta] = {}
     for root in dirs:  # later dirs override earlier

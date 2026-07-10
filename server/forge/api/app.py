@@ -19,7 +19,7 @@ from forge.api.schemas import (
 from forge.engine.bus import EventBus
 from forge.engine.events import Effort, SessionDeleted
 from forge.engine.manager import SessionManager
-from forge.engine.skills import discover_skills
+from forge.engine.skills import discover_skills, stock_skills_dir
 from forge.llm.base import LLMClient
 from forge.store.config import ForgeConfig
 from forge.store.projects import ProjectStore
@@ -252,7 +252,8 @@ def create_app(home: Path, config: ForgeConfig, llm: LLMClient) -> FastAPI:
 
     @app.get("/api/skills")
     async def skills():
-        return [s.model_dump() for s in discover_skills([home / "skills"])]
+        return [s.model_dump() for s in discover_skills(
+            [stock_skills_dir(), home / "skills"])]
 
     @app.websocket("/ws")
     async def ws(websocket: WebSocket):

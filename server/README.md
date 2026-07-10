@@ -28,3 +28,7 @@ Optional web tools (each tool only appears when its key is set):
 
 Env: `FORGE_HOME` overrides `~/.forge`. Contents: `config.toml` (settings),
 `projects.json` (project list + per-project default model/autonomy/effort).
+
+Skills resolve from three places, later wins on name collision:
+`forge/skills/` (stock, shipped with the app) → `~/.forge/skills/` (user) →
+`<cwd>/.forge/skills/` (project).

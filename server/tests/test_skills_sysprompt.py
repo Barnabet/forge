@@ -64,3 +64,16 @@ def test_discovery_survives_malformed_skill_md(tmp_path):
     assert "good" in by_name
     assert "bad" not in by_name
     assert by_name["scalar"].name == "scalar"  # non-mapping frontmatter -> dir-name fallback
+
+
+def test_stock_skills_bundled_and_user_overridable(tmp_path):
+    from forge.engine.skills import stock_skills_dir
+
+    stock = discover_skills([stock_skills_dir()])
+    assert "creating-skills" in {s.name for s in stock}
+
+    # A user skill with the same name wins over the stock one.
+    make_skill(tmp_path, "creating-skills", desc="user override")
+    merged = discover_skills([stock_skills_dir(), tmp_path])
+    by_name = {s.name: s for s in merged}
+    assert by_name["creating-skills"].description == "user override"
