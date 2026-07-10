@@ -95,3 +95,71 @@ describe('store', () => {
     expect(s.drawer.open).toBe(false)
   })
 })
+
+describe('store: v1.1', () => {
+  it('session_deleted removes the session and re-activates a survivor', () => {
+    const { applyEvent } = useForge.getState()
+    applyEvent(ev('session_created', 'aa', 1, { name: 'a', cwd: '/', model: 'm', autonomy: 'yolo' }))
+    applyEvent(ev('session_created', 'bb', 1, { name: 'b', cwd: '/', model: 'm', autonomy: 'yolo' }))
+    useForge.getState().setActive('aa')
+    applyEvent({ type: 'session_deleted', session_id: 'aa', seq: 0 } as never)
+    const s = useForge.getState()
+    expect(s.order).toEqual(['bb'])
+    expect(s.activeId).toBe('bb')
+    applyEvent({ type: 'session_deleted', session_id: 'bb', seq: 0 } as never)
+    expect(useForge.getState().activeId).toBeNull()
+  })
+
+  it('deleted-session fallback skips archived survivors', () => {
+    const { applyEvent } = useForge.getState()
+    applyEvent(ev('session_created', 'aa', 1, { name: 'a', cwd: '/', model: 'm', autonomy: 'yolo' }))
+    applyEvent(ev('session_created', 'bb', 1, { name: 'b', cwd: '/', model: 'm', autonomy: 'yolo' }))
+    applyEvent(ev('session_created', 'cc', 1, { name: 'c', cwd: '/', model: 'm', autonomy: 'yolo' }))
+    applyEvent(ev('session_archived', 'bb', 2, {}))
+    useForge.getState().setActive('aa')
+    applyEvent({ type: 'session_deleted', session_id: 'aa', seq: 0 } as never)
+    expect(useForge.getState().activeId).toBe('cc')
+  })
+
+  it('hydrate loads projects', async () => {
+    vi.stubGlobal('fetch', vi.fn(async (url: string) => ({
+      ok: true,
+      json: async () =>
+        url.includes('/projects') ? [{ id: 'p1', name: 'mygent', cwd: '/w',
+          default_model: '', default_autonomy: '', default_effort: '' }]
+        : url.includes('/models') ? []
+        : url.includes('/health') ? { ok: true }
+        : [],
+    })) as unknown as typeof fetch)
+    await useForge.getState().hydrate()
+    expect(useForge.getState().projects[0]).toMatchObject({ id: 'p1', name: 'mygent' })
+  })
+
+  it('newSessionInProject posts the project id and activates the session', async () => {
+    const fetchMock = vi.fn(async (_url: string, init?: RequestInit) => ({
+      ok: true,
+      json: async () =>
+        init?.method === 'POST'
+          ? { id: 'ns', name: 'New session', cwd: '/w', model: 'm',
+              autonomy: 'yolo', status: 'idle', project_id: 'p1',
+              archived: false, effort: 'high' }
+          : [],
+    }))
+    vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch)
+    await useForge.getState().newSessionInProject('p1')
+    expect(fetchMock).toHaveBeenCalledWith('/api/sessions', expect.objectContaining({
+      method: 'POST',
+      body: JSON.stringify({ project_id: 'p1' }),
+    }))
+    const s = useForge.getState()
+    expect(s.activeId).toBe('ns')
+    expect(s.sessions['ns'].stream).toMatchObject({ projectId: 'p1', effort: 'high' })
+  })
+
+  it('dialog open/close', () => {
+    useForge.getState().openDialog('new-project')
+    expect(useForge.getState().dialog).toBe('new-project')
+    useForge.getState().closeDialog()
+    expect(useForge.getState().dialog).toBeNull()
+  })
+})

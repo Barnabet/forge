@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { api } from '../api'
-import type { Changeset, ModelInfo, SessionMeta, WireEvent } from '../protocol'
+import type { Changeset, Effort, ModelInfo, Project, SessionMeta, WireEvent } from '../protocol'
 import { emptyStream, reduce, type SessionStream } from './reducer'
 
 export interface DrawerState {
@@ -34,6 +34,9 @@ function seedFromMeta(state: SessionState, meta: SessionMeta): SessionState {
       cwd: meta.cwd, model: meta.model,
       autonomy: meta.autonomy ?? 'yolo',
       status: meta.status ?? 'idle',
+      projectId: meta.project_id ?? state.stream.projectId,
+      archived: meta.archived ?? state.stream.archived,
+      effort: meta.effort ?? state.stream.effort,
     },
   }
 }
@@ -43,10 +46,13 @@ export interface ForgeState {
   order: string[]
   activeId: string | null
   models: ModelInfo[]
+  projects: Project[]
+  dialog: 'new-session' | 'new-project' | null
   healthy: boolean
   connection: 'connecting' | 'open' | 'closed'
   upsertSession(id: string, seed?: SessionMeta): void
   applyEvent(e: WireEvent): void
+  removeSession(id: string): void
   setActive(id: string): void
   setConnection(c: ForgeState['connection']): void
   hydrate(): Promise<void>
@@ -59,6 +65,15 @@ export interface ForgeState {
   revert(): Promise<void>
   keepAll(): Promise<void>
   refreshHealth(): Promise<void>
+  openDialog(d: 'new-session' | 'new-project'): void
+  closeDialog(): void
+  createProject(body: Parameters<typeof api.createProject>[0]): Promise<void>
+  archiveSession(sid: string): Promise<void>
+  unarchiveSession(sid: string): Promise<void>
+  deleteSession(sid: string): Promise<void>
+  setEffort(effort: Effort): Promise<void>
+  newSessionInProject(pid: string): Promise<void>
+  newAdhocSession(body: { cwd: string; model?: string; autonomy?: string; effort?: string }): Promise<void>
 }
 
 export const useForge = create<ForgeState>()((set, get) => {
@@ -78,7 +93,8 @@ export const useForge = create<ForgeState>()((set, get) => {
 
   return {
     sessions: {}, order: [], activeId: null,
-    models: [], healthy: false, connection: 'connecting',
+    models: [], projects: [], dialog: null,
+    healthy: false, connection: 'connecting',
 
     upsertSession: (id, seed) =>
       set(s => {
@@ -93,6 +109,10 @@ export const useForge = create<ForgeState>()((set, get) => {
       }),
 
     applyEvent: e => {
+      if (e.type === 'session_deleted') {
+        get().removeSession(e.session_id)
+        return
+      }
       get().upsertSession(e.session_id)
       set(s => {
         const session = s.sessions[e.session_id]
@@ -105,14 +125,26 @@ export const useForge = create<ForgeState>()((set, get) => {
       })
     },
 
+    removeSession: id =>
+      set(s => {
+        const sessions = { ...s.sessions }
+        delete sessions[id]
+        const order = s.order.filter(x => x !== id)
+        let activeId = s.activeId
+        if (activeId === id) {
+          activeId = order.find(x => !sessions[x].stream.archived) ?? order[0] ?? null
+        }
+        return { sessions, order, activeId }
+      }),
+
     setActive: id => set({ activeId: id }),
     setConnection: connection => set({ connection }),
 
     hydrate: async () => {
-      const [metas, models, health] = await Promise.all([
-        api.sessions(), api.models(), api.health(),
+      const [metas, models, health, projects] = await Promise.all([
+        api.sessions(), api.models(), api.health(), api.projects(),
       ])
-      set({ models, healthy: health.ok })
+      set({ models, healthy: health.ok, projects })
       for (const m of metas) get().upsertSession(m.id, m)
       // Backfill each session's stream over REST from its current cursor. This
       // makes boot ordering vs. the WS replay irrelevant (the reducer dedupes by
@@ -186,6 +218,35 @@ export const useForge = create<ForgeState>()((set, get) => {
       } catch {
         set({ healthy: false })
       }
+    },
+
+    openDialog: dialog => set({ dialog }),
+    closeDialog: () => set({ dialog: null }),
+
+    createProject: async body => {
+      await api.createProject(body)
+      set({ projects: await api.projects() })
+    },
+
+    archiveSession: async sid => { await api.archiveSession(sid) },
+    unarchiveSession: async sid => { await api.unarchiveSession(sid) },
+    deleteSession: async sid => { await api.deleteSession(sid) },
+
+    setEffort: async effort => {
+      const a = active()
+      if (a) await api.setEffort(a.id, effort)
+    },
+
+    newSessionInProject: async pid => {
+      const meta = await api.createSession({ project_id: pid })
+      get().upsertSession(meta.id, meta)
+      set({ activeId: meta.id })
+    },
+
+    newAdhocSession: async body => {
+      const meta = await api.createSession(body)
+      get().upsertSession(meta.id, meta)
+      set({ activeId: meta.id })
     },
   }
 })

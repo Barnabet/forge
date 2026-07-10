@@ -215,3 +215,30 @@ describe('reducer: run lifecycle', () => {
     expect(s.steps).toBe(0) // reset by the second user message
   })
 })
+
+describe('reducer: v1.1 events', () => {
+  it('session_created carries project and effort', () => {
+    seq = 0
+    const s = run([ev('session_created', { name: 'n', cwd: '/w', model: 'm',
+      autonomy: 'yolo', project_id: 'p1', effort: 'high' })])
+    expect(s).toMatchObject({ projectId: 'p1', effort: 'high', archived: false })
+  })
+
+  it('v1 session_created without new fields defaults them', () => {
+    seq = 0
+    const s = run([ev('session_created', { name: 'n', cwd: '/w', model: 'm', autonomy: 'yolo' })])
+    expect(s).toMatchObject({ projectId: null, effort: 'default', archived: false })
+  })
+
+  it('archive/unarchive flip the flag; effort_changed updates', () => {
+    seq = 0
+    const s = run([
+      ev('session_created', { name: 'n', cwd: '/w', model: 'm', autonomy: 'yolo' }),
+      ev('session_archived', {}),
+      ev('effort_changed', { effort: 'low' }),
+    ])
+    expect(s).toMatchObject({ archived: true, effort: 'low' })
+    const s2 = run([ev('session_unarchived', {}, { seq: 4 })], s)
+    expect(s2.archived).toBe(false)
+  })
+})

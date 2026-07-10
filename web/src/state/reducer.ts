@@ -1,4 +1,4 @@
-import { seqOf, type Autonomy, type DiffStats, type Status, type WireEvent } from '../protocol'
+import { seqOf, type Autonomy, type DiffStats, type Effort, type Status, type WireEvent } from '../protocol'
 
 export type StreamItem =
   | { kind: 'user'; seq: number; text: string }
@@ -23,12 +23,16 @@ export interface SessionStream {
   autonomy: Autonomy
   status: Status
   steps: number
+  projectId: string | null
+  archived: boolean
+  effort: Effort
 }
 
 export function emptyStream(): SessionStream {
   return {
     lastSeq: 0, items: [], name: 'New session', cwd: '', model: '',
     autonomy: 'yolo', status: 'idle', steps: 0,
+    projectId: null, archived: false, effort: 'default',
   }
 }
 
@@ -46,7 +50,20 @@ export function reduce(s: SessionStream, e: WireEvent): SessionStream {
   switch (e.type) {
     case 'session_created':
       n.name = e.name; n.cwd = e.cwd; n.model = e.model; n.autonomy = e.autonomy
+      n.projectId = e.project_id ?? null
+      n.effort = e.effort ?? 'default'
       break
+    case 'session_archived':
+      n.archived = true
+      break
+    case 'session_unarchived':
+      n.archived = false
+      break
+    case 'effort_changed':
+      n.effort = e.effort
+      break
+    case 'session_deleted':
+      break // the store intercepts this in applyEvent; never reduced into a stream
     case 'session_renamed':
       n.name = e.name
       break
