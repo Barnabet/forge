@@ -223,6 +223,16 @@ class SessionActor:
         window = self.config.context_window(self.meta.model)
         if usage_tokens <= COMPACT_THRESHOLD * window:
             return
+        await self._compact()
+
+    async def compact_now(self) -> bool:
+        """Manual /compact. Refused while a run is active."""
+        if self.run_task and not self.run_task.done():
+            return False
+        await self._compact()
+        return True
+
+    async def _compact(self) -> None:
         msgs = to_messages(self.log.read(), "")[1:]  # drop system stub
         transcript = "\n".join(
             f"{m['role'].upper()}: {m.get('content') or m.get('tool_calls', '')}"

@@ -82,6 +82,12 @@ def create_app(home: Path, config: ForgeConfig, llm: LLMClient) -> FastAPI:
         manager.get(sid).set_model(body.model)
         return {}
 
+    @app.post("/api/sessions/{sid}/compact")
+    async def compact(sid: str):
+        if not await manager.get(sid).compact_now():
+            raise HTTPException(409, "session is running; compact after the run finishes")
+        return {}
+
     @app.patch("/api/sessions/{sid}")
     async def rename(sid: str, body: RenameSession):
         actor = manager.get(sid)

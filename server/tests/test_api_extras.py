@@ -2,15 +2,16 @@ import pytest
 from fastapi.testclient import TestClient
 
 from forge.api.app import create_app
+from forge.llm.base import CompletionResult
 from forge.llm.fake import FakeLLM
 from forge.store.config import load_config
 
 
 @pytest.fixture()
 def make_client(tmp_path):
-    def _make(script=None):
+    def _make(script=None, delay=0.0):
         config = load_config(tmp_path)
-        llm = FakeLLM(script or [])
+        llm = FakeLLM(script or [], delay=delay)
         app = create_app(tmp_path, config, llm)
         return TestClient(app)
     return _make
@@ -46,3 +47,35 @@ def test_model_change_survives_rehydrate(tmp_path):
     app2 = create_app(tmp_path, load_config(tmp_path), FakeLLM([]))
     with TestClient(app2) as client:
         assert client.get("/api/sessions").json()[0]["model"] == "gpt-5.2"
+
+
+def test_manual_compact_emits_event(make_client):
+    client = make_client(script=[
+        CompletionResult(text="hi there", tool_calls=[], usage_tokens=10),
+        CompletionResult(text="SUMMARY", tool_calls=[], usage_tokens=5),
+    ])
+    with client:
+        sid = client.post("/api/sessions", json={}).json()["id"]
+        client.post(f"/api/sessions/{sid}/messages", json={"text": "hello"})
+        # wait for the run to finish (idle status in meta)
+        for _ in range(100):
+            if client.get("/api/sessions").json()[0]["status"] == "idle":
+                break
+        r = client.post(f"/api/sessions/{sid}/compact")
+        assert r.status_code == 200
+        events = client.get(f"/api/sessions/{sid}/events").json()
+        compacted = [e for e in events if e["type"] == "context_compacted"]
+        assert compacted and compacted[-1]["summary"] == "SUMMARY"
+        assert compacted[-1]["upto_seq"] > 0
+
+
+def test_compact_while_running_is_409(make_client):
+    # a FakeLLM with a delay keeps the run active while we hit /compact
+    client = make_client(script=[
+        CompletionResult(text="slow", tool_calls=[], usage_tokens=10),
+    ], delay=0.3)
+    with client:
+        sid = client.post("/api/sessions", json={}).json()["id"]
+        client.post(f"/api/sessions/{sid}/messages", json={"text": "go"})
+        r = client.post(f"/api/sessions/{sid}/compact")
+        assert r.status_code == 409
