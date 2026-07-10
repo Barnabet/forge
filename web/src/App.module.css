@@ -1,0 +1,23 @@
+.frame {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.main {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+.chatCol {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.connBanner {
+  text-align: center;
+  font-size: 11px;
+  color: var(--warn);
+  background: rgba(229, 184, 75, 0.08);
+  padding: 3px;
+}

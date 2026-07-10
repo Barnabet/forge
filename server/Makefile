@@ -1,8 +1,11 @@
 # server/Makefile
-.PHONY: dev test lint export-protocol
+.PHONY: dev dev-web test lint export-protocol
 
 dev:
 	uv run python -m forge.api.app
+
+dev-web:
+	cd ../web && pnpm dev
 
 test:
 	uv run pytest -q
