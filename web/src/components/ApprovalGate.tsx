@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { StreamItem } from '../state/reducer'
+import { fnmatchEscape } from '../lib/fnmatch'
 import s from './ApprovalGate.module.css'
 
 export default function ApprovalGate({
@@ -22,7 +23,7 @@ export default function ApprovalGate({
   }
 
   const alwaysOptions = [
-    { label: 'Always allow this command (session)', pattern: item.display, scope: 'session' as const },
+    { label: 'Always allow this command (session)', pattern: fnmatchEscape(item.display), scope: 'session' as const },
     { label: `Always allow ${item.tool} (session)`, pattern: '*', scope: 'session' as const },
     { label: `Always allow ${item.tool} (global)`, pattern: '*', scope: 'global' as const },
   ]

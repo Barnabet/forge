@@ -36,6 +36,14 @@ describe('ApprovalGate', () => {
     expect(onResolve).toHaveBeenCalledWith('allow', { pattern: '*', scope: 'session' })
   })
 
+  it('escapes fnmatch metacharacters in the exact-command policy pattern', async () => {
+    const onResolve = vi.fn()
+    render(<ApprovalGate item={{ ...gate, display: 'cat *.log' }} onResolve={onResolve} />)
+    await userEvent.click(screen.getByRole('button', { name: /Always/ }))
+    await userEvent.click(screen.getByText('Always allow this command (session)'))
+    expect(onResolve).toHaveBeenCalledWith('allow', { pattern: 'cat [*].log', scope: 'session' })
+  })
+
   it('denied gate renders the collapsed row', () => {
     render(<ApprovalGate item={{ ...gate, denied: true }} onResolve={() => {}} />)
     expect(screen.getByText(/Denied/)).toBeInTheDocument()
