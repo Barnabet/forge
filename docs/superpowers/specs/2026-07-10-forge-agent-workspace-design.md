@@ -169,7 +169,10 @@ yields output chunks; ctx = cwd, event emitter, cancellation token).
   as slots free. The top-bar pill shows the queued count.
 - The composer always talks to the active session (steer mid-run or start its next run).
   "Queue another task" = new tab (`+`) and prompt it; at the cap it queues.
-- Session names auto-generate from the first message; renameable.
+- Creating a session takes cwd, model, and autonomy, each defaulting from config (cwd defaults to
+  the previous session's cwd, then the home directory); the UI's `+` creates with defaults and
+  `/model` / `/autonomy` adjust after.
+- Session names auto-generate by truncating the first user message (~40 chars); renameable.
 
 ## Skills
 
