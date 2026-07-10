@@ -1,0 +1,64 @@
+:root {
+  /* accent — tints ONLY via color-mix, never hardcoded */
+  --accent: #35e0c2;
+  --ink: color-mix(in oklab, var(--accent) 20%, #050505);
+
+  /* backgrounds */
+  --bg-app: #0a0a0c;
+  --bg-bar: linear-gradient(180deg, #0e0e11, #0b0b0d);
+  --bg-card: #0e0e11;
+  --bg-drawer: #0c0c0f;
+  --bg-composer: #131317;
+  --bg-raised-1: #1a1a20;
+  --bg-raised-2: #1b1b21;
+  --bg-raised-3: #22222a;
+
+  /* text */
+  --text-primary: #ececef;
+  --text-body: #b9b9c2;
+  --text-secondary: #9d9da8;
+  --text-muted: #8f8f9a;
+  --text-faint: #62626d;
+  --text-faint-2: #55555f;
+  --text-ghost: #4c4c56;
+  --text-ghost-2: #3f3f49;
+
+  /* semantic */
+  --ok: #6fd598;
+  --ok-dim: #86d9a8;
+  --ok-bg: rgba(111, 213, 152, 0.1);
+  --ok-row: rgba(111, 213, 152, 0.07);
+  --danger: #ee8484;
+  --danger-dim: #e89b9b;
+  --danger-bg: rgba(238, 132, 132, 0.1);
+  --danger-row: rgba(238, 132, 132, 0.07);
+  --warn: #e5b84b;
+  --warn-dot: #e0b34b;
+  --warn-title: #eac26a;
+
+  /* hairlines by elevation */
+  --hair-1: rgba(255, 255, 255, 0.05);
+  --hair-2: rgba(255, 255, 255, 0.06);
+  --hair-3: rgba(255, 255, 255, 0.07);
+  --hair-4: rgba(255, 255, 255, 0.08);
+  --hair-5: rgba(255, 255, 255, 0.09);
+  --hair-hover: rgba(255, 255, 255, 0.14);
+
+  /* radii */
+  --r-tile: 5px;
+  --r-btn: 7px;
+  --r-btn-lg: 8px;
+  --r-seg: 9px;
+  --r-card: 12px;
+  --r-composer: 14px;
+  --r-pill: 999px;
+
+  /* shadows */
+  --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 2px 10px rgba(0, 0, 0, 0.25);
+  --shadow-composer: 0 12px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  --glow-accent: 0 0 12px color-mix(in oklab, var(--accent) 30%, transparent);
+
+  /* type */
+  --font-sans: 'Geist Sans', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+}

@@ -1,2 +1,4 @@
 .DS_Store
 .superpowers/
+web/node_modules
+web/dist
