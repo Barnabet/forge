@@ -24,12 +24,19 @@ export default function ChatStream() {
   const scroller = useRef<HTMLDivElement>(null)
 
   const itemCount = session?.stream.items.length ?? 0
+  // Streaming deltas grow the LAST item in place without changing the count,
+  // so the follow-scroll also keys on the tail item's content size.
+  const tail = session?.stream.items[itemCount - 1]
+  const tailSize =
+    tail?.kind === 'prose' ? tail.text.length
+    : tail?.kind === 'tool' ? tail.output.length
+    : 0
   useEffect(() => {
     const el = scroller.current
     if (!el) return
     const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 80
     if (nearBottom) el.scrollTop = el.scrollHeight
-  }, [itemCount, activeId])
+  }, [itemCount, activeId, tailSize])
 
   if (!session) return <div ref={scroller} className={s.scroller} />
   const { items, status, steps } = session.stream

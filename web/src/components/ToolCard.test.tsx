@@ -17,23 +17,26 @@ describe('ToolCard', () => {
     expect(screen.getByText('pytest -q')).toBeInTheDocument()
   })
 
-  it('done: shows ✓, duration, and auto-approved meta', () => {
+  it('done: shows ✓, duration, and auto-approved meta; body collapsed by default', () => {
     render(<ToolCard item={{ ...base, status: 'done', durationMs: 1240, autoApproved: true, output: '3 passed' }} onOpenPanel={() => {}} />)
     expect(screen.getByText('✓')).toBeInTheDocument()
     expect(screen.getByText('1.2s')).toBeInTheDocument()
     expect(screen.getByText('auto-approved')).toBeInTheDocument()
-    expect(screen.getByText('3 passed')).toBeInTheDocument()
+    expect(screen.queryByText('3 passed')).not.toBeInTheDocument()  // collapsed by default
   })
 
-  it('error: shows ! and the output', () => {
+  it('error: shows !; output revealed on expand', async () => {
     render(<ToolCard item={{ ...base, status: 'error', output: 'boom' }} onOpenPanel={() => {}} />)
     expect(screen.getByText('!')).toBeInTheDocument()
+    expect(screen.queryByText('boom')).not.toBeInTheDocument()
+    await userEvent.click(screen.getByText('pytest -q'))
     expect(screen.getByText('boom')).toBeInTheDocument()
   })
 
-  it('truncates long output to the last 12 lines', () => {
+  it('truncates long output to the last 12 lines when expanded', async () => {
     const output = Array.from({ length: 20 }, (_, i) => `line${i + 1}`).join('\n')
     render(<ToolCard item={{ ...base, status: 'done', output }} onOpenPanel={() => {}} />)
+    await userEvent.click(screen.getByText('pytest -q'))
     expect(screen.getByText('… 8 earlier lines')).toBeInTheDocument()
     expect(screen.getByText(/line20/)).toBeInTheDocument()
     expect(screen.queryByText(/line1$/m)).not.toBeInTheDocument()
@@ -52,13 +55,13 @@ describe('ToolCard', () => {
     expect(onOpen).toHaveBeenCalledWith(2)
   })
 
-  it('clicking the header collapses and re-expands the body', async () => {
+  it('clicking the header expands and re-collapses the body', async () => {
     render(<ToolCard item={{ ...base, status: 'done', output: '3 passed' }} onOpenPanel={() => {}} />)
+    expect(screen.queryByText('3 passed')).not.toBeInTheDocument()  // collapsed by default
+    await userEvent.click(screen.getByText('pytest -q'))
     expect(screen.getByText('3 passed')).toBeInTheDocument()
     await userEvent.click(screen.getByText('pytest -q'))
     expect(screen.queryByText('3 passed')).not.toBeInTheDocument()
-    await userEvent.click(screen.getByText('pytest -q'))
-    expect(screen.getByText('3 passed')).toBeInTheDocument()
   })
 
   it('open panel does not toggle the collapse', async () => {
@@ -70,7 +73,7 @@ describe('ToolCard', () => {
     />)
     await userEvent.click(screen.getByRole('button', { name: /open panel/ }))
     expect(onOpen).toHaveBeenCalled()
-    expect(screen.getByText('ok')).toBeInTheDocument()  // body still visible
+    expect(screen.queryByText('ok')).not.toBeInTheDocument()  // still collapsed
   })
 
   it('hides the body for (no output)', () => {

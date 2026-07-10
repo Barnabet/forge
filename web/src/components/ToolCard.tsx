@@ -15,7 +15,7 @@ export default function ToolCard({
   item: Extract<StreamItem, { kind: 'tool' }>
   onOpenPanel(changesetIndex: number): void
 }) {
-  const [collapsed, setCollapsed] = useState(false)
+  const [collapsed, setCollapsed] = useState(true)
   const glyph = item.status === 'running' ? '▸' : item.status === 'done' ? '✓' : '!'
   const output = item.output === '(no output)' ? '' : item.output
   const lines = output ? output.replace(/\n$/, '').split('\n') : []
