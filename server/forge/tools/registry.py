@@ -7,12 +7,13 @@ from forge.tools.bash import BashTool
 from forge.tools.files_read import ReadFileTool
 from forge.tools.files_write import EditFileTool, WriteFileTool
 from forge.tools.search import GlobTool, GrepTool, ListDirTool
+from forge.tools.skills_tool import LoadSkillTool
 
 
 def default_tools(skill_dirs: list[Path]) -> dict[str, Tool]:
     tools: list[Tool] = [
         BashTool(), ReadFileTool(), WriteFileTool(), EditFileTool(),
         GlobTool(), GrepTool(), ListDirTool(),
+        LoadSkillTool(skill_dirs),
     ]
-    # LoadSkillTool(skill_dirs) is appended here in the skills task
     return {t.name: t for t in tools}
