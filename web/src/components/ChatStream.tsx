@@ -48,8 +48,12 @@ export default function ChatStream() {
   // attaches to those elements instead, marking where execution is.
   const hasLiveContent = items.some(it =>
     (it.kind === 'prose' && it.streaming) || (it.kind === 'tool' && it.status === 'running'))
+  // Reasoning never follows text: once prose lands, the turn either moves to
+  // a tool call or is over (the run may linger for post-turn bookkeeping like
+  // memory updates), so "Thinking" after prose would be a lie.
+  const afterText = items[items.length - 1]?.kind === 'prose'
   const statusText =
-    status === 'running' ? (hasLiveContent ? null : 'Thinking')
+    status === 'running' ? (hasLiveContent || afterText ? null : 'Thinking')
     : status === 'attention' ? `Waiting on approval · step ${steps}`
     : status === 'queued' ? 'Queued — waiting for a slot'
     : null

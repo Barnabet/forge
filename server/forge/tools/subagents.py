@@ -29,9 +29,6 @@ You are a focused worker delegated one task by a parent agent.
 - You cannot create further subagents.
 - Access mode: {mode}.
 {mode_instruction}
-
-## Delegated task
-{task}
 """
 
 
@@ -154,8 +151,14 @@ class SpawnAgentsTool(Tool):
         )
         prompt = WORKER_PROMPT.format(
             parent_prompt=self.parent_prompt_fn(), mode=mode,
-            mode_instruction=instruction, task=task)
-        messages: list[dict] = [{"role": "system", "content": prompt}]
+            mode_instruction=instruction)
+        # The task must be a user message: a request with only a system message
+        # translates to an empty user turn on Anthropic-family models (400:
+        # "text content blocks must be non-empty").
+        messages: list[dict] = [
+            {"role": "system", "content": prompt},
+            {"role": "user", "content": f"## Delegated task\n{task}"},
+        ]
 
         async def no_delta(_: str) -> None:
             pass

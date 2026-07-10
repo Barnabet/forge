@@ -65,6 +65,15 @@ describe('ChatStream', () => {
     expect(screen.queryByText('Thinking')).not.toBeInTheDocument()
   })
 
+  it('hides "Thinking" after final prose while the run lingers (post-turn bookkeeping)', () => {
+    apply(
+      ev('status_changed', 2, { status: 'running' }),
+      ev('assistant_message', 3, { text: 'All done.', tool_calls: [] }),
+    )
+    render(<ChatStream />)
+    expect(screen.queryByText('Thinking')).not.toBeInTheDocument()
+  })
+
   it('renders markdown lists as real list items', () => {
     apply(ev('assistant_message', 2, {
       text: 'The pull brought in:\n\n- New code: `anchor.py`\n- New tests\n- Docs',

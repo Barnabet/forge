@@ -28,7 +28,8 @@ class InspectingLLM:
         self.peak = max(self.peak, self.active)
         await asyncio.sleep(0.02)
         self.active -= 1
-        task = messages[0]["content"].split("## Delegated task\n", 1)[1]
+        assert messages[0]["role"] == "system" and messages[1]["role"] == "user"
+        task = messages[1]["content"].split("## Delegated task\n", 1)[1]
         return CompletionResult(text=f"report for {task}")
 
     async def healthy(self):
