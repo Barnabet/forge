@@ -36,6 +36,12 @@ def create_app(home: Path, config: ForgeConfig, llm: LLMClient) -> FastAPI:
     app = FastAPI(title="Forge", lifespan=lifespan)
     app.state.manager = manager
 
+    def _actor(sid: str):
+        try:
+            return manager.get(sid)
+        except KeyError:
+            raise HTTPException(404, f"unknown session: {sid}") from None
+
     @app.get("/api/health")
     async def health():
         return {"ok": await llm.healthy()}
@@ -55,42 +61,42 @@ def create_app(home: Path, config: ForgeConfig, llm: LLMClient) -> FastAPI:
 
     @app.post("/api/sessions/{sid}/messages", status_code=202)
     async def post_message(sid: str, body: PostMessage):
-        await manager.get(sid).post_message(body.text)
+        await _actor(sid).post_message(body.text)
         return {}
 
     @app.post("/api/sessions/{sid}/approvals/{call_id}")
     async def resolve(sid: str, call_id: str, body: ResolveApproval):
-        await manager.get(sid).resolve_approval(
+        await _actor(sid).resolve_approval(
             call_id, body.decision,
             body.always.model_dump() if body.always else None)
         return {}
 
     @app.post("/api/sessions/{sid}/cancel")
     async def cancel(sid: str):
-        manager.get(sid).cancel()
+        _actor(sid).cancel()
         return {}
 
     @app.post("/api/sessions/{sid}/autonomy")
     async def set_autonomy(sid: str, body: SetAutonomy):
-        manager.get(sid).set_autonomy(body.autonomy)
+        _actor(sid).set_autonomy(body.autonomy)
         return {}
 
     @app.post("/api/sessions/{sid}/model")
     async def set_model(sid: str, body: SetModel):
         if body.model not in {m.id for m in config.models}:
             raise HTTPException(400, f"unknown model: {body.model}")
-        manager.get(sid).set_model(body.model)
+        _actor(sid).set_model(body.model)
         return {}
 
     @app.post("/api/sessions/{sid}/compact")
     async def compact(sid: str):
-        if not await manager.get(sid).compact_now():
+        if not await _actor(sid).compact_now():
             raise HTTPException(409, "session is running; compact after the run finishes")
         return {}
 
     @app.patch("/api/sessions/{sid}")
     async def rename(sid: str, body: RenameSession):
-        actor = manager.get(sid)
+        actor = _actor(sid)
         actor.meta.name = body.name
         from forge.engine.events import SessionRenamed
         actor.emit(actor._e(SessionRenamed, name=body.name))
@@ -98,25 +104,34 @@ def create_app(home: Path, config: ForgeConfig, llm: LLMClient) -> FastAPI:
 
     @app.get("/api/sessions/{sid}/events")
     async def events(sid: str, after: int = 0):
-        return [e.model_dump(mode="json") for e in manager.get(sid).log.read(after)]
+        return [e.model_dump(mode="json") for e in _actor(sid).log.read(after)]
 
     @app.get("/api/sessions/{sid}/changesets")
     async def changesets(sid: str):
-        return [c.model_dump() for c in manager.get(sid).changesets.list()]
+        return [c.model_dump() for c in _actor(sid).changesets.list()]
 
     @app.post("/api/sessions/{sid}/changesets/{index}/revert")
     async def revert(sid: str, index: int):
-        manager.get(sid).changesets.revert(index)
+        _actor(sid).changesets.revert(index)
         return {}
 
     @app.post("/api/sessions/{sid}/changesets/keep_all")
     async def keep_all(sid: str):
-        manager.get(sid).changesets.keep_all()
+        _actor(sid).changesets.keep_all()
         return {}
+
+    @app.get("/api/sessions/{sid}/changesets/{index}/file")
+    async def changeset_file(sid: str, index: int):
+        actor = _actor(sid)
+        try:
+            cs = actor.changesets.get(index)
+            return {"path": cs.path, "content": actor.changesets.after_content(index)}
+        except (IndexError, FileNotFoundError):
+            raise HTTPException(404, f"no changeset {index}") from None
 
     @app.get("/api/sessions/{sid}/files")
     async def file_search(sid: str, q: str = ""):
-        cwd = Path(manager.get(sid).meta.cwd)
+        cwd = Path(_actor(sid).meta.cwd)
         return await asyncio.to_thread(_walk_files, cwd, q)
 
     @app.get("/api/skills")
@@ -134,7 +149,13 @@ def create_app(home: Path, config: ForgeConfig, llm: LLMClient) -> FastAPI:
             return
         await websocket.accept()
         raw = await websocket.receive_text()
-        cursors: dict[str, int] = json.loads(raw).get("cursors", {})
+        try:
+            cursors_raw = json.loads(raw).get("cursors", {})
+            cursors: dict[str, int] = {
+                str(k): int(v) for k, v in cursors_raw.items()}
+        except (json.JSONDecodeError, AttributeError, TypeError, ValueError):
+            await websocket.close(code=4400)
+            return
         q = bus.subscribe()
         try:
             for sid, after in cursors.items():

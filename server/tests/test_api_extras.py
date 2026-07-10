@@ -1,5 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
+from starlette.websockets import WebSocketDisconnect
 
 from forge.api.app import create_app
 from forge.llm.base import CompletionResult
@@ -79,3 +80,37 @@ def test_compact_while_running_is_409(make_client):
         client.post(f"/api/sessions/{sid}/messages", json={"text": "go"})
         r = client.post(f"/api/sessions/{sid}/compact")
         assert r.status_code == 409
+
+
+def test_unknown_session_is_404(make_client):
+    client = make_client()
+    with client:
+        assert client.get("/api/sessions/nope/events").status_code == 404
+        assert client.post("/api/sessions/nope/messages",
+                           json={"text": "x"}).status_code == 404
+        assert client.post("/api/sessions/nope/cancel").status_code == 404
+
+
+def test_changeset_file_content(make_client, tmp_path):
+    client = make_client()
+    with client:
+        sid = client.post("/api/sessions",
+                          json={"cwd": str(tmp_path)}).json()["id"]
+        actor = client.app.state.manager.get(sid)
+        target = tmp_path / "hello.txt"
+        actor.changesets.record(target, None, "new content\n")
+        r = client.get(f"/api/sessions/{sid}/changesets/0/file")
+        assert r.status_code == 200
+        assert r.json() == {"path": str(target), "content": "new content\n"}
+        assert client.get(
+            f"/api/sessions/{sid}/changesets/9/file").status_code == 404
+
+
+def test_ws_malformed_first_payload_closes_4400(make_client):
+    client = make_client()
+    with client:
+        with pytest.raises(WebSocketDisconnect) as excinfo:
+            with client.websocket_connect("/ws") as ws:
+                ws.send_text("this is not json")
+                ws.receive_text()
+        assert excinfo.value.code == 4400

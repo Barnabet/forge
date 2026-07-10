@@ -56,6 +56,9 @@ class ChangesetStore:
     def get(self, index: int) -> Changeset:
         return self._sets[index]
 
+    def after_content(self, index: int) -> str:
+        return (self.blobs / f"{index}.after").read_text()
+
     def revert(self, index: int) -> None:
         cs = self._sets[index]
         before = self.blobs / f"{index}.before"
