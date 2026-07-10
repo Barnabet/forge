@@ -108,6 +108,41 @@ describe('ToolActivity group', () => {
     expect(screen.queryByText('B')).not.toBeInTheDocument()
   })
 
+  it('edit group: names the file, counts edits, sums diff stats', () => {
+    render(<ToolActivity
+      items={[
+        t({ tool: 'edit_file', callId: 'e1', display: 'app.py', status: 'done',
+            diffStats: { path: '/w/app.py', added: 10, removed: 2, changeset_index: 0 } }),
+        t({ tool: 'edit_file', callId: 'e2', display: 'app.py', status: 'done',
+            diffStats: { path: '/w/app.py', added: 5, removed: 1, changeset_index: 1 } }),
+      ]}
+      onOpenPanel={() => {}}
+    />)
+    expect(screen.getByText('Edited')).toBeInTheDocument()
+    expect(screen.getByText('app.py')).toBeInTheDocument()
+    expect(screen.getByText('× 2')).toBeInTheDocument()
+    expect(screen.getByText('+15')).toBeInTheDocument()
+    expect(screen.getByText('−3')).toBeInTheDocument()
+  })
+
+  it('edit group expands to individual edits with their own panel links', async () => {
+    const onOpen = vi.fn()
+    render(<ToolActivity
+      items={[
+        t({ tool: 'edit_file', callId: 'e1', display: 'app.py', status: 'done',
+            diffStats: { path: '/w/app.py', added: 10, removed: 2, changeset_index: 0 } }),
+        t({ tool: 'edit_file', callId: 'e2', display: 'app.py', status: 'done',
+            diffStats: { path: '/w/app.py', added: 5, removed: 1, changeset_index: 1 } }),
+      ]}
+      onOpenPanel={onOpen}
+    />)
+    await userEvent.click(screen.getByText('× 2'))
+    const links = screen.getAllByRole('button', { name: /open panel/ })
+    expect(links).toHaveLength(2)
+    await userEvent.click(links[1])
+    expect(onOpen).toHaveBeenCalledWith(1)
+  })
+
   it('surfaces the failure count on the roll-up', () => {
     render(<ToolActivity
       items={[...reads, t({ tool: 'read_file', callId: 'r3', display: 'c.py', status: 'error' })]}

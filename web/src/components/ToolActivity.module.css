@@ -46,6 +46,8 @@
 .added { color: var(--ok); }
 .removed { color: var(--danger); }
 
+.count { flex: none; color: var(--text-ghost); }
+
 .failed {
   flex: none;
   font-size: 11px;

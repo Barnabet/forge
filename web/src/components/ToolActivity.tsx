@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { groupLabel, toolVerb, type ToolItem } from '../lib/toolActivity'
+import { familyOf, groupLabel, toolVerb, type ToolItem } from '../lib/toolActivity'
 import s from './ToolActivity.module.css'
 
 const TAIL = 12
@@ -83,11 +83,33 @@ export default function ToolActivity({
 
   const running = items.some(i => i.status === 'running')
   const failed = items.filter(i => i.status === 'error').length
+  // Edit groups are per-file (see segmentItems): the header names the file
+  // and sums the diff stats across the individual edits.
+  const isEdit = familyOf(items[0].tool) === 'edit'
+  const allWrites = isEdit && items.every(i => i.tool === 'write_file')
+  const added = items.reduce((n, i) => n + (i.diffStats?.added ?? 0), 0)
+  const removed = items.reduce((n, i) => n + (i.diffStats?.removed ?? 0), 0)
   return (
     <div>
       <div className={s.row} data-clickable="true" onClick={() => setOpen(o => !o)}>
         {running && <span className={s.pulse} aria-hidden="true" />}
-        <span className={s.verb}>{groupLabel(items)}</span>
+        {isEdit ? (
+          <>
+            <span className={s.verb}>
+              {running ? (allWrites ? 'Writing' : 'Editing') : allWrites ? 'Wrote' : 'Edited'}
+            </span>
+            <span className={s.object}>{items[0].display}</span>
+            <span className={s.count}>× {items.length}</span>
+            {added + removed > 0 && (
+              <span className={s.stats}>
+                <span className={s.added}>+{added}</span>
+                <span className={s.removed}>−{removed}</span>
+              </span>
+            )}
+          </>
+        ) : (
+          <span className={s.verb}>{groupLabel(items)}</span>
+        )}
         {failed > 0 && <span className={s.failed}>{failed} failed</span>}
         <span className={s.meta}>
           <span className={s.chevron} aria-hidden="true">{open ? '⌄' : '›'}</span>

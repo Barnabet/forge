@@ -95,6 +95,18 @@ describe('segmentItems', () => {
     expect(e.key).toBe('t:r1')
   })
 
+  it('groups edits per file, not per family', () => {
+    const entries = segmentItems([
+      tool({ tool: 'edit_file', callId: 'e1', display: 'a.py' }),
+      tool({ tool: 'write_file', callId: 'e2', display: 'b.py' }),
+      tool({ tool: 'edit_file', callId: 'e3', display: 'a.py' }),
+    ])
+    expect(entries).toHaveLength(1)
+    const e = entries[0]
+    if (e.kind !== 'tools') throw new Error('expected tools entry')
+    expect(e.groups.map(g => g.map(t => t.callId))).toEqual([['e1', 'e3'], ['e2']])
+  })
+
   it('breaks tool runs on any non-tool item', () => {
     const entries = segmentItems([
       tool({ tool: 'bash', callId: 'b1' }),
