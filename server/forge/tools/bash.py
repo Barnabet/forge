@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import codecs
 import os
 import signal
 
@@ -26,15 +27,21 @@ class BashTool(Tool):
             stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.STDOUT,
             start_new_session=True)
         parts: list[str] = []
+        decoder = codecs.getincrementaldecoder("utf-8")("replace")
         try:
             async with asyncio.timeout(self.timeout_s):
                 while True:
                     chunk = await proc.stdout.read(4096)
                     if not chunk:
                         break
-                    text = chunk.decode(errors="replace")
-                    parts.append(text)
-                    ctx.emit_chunk(text)
+                    text = decoder.decode(chunk)
+                    if text:
+                        parts.append(text)
+                        ctx.emit_chunk(text)
+                tail = decoder.decode(b"", final=True)
+                if tail:
+                    parts.append(tail)
+                    ctx.emit_chunk(tail)
                 await proc.wait()
         except TimeoutError:
             _kill(proc)
@@ -51,8 +58,10 @@ class BashTool(Tool):
 
 
 def _kill(proc) -> None:
-    if proc.returncode is None:
-        try:
-            os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
-        except ProcessLookupError:
-            pass
+    # start_new_session=True makes the process group id equal proc.pid, so we can
+    # signal the whole group unconditionally -- even after the shell leader exited,
+    # to reap any backgrounded children that inherited our stdout.
+    try:
+        os.killpg(proc.pid, signal.SIGKILL)
+    except ProcessLookupError:
+        pass
