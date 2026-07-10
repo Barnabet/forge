@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
@@ -52,6 +53,37 @@ def test_project_validation(client, tmp_path):
     assert r.status_code == 400
     assert client.patch("/api/projects/zzzz", json={"name": "x"}).status_code == 404
     assert client.delete("/api/projects/zzzz").status_code == 404
+
+
+def test_patch_null_field_rejected_and_store_stays_loadable(client, tmp_path):
+    work = tmp_path / "proj"
+    work.mkdir()
+    p = client.post("/api/projects", json={"name": "n", "cwd": str(work)}).json()
+    r = client.patch(f"/api/projects/{p['id']}", json={"name": None})
+    assert r.status_code == 400
+    # disk store must still load on a fresh app, project unchanged
+    app2 = create_app(tmp_path, load_config(tmp_path), FakeLLM([]))
+    with TestClient(app2) as c:
+        assert c.get("/api/projects").json() == [p]
+
+
+def test_patch_cwd_validated_and_expanded(client, tmp_path):
+    work = tmp_path / "proj"
+    work.mkdir()
+    p = client.post("/api/projects", json={"name": "n", "cwd": str(work)}).json()
+
+    r = client.patch(f"/api/projects/{p['id']}", json={"cwd": str(tmp_path / "nope")})
+    assert r.status_code == 400
+    assert client.get("/api/projects").json()[0]["cwd"] == str(work)
+
+    other = tmp_path / "other"
+    other.mkdir()
+    p2 = client.patch(f"/api/projects/{p['id']}", json={"cwd": str(other)}).json()
+    assert p2["cwd"] == str(other)
+    assert client.get("/api/projects").json() == [p2]
+
+    p3 = client.patch(f"/api/projects/{p['id']}", json={"cwd": "~"}).json()
+    assert p3["cwd"] == str(Path.home())
 
 
 def test_recent_dirs_distinct_most_recent_first(client, tmp_path):

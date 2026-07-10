@@ -49,7 +49,9 @@ class ProjectStore:
         p = self.get(pid)
         if p is None:
             return None
-        updated = p.model_copy(update=fields)
+        # Re-validate the merged record (model_copy(update=...) would not),
+        # so an invalid value can never be persisted and brick the next load.
+        updated = Project.model_validate({**p.model_dump(), **fields})
         self._projects[self._projects.index(p)] = updated
         self._save()
         return updated

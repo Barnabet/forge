@@ -9,6 +9,7 @@ from urllib.parse import urlparse
 
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.staticfiles import StaticFiles
+from pydantic import ValidationError
 
 from forge.api.schemas import (
     CreateProject, CreateSession, PostMessage, RenameSession, ResolveApproval,
@@ -154,7 +155,16 @@ def create_app(home: Path, config: ForgeConfig, llm: LLMClient) -> FastAPI:
 
     @app.patch("/api/projects/{pid}")
     async def update_project(pid: str, body: UpdateProject):
-        p = projects.update(pid, body.model_dump(exclude_unset=True))
+        fields = body.model_dump(exclude_unset=True)
+        if "cwd" in fields:
+            cwd = Path(fields["cwd"]).expanduser() if fields["cwd"] else None
+            if cwd is None or not cwd.is_dir():
+                raise HTTPException(400, f"not a directory: {fields['cwd']}")
+            fields["cwd"] = str(cwd)
+        try:
+            p = projects.update(pid, fields)
+        except ValidationError:
+            raise HTTPException(400, f"invalid project fields: {fields}") from None
         if p is None:
             raise HTTPException(404, f"unknown project: {pid}")
         return p.model_dump()
