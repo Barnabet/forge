@@ -71,6 +71,15 @@ describe('ToolActivity single line', () => {
     expect(screen.queryByText('ok')).not.toBeInTheDocument()
   })
 
+  it('shows paths relative to the session cwd', () => {
+    render(<ToolActivity
+      items={[t({ tool: 'read_file', display: '/w/proj/src/app.py', status: 'done' })]}
+      cwd="/w/proj"
+      onOpenPanel={() => {}}
+    />)
+    expect(screen.getByText('src/app.py')).toBeInTheDocument()
+  })
+
   it('hides the body for (no output)', () => {
     render(<ToolActivity items={[t({ status: 'done', output: '(no output)' })]} onOpenPanel={() => {}} />)
     expect(screen.queryByText('(no output)')).not.toBeInTheDocument()

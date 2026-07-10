@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { familyOf, groupLabel, toolVerb, type ToolItem } from '../lib/toolActivity'
+import { familyOf, groupLabel, relDisplay, toolVerb, type ToolItem } from '../lib/toolActivity'
 import s from './ToolActivity.module.css'
 
 const TAIL = 12
@@ -10,10 +10,12 @@ function fmtDuration(ms: number): string {
 
 function Line({
   item,
+  cwd,
   indent,
   onOpenPanel,
 }: {
   item: ToolItem
+  cwd: string
   indent: boolean
   onOpenPanel(changesetIndex: number): void
 }) {
@@ -34,7 +36,7 @@ function Line({
       >
         {running && <span className={s.pulse} aria-hidden="true" />}
         <span className={s.verb}>{toolVerb(item)}</span>
-        <span className={s.object}>{item.display || '…'}</span>
+        <span className={s.object}>{item.display ? relDisplay(item.display, cwd) : '…'}</span>
         {item.diffStats && (
           <span className={s.stats}>
             <span className={s.added}>+{item.diffStats.added}</span>
@@ -73,13 +75,16 @@ function Line({
 
 export default function ToolActivity({
   items,
+  cwd = '',
   onOpenPanel,
 }: {
   items: ToolItem[]
+  cwd?: string
   onOpenPanel(changesetIndex: number): void
 }) {
   const [open, setOpen] = useState(false)
-  if (items.length === 1) return <Line item={items[0]} indent={false} onOpenPanel={onOpenPanel} />
+  if (items.length === 1)
+    return <Line item={items[0]} cwd={cwd} indent={false} onOpenPanel={onOpenPanel} />
 
   const running = items.some(i => i.status === 'running')
   const failed = items.filter(i => i.status === 'error').length
@@ -98,7 +103,7 @@ export default function ToolActivity({
             <span className={s.verb}>
               {running ? (allWrites ? 'Writing' : 'Editing') : allWrites ? 'Wrote' : 'Edited'}
             </span>
-            <span className={s.object}>{items[0].display}</span>
+            <span className={s.object}>{relDisplay(items[0].display, cwd)}</span>
             <span className={s.count}>× {items.length}</span>
             {added + removed > 0 && (
               <span className={s.stats}>
@@ -116,7 +121,7 @@ export default function ToolActivity({
         </span>
       </div>
       {open && items.map(it => (
-        <Line key={it.callId} item={it} indent onOpenPanel={onOpenPanel} />
+        <Line key={it.callId} item={it} cwd={cwd} indent onOpenPanel={onOpenPanel} />
       ))}
     </div>
   )

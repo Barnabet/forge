@@ -48,6 +48,7 @@ export default function ChatStream() {
                   <ToolActivity
                     key={`${familyOf(g[0].tool)}:${g[0].callId}`}
                     items={g}
+                    cwd={session.stream.cwd}
                     onOpenPanel={idx => void openDrawer(idx)}
                   />
                 ))}

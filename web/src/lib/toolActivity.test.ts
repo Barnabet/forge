@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { StreamItem } from '../state/reducer'
-import { familyOf, groupLabel, segmentItems, toolVerb, type ToolItem } from './toolActivity'
+import { familyOf, groupLabel, relDisplay, segmentItems, toolVerb, type ToolItem } from './toolActivity'
 
 const tool = (over: Partial<ToolItem>): ToolItem => ({
   kind: 'tool', seq: 1, callId: 'c1', tool: 'bash', display: 'ls',
@@ -23,6 +23,27 @@ describe('familyOf', () => {
   it('gives unknown tools their own family', () => {
     expect(familyOf('web_fetch')).toBe('other:web_fetch')
     expect(familyOf('web_fetch')).not.toBe(familyOf('bash'))
+  })
+})
+
+describe('relDisplay', () => {
+  it('strips the cwd prefix from paths', () => {
+    expect(relDisplay('/w/proj/src/app.py', '/w/proj')).toBe('src/app.py')
+  })
+
+  it('strips every occurrence inside a command string', () => {
+    expect(relDisplay('sed -n 1,5p /w/proj/a.py /w/proj/b.py', '/w/proj'))
+      .toBe('sed -n 1,5p a.py b.py')
+  })
+
+  it('respects path boundaries and leaves outside paths absolute', () => {
+    expect(relDisplay('/www/x.py', '/w')).toBe('/www/x.py')
+    expect(relDisplay('~/.forge/config.toml', '/w/proj')).toBe('~/.forge/config.toml')
+  })
+
+  it('falls back sensibly for the cwd itself and empty cwd', () => {
+    expect(relDisplay('/w/proj/', '/w/proj')).toBe('.')
+    expect(relDisplay('/w/proj/a.py', '')).toBe('/w/proj/a.py')
   })
 })
 

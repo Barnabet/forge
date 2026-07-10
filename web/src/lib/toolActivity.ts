@@ -31,6 +31,16 @@ const VERBS: Record<string, [string, string]> = {
   load_skill: ['Loading', 'Loaded'],
 }
 
+// Presentation only: show paths relative to the session cwd. Applies to
+// every occurrence (bash commands embed paths too); paths outside the
+// workspace keep their absolute form.
+export function relDisplay(display: string, cwd: string): string {
+  if (!cwd) return display
+  const prefix = cwd.endsWith('/') ? cwd : `${cwd}/`
+  const out = display.split(prefix).join('')
+  return out || '.'
+}
+
 export function toolVerb(item: ToolItem): string {
   const [present, past] = VERBS[item.tool] ?? ['Running', 'Ran']
   return item.status === 'running' ? present : past
