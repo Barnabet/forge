@@ -13,7 +13,7 @@ from pydantic import ValidationError
 
 from forge.api.schemas import (
     CreateProject, CreateSession, PostMessage, RenameSession, ResolveApproval,
-    SetAutonomy, SetModel, UpdateProject,
+    SetAutonomy, SetEffort, SetModel, UpdateProject,
 )
 from forge.engine.bus import EventBus
 from forge.engine.events import SessionDeleted
@@ -102,6 +102,13 @@ def create_app(home: Path, config: ForgeConfig, llm: LLMClient) -> FastAPI:
         if body.model not in {m.id for m in config.models}:
             raise HTTPException(400, f"unknown model: {body.model}")
         _actor(sid).set_model(body.model)
+        return {}
+
+    @app.post("/api/sessions/{sid}/effort")
+    async def set_effort(sid: str, body: SetEffort):
+        if body.effort not in ("default", "low", "medium", "high"):
+            raise HTTPException(400, f"invalid effort: {body.effort}")
+        _actor(sid).set_effort(body.effort)
         return {}
 
     @app.post("/api/sessions/{sid}/compact")

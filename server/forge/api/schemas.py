@@ -33,6 +33,10 @@ class SetModel(BaseModel):
     model: str
 
 
+class SetEffort(BaseModel):
+    effort: str
+
+
 class RenameSession(BaseModel):
     name: str
 

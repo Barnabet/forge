@@ -230,3 +230,42 @@ def test_delete_broadcasts_ephemeral_event(make_client):
             assert msg["type"] == "session_deleted"
             assert msg["session_id"] == sid
             assert msg["seq"] == 0
+
+
+def _wait_idle(client):
+    for _ in range(200):
+        if all(m["status"] == "idle" for m in client.get("/api/sessions").json()):
+            return
+
+
+def test_set_effort_and_llm_receives_it(make_client):
+    client = make_client(script=[
+        CompletionResult(text="hi", tool_calls=[], usage_tokens=1),
+        CompletionResult(text="hi again", tool_calls=[], usage_tokens=1),
+    ])
+    with client:
+        sid = client.post("/api/sessions", json={}).json()["id"]
+        llm = client.app.state.manager.llm
+        # default effort passes "default"
+        client.post(f"/api/sessions/{sid}/messages", json={"text": "one"})
+        _wait_idle(client)
+        assert llm.efforts == ["default"]
+        # switch and run again
+        r = client.post(f"/api/sessions/{sid}/effort", json={"effort": "high"})
+        assert r.status_code == 200
+        events = client.get(f"/api/sessions/{sid}/events").json()
+        assert events[-1] == {**events[-1], "type": "effort_changed", "effort": "high"}
+        client.post(f"/api/sessions/{sid}/messages", json={"text": "two"})
+        _wait_idle(client)
+        assert llm.efforts == ["default", "high"]
+
+
+def test_effort_validation_and_replay(tmp_path):
+    config = load_config(tmp_path)
+    with TestClient(create_app(tmp_path, config, FakeLLM([]))) as client:
+        sid = client.post("/api/sessions", json={}).json()["id"]
+        assert client.post(f"/api/sessions/{sid}/effort",
+                           json={"effort": "turbo"}).status_code == 400
+        client.post(f"/api/sessions/{sid}/effort", json={"effort": "low"})
+    with TestClient(create_app(tmp_path, load_config(tmp_path), FakeLLM([]))) as client:
+        assert client.get("/api/sessions").json()[0]["effort"] == "low"

@@ -12,12 +12,14 @@ class FakeLLM:
         self.script = list(script)
         self.delay = delay
         self.calls: list[list[dict]] = []
+        self.efforts: list[str] = []
 
     async def complete(
         self, model: str, messages: list[dict], tools: list[dict],
-        on_text_delta: OnTextDelta,
+        on_text_delta: OnTextDelta, effort: str = "default",
     ) -> CompletionResult:
         self.calls.append(messages)
+        self.efforts.append(effort)
         if self.delay:
             await asyncio.sleep(self.delay)
         item = self.script.pop(0)

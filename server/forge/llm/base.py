@@ -22,7 +22,7 @@ class LLMError(Exception):
 class LLMClient(Protocol):
     async def complete(
         self, model: str, messages: list[dict], tools: list[dict],
-        on_text_delta: OnTextDelta,
+        on_text_delta: OnTextDelta, effort: str = "default",
     ) -> CompletionResult: ...
 
     async def healthy(self) -> bool: ...

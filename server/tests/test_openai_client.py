@@ -84,3 +84,17 @@ async def test_non_retryable_error_fails_fast():
     with pytest.raises(LLMError):
         await llm.complete("m", [], [], on_delta)
     assert len(calls) == 1  # non-retryable → no retries
+
+
+async def test_passes_reasoning_effort_only_when_set():
+    llm, calls = make_llm([
+        [chunk(usage=NS(total_tokens=1))],
+        [chunk(usage=NS(total_tokens=1))],
+    ])
+
+    async def on_delta(t): ...
+
+    await llm.complete("m", [], [], on_delta, effort="high")
+    assert calls[0]["reasoning_effort"] == "high"
+    await llm.complete("m", [], [], on_delta)
+    assert "reasoning_effort" not in calls[1]

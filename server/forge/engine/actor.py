@@ -11,7 +11,7 @@ from pydantic import BaseModel
 from forge.engine.bus import EventBus
 from forge.engine.events import (
     ApprovalRequested, ApprovalResolved, AssistantMessage, Autonomy,
-    AutonomyChanged, ContextCompacted, Effort, ErrorEvent, ModelChanged,
+    AutonomyChanged, ContextCompacted, Effort, EffortChanged, ErrorEvent, ModelChanged,
     OutputChunk, PolicyAdded, RunFinished, SessionArchived, SessionRenamed,
     SessionUnarchived, Status, StatusChanged,
     TextDelta, ToolCallFinished, ToolCallSpec, ToolCallStarted, UserMessage,
@@ -94,6 +94,10 @@ class SessionActor:
         self.meta.model = model
         self.emit(self._e(ModelChanged, model=model))
 
+    def set_effort(self, effort: Effort) -> None:
+        self.meta.effort = effort
+        self.emit(self._e(EffortChanged, effort=effort))
+
     def archive(self) -> bool:
         if self.run_task and not self.run_task.done():
             return False
@@ -147,7 +151,7 @@ class SessionActor:
                 self.meta.model,
                 to_messages(self.log.read(), self.system_prompt_fn(self.meta)),
                 [openai_spec(t) for t in self.tools.values()],
-                on_delta)
+                on_delta, effort=self.meta.effort)
             self.emit(self._e(AssistantMessage, text=result.text,
                               tool_calls=result.tool_calls))
             if not result.tool_calls:
@@ -264,7 +268,7 @@ class SessionActor:
               "Summarize this agent session so far for continuation. Include the "
               "original task, key decisions, files touched, current progress, and "
               "immediate next steps.\n\n" + transcript}],
-            [], no_delta)
+            [], no_delta, effort=self.meta.effort)
         self.emit(self._e(ContextCompacted, summary=summary.text, upto_seq=upto))
 
     def _close_dangling(self, reason: str) -> None:

@@ -20,24 +20,29 @@ class OpenAILLM:
         self.retry_delays = retry_delays
 
     async def complete(self, model: str, messages: list[dict], tools: list[dict],
-                       on_text_delta: OnTextDelta) -> CompletionResult:
+                       on_text_delta: OnTextDelta,
+                       effort: str = "default") -> CompletionResult:
         last: Exception | None = None
         for delay in (0, *self.retry_delays):
             if delay:
                 await asyncio.sleep(delay)
             try:
-                return await self._stream_once(model, messages, tools, on_text_delta)
+                return await self._stream_once(
+                    model, messages, tools, on_text_delta, effort)
             except RETRYABLE as e:
                 last = e
             except OpenAIError as e:  # non-retryable (auth, bad model) → fail fast
                 raise LLMError(f"LLM call failed: {e}") from e
         raise LLMError(f"LLM call failed after retries: {last}")
 
-    async def _stream_once(self, model, messages, tools, on_text_delta):
+    async def _stream_once(self, model, messages, tools, on_text_delta,
+                           effort="default"):
         kwargs: dict = {"model": model, "messages": messages, "stream": True,
                         "stream_options": {"include_usage": True}}
         if tools:
             kwargs["tools"] = tools
+        if effort != "default":
+            kwargs["reasoning_effort"] = effort
         stream = await self.client.chat.completions.create(**kwargs)
 
         text_parts: list[str] = []
