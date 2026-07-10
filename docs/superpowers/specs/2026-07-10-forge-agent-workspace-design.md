@@ -24,6 +24,7 @@ only; the harness is entirely Forge's.
 - Autonomy modes: **yolo (default)** and **guarded** (approval gates with Allow / Deny / Always policies)
 - Parallel sessions with tabs, statuses, and a FIFO task queue under a concurrency cap
 - Claude Code-compatible skills with progressive disclosure
+- Cross-session memory: instruction files (project + global) plus an agent-writable memory directory
 - Event-sourced persistence: sessions survive restarts; reconnects replay
 - The full 2a workspace UI: top bar, chat stream, tool cards, gates, composer, detail drawer (Diff + File views)
 - Basic automatic context compaction
@@ -56,6 +57,8 @@ Three processes at runtime:
 - `sessions/<id>/events.jsonl` — append-only durable event log per session.
 - `sessions/<id>/blobs/` — before/after file contents for changesets (drawer diffs, revert).
 - `skills/` — global skills library.
+- `FORGE.md` — global instruction file.
+- `memory/` — agent-writable memory (one fact per file + `MEMORY.md` index).
 
 ### Repo layout (monorepo)
 
@@ -128,7 +131,7 @@ while run is active:
 **Model adapter (`llm/`):** wraps `AsyncOpenAI` at the CLIProxyAPI base URL. Assembles streamed
 tool calls from deltas, retries transient errors with backoff, reads per-model config, tracks
 usage per session. The system prompt is a harness template: identity, environment (OS, cwd, date),
-skills index, behavioral guidelines. A **FakeLLM** implementation of the same interface replays
+skills index, instruction files, memory index, behavioral guidelines. A **FakeLLM** implementation of the same interface replays
 scripted responses for tests.
 
 ## Tools and approvals
@@ -183,6 +186,22 @@ yields output chunks; ctx = cwd, event emitter, cancellation token).
 - **Progressive disclosure:** at session start the server indexes name + description into the
   system prompt; the model calls `load_skill(name)` (never gated) to load a body when relevant.
 - The agent can author new skills with its own file tools — no extra machinery.
+
+## Memory
+
+Two complementary layers, both riding on existing file tools and system-prompt assembly:
+
+- **Instruction files (user-curated):** at session start, load `~/.forge/FORGE.md` (global) and
+  `<cwd>/FORGE.md` or `AGENTS.md` (project) into the system prompt. Conventions, preferences,
+  standing rules.
+- **Agent-writable memory:** `~/.forge/memory/` holds one fact per markdown file plus a
+  `MEMORY.md` index (one line per fact). The index is injected into the system prompt each
+  session; the agent reads full fact files on demand and saves/updates/deletes facts with its
+  normal file tools, guided by system-prompt instructions (save durable user preferences, project
+  facts, and lessons learned; update rather than duplicate; keep the index current).
+
+Memory reads/writes go through the ordinary tools, so they follow the same approval rules as any
+other file operation.
 
 ## Frontend
 
