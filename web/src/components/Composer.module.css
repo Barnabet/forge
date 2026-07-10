@@ -1,0 +1,55 @@
+.wrap { flex: none; padding: 16px 24px 22px; }
+.card {
+  position: relative;
+  max-width: 700px;
+  margin: 0 auto;
+  background: var(--bg-composer);
+  border: 1px solid var(--hair-5);
+  border-radius: var(--r-composer);
+  padding: 13px 15px;
+  box-shadow: var(--shadow-composer);
+}
+
+.input {
+  width: 100%;
+  resize: none;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  max-height: 140px;
+}
+.input::placeholder { color: var(--text-faint-2); }
+
+.footer { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+.chip {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--text-faint);
+  border: 1px solid var(--hair-4);
+  border-radius: var(--r-btn);
+  padding: 3px 8px;
+}
+.spacer { flex: 1; }
+
+.modelPill {
+  display: flex; align-items: center; gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: var(--r-pill);
+  padding: 4px 10px;
+}
+.healthDot { width: 5px; height: 5px; border-radius: 50%; background: var(--danger); }
+
+.send {
+  width: 28px; height: 28px;
+  display: grid; place-items: center;
+  border-radius: var(--r-btn-lg);
+  background: var(--accent);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 4px 12px color-mix(in oklab, var(--accent) 35%, transparent),
+              inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.send:disabled { opacity: 0.4; cursor: default; }
