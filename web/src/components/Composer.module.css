@@ -17,6 +17,8 @@
   line-height: 1.5;
   color: var(--text-primary);
   max-height: 140px;
+  /* no scrollbar below the height cap; autosize flips it on at the cap */
+  overflow-y: hidden;
 }
 .input::placeholder { color: var(--text-faint-2); }
 

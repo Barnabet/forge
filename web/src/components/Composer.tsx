@@ -53,6 +53,7 @@ export default function Composer() {
     if (!el) return
     el.style.height = 'auto'
     el.style.height = `${Math.min(el.scrollHeight, 140)}px`
+    el.style.overflowY = el.scrollHeight > 140 ? 'auto' : 'hidden'
   }
 
   return (
