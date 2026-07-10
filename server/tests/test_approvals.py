@@ -60,6 +60,18 @@ async def test_always_global_persists_policy(tmp_path):
     assert sum(1 for e in actor.log.read() if e.type == "approval_requested") == 1
 
 
+async def test_deny_with_always_does_not_persist_policy(tmp_path):
+    actor, _ = make_actor(tmp_path, [BASH_CALL, DONE], autonomy="guarded")
+    await actor.post_message("go")
+    await pump_until(actor, "approval_requested")
+    await actor.resolve_approval(
+        "c1", "deny", always={"pattern": "echo *", "scope": "global"})
+    await wait_idle(actor)
+    assert not any(e.type == "policy_added" for e in actor.log.read())
+    assert load_config(tmp_path / "home").policies == []
+    assert actor.session_policies == []
+
+
 async def test_cancel_mid_gate_closes_dangling(tmp_path):
     actor, _ = make_actor(tmp_path, [BASH_CALL], autonomy="guarded")
     await actor.post_message("go")

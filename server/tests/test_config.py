@@ -31,3 +31,15 @@ def test_policy_matching_and_persist(tmp_path):
 
     save_global_policy(tmp_path, Policy(tool="edit_file", pattern="*"))
     assert Policy(tool="edit_file", pattern="*") in load_config(tmp_path).policies
+
+
+def test_policy_with_quotes_and_backslashes_roundtrips(tmp_path):
+    # Real command lines carry quotes and backslashes; naive interpolation would
+    # emit invalid TOML and brick load_config on the next boot.
+    policy = Policy(tool="bash", pattern=r'echo "hello world" \& stuff')
+    save_global_policy(tmp_path, policy)
+    loaded = load_config(tmp_path).policies       # must not raise
+    assert policy in loaded
+    # saving the same policy twice yields exactly one entry
+    save_global_policy(tmp_path, policy)
+    assert load_config(tmp_path).policies.count(policy) == 1

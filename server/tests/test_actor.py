@@ -92,6 +92,34 @@ async def test_unexpected_error_ends_run_with_error(tmp_path):
     assert fin[0].reason == "error" and actor.meta.status == "idle"
 
 
+async def test_cancel_while_queued_finishes_and_idles(tmp_path):
+    # Two actors share one slot; the second is cancelled while still queued
+    # (awaiting the semaphore). It must still emit run_finished and go idle.
+    sched = Scheduler(1)
+
+    def build(name, script, delay=0.0):
+        (tmp_path / name).mkdir(exist_ok=True)
+        meta = SessionMeta(id=name, cwd=str(tmp_path / name), model="m")
+        actor = SessionActor(
+            meta=meta, home=tmp_path / "home", config=ForgeConfig(),
+            llm=FakeLLM(script, delay=delay), bus=EventBus(), scheduler=sched,
+            system_prompt_fn=lambda m: "SYS")
+        return actor
+
+    a = build("a", [CompletionResult(text="slow", usage_tokens=1)], delay=0.5)
+    b = build("b", [CompletionResult(text="fast", usage_tokens=1)])
+    await a.post_message("hold the slot")
+    await asyncio.sleep(0.05)
+    await b.post_message("queue me")
+    await asyncio.sleep(0.05)
+    assert b.meta.status == "queued"
+    b.cancel()  # user cancels the queued run via POST /cancel
+    await asyncio.gather(a.run_task, b.run_task, return_exceptions=True)
+    fin = [e for e in b.log.read() if e.type == "run_finished"]
+    assert fin and fin[0].reason == "cancelled", "no run_finished after queued cancel"
+    assert b.meta.status == "idle", f"stuck in {b.meta.status!r}"
+
+
 async def test_message_during_final_stream_is_consumed(tmp_path):
     actor, llm = make_actor(tmp_path, [
         CompletionResult(text="first", usage_tokens=10),

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import tomllib
 from fnmatch import fnmatch
 from pathlib import Path
@@ -52,8 +53,13 @@ def load_config(home: Path) -> ForgeConfig:
 def save_global_policy(home: Path, policy: Policy) -> None:
     """Append a policy as TOML; crude but config.toml stays human-owned."""
     home.mkdir(parents=True, exist_ok=True)
+    if policy in load_config(home).policies:
+        return  # already persisted; don't duplicate
     path = home / "config.toml"
-    block = f'\n[[policies]]\ntool = "{policy.tool}"\npattern = "{policy.pattern}"\n'
+    # json.dumps yields a valid TOML basic string (same escaping rules), so
+    # patterns containing quotes/backslashes round-trip instead of corrupting.
+    block = (f"\n[[policies]]\ntool = {json.dumps(policy.tool)}\n"
+             f"pattern = {json.dumps(policy.pattern)}\n")
     path.write_text((path.read_text() if path.exists() else "") + block)
 
 

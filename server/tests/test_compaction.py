@@ -1,3 +1,5 @@
+import asyncio
+
 from forge.engine.events import ToolCallSpec
 from forge.engine.projection import to_messages
 from forge.llm.base import CompletionResult
@@ -32,3 +34,24 @@ async def test_compaction_triggers_and_projection_shrinks(tmp_path):
     # projection helper agrees
     msgs = to_messages(evs, "SYS")
     assert not any(m["role"] == "tool" for m in msgs)
+
+
+async def test_steering_during_compaction_summary_reaches_model(tmp_path):
+    # A user_message posted while the summarizer LLM call is in flight must land
+    # AFTER the compaction cut, or it is silently dropped from the model context.
+    actor, llm = make_actor(tmp_path, [
+        CompletionResult(text="", tool_calls=[
+            ToolCallSpec(id="c1", name="bash", arguments='{"command": "echo x"}')],
+            usage_tokens=90),                    # crosses 75% of 100 -> compaction
+        CompletionResult(text="the summary", usage_tokens=5),   # summarizer (slow)
+        CompletionResult(text="done", usage_tokens=10),
+        CompletionResult(text="done2", usage_tokens=10),
+    ], delay=0.3)
+    actor.config = ForgeConfig(
+        models=[ModelConfig(id="m", display_name="m", context_window=100)])
+    await actor.post_message("go")
+    await asyncio.sleep(0.45)          # call1 0-0.3, tool ~0.31, summarizer 0.31-0.61
+    await actor.post_message("STEER-ME")   # arrives during summarization
+    await wait_idle(actor)
+    flat = str(to_messages(actor.log.read(), "SYS"))
+    assert "STEER-ME" in flat, "steering message dropped from model context"

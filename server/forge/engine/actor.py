@@ -98,22 +98,24 @@ class SessionActor:
 
     # -- run loop -------------------------------------------------------------
     async def _run(self) -> None:
-        async with self.scheduler.slot(lambda: self._set_status("queued")):
-            self._set_status("running")
-            try:
+        try:
+            # Cancel may arrive while awaiting the semaphore (session still
+            # "queued"); the try must wrap the slot acquisition too.
+            async with self.scheduler.slot(lambda: self._set_status("queued")):
+                self._set_status("running")
                 await self._loop()
                 self.emit(self._e(RunFinished, reason="completed"))
-            except asyncio.CancelledError:
-                self._close_dangling("Cancelled by user")
-                self.emit(self._e(RunFinished, reason="cancelled"))
-            except LLMError as e:
-                self.emit(self._e(ErrorEvent, message=str(e)))
-                self.emit(self._e(RunFinished, reason="error"))
-            except Exception as e:  # backstop: projection/summarizer/other crashes
-                self.emit(self._e(ErrorEvent, message=f"Unexpected error: {e!r}"))
-                self.emit(self._e(RunFinished, reason="error"))
-            finally:
-                self._set_status("idle")
+        except asyncio.CancelledError:
+            self._close_dangling("Cancelled by user")
+            self.emit(self._e(RunFinished, reason="cancelled"))
+        except LLMError as e:
+            self.emit(self._e(ErrorEvent, message=str(e)))
+            self.emit(self._e(RunFinished, reason="error"))
+        except Exception as e:  # backstop: projection/summarizer/other crashes
+            self.emit(self._e(ErrorEvent, message=f"Unexpected error: {e!r}"))
+            self.emit(self._e(RunFinished, reason="error"))
+        finally:
+            self._set_status("idle")
 
     async def _loop(self) -> None:
         while True:
@@ -197,7 +199,7 @@ class SessionActor:
             self._approvals.pop(call.id, None)
             self._set_status("running")
         self.emit(self._e(ApprovalResolved, call_id=call.id, decision=decision))
-        if always:
+        if always and decision == "allow":
             policy = Policy(tool=call.name, pattern=always["pattern"])
             scope = always.get("scope", "session")
             if scope == "global":
@@ -224,6 +226,9 @@ class SessionActor:
 
         async def no_delta(_: str) -> None: ...
 
+        # Capture the cut point BEFORE the summarizer await: a steering message
+        # posted while the summarizer is in flight must survive projection.
+        upto = self.log.last_seq
         summary = await self.llm.complete(
             self.meta.model,
             [{"role": "user", "content":
@@ -231,8 +236,7 @@ class SessionActor:
               "original task, key decisions, files touched, current progress, and "
               "immediate next steps.\n\n" + transcript}],
             [], no_delta)
-        self.emit(self._e(ContextCompacted, summary=summary.text,
-                          upto_seq=self.log.last_seq))
+        self.emit(self._e(ContextCompacted, summary=summary.text, upto_seq=upto))
 
     def _close_dangling(self, reason: str) -> None:
         for call_id, tool in dangling_call_ids(self.log.read()):

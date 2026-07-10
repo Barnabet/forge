@@ -1,6 +1,8 @@
 import json
 
+import pytest
 from starlette.testclient import TestClient
+from starlette.websockets import WebSocketDisconnect
 
 from forge.api.app import create_app
 from forge.engine.events import ToolCallSpec
@@ -91,11 +93,27 @@ def test_guarded_approval_roundtrip(tmp_path):
 def test_file_search_and_misc_endpoints(tmp_path):
     (tmp_path / "src").mkdir()
     (tmp_path / "src" / "main_app.py").write_text("x")
+    # matching files under pruned dirs must never surface
+    (tmp_path / "node_modules").mkdir()
+    (tmp_path / "node_modules" / "main_app.py").write_text("x")
+    (tmp_path / ".git").mkdir()
+    (tmp_path / ".git" / "main_app.py").write_text("x")
     client = make_client(tmp_path, [])
     with client:
         sid = client.post("/api/sessions", json={"cwd": str(tmp_path)}).json()["id"]
         hits = client.get(f"/api/sessions/{sid}/files", params={"q": "mnpy"}).json()
         assert "src/main_app.py" in hits
+        assert "node_modules/main_app.py" not in hits
+        assert ".git/main_app.py" not in hits
         assert client.get("/api/health").json() == {"ok": True}
         assert client.get("/api/models").json()[0]["id"] == "m"
         assert client.get("/api/skills").json() == []
+
+
+def test_ws_rejects_cross_origin(tmp_path):
+    client = make_client(tmp_path, [])
+    with client:
+        with pytest.raises(WebSocketDisconnect):
+            with client.websocket_connect(
+                    "/ws", headers={"origin": "https://evil.example"}) as ws:
+                ws.receive_text()
