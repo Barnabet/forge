@@ -5,6 +5,7 @@ import json
 import os
 from contextlib import asynccontextmanager
 from pathlib import Path
+from typing import get_args
 from urllib.parse import urlparse
 
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
@@ -16,7 +17,7 @@ from forge.api.schemas import (
     SetAutonomy, SetEffort, SetModel, UpdateProject,
 )
 from forge.engine.bus import EventBus
-from forge.engine.events import SessionDeleted
+from forge.engine.events import Effort, SessionDeleted
 from forge.engine.manager import SessionManager
 from forge.engine.skills import discover_skills
 from forge.llm.base import LLMClient
@@ -25,6 +26,26 @@ from forge.store.projects import ProjectStore
 from forge.tools.search import SKIP_DIRS
 
 WEB_DIST = Path(__file__).resolve().parents[3] / "web" / "dist"
+
+_EFFORTS = get_args(Effort)
+_AUTONOMIES = ("yolo", "guarded")
+
+
+def _validate_effort(value: str | None) -> None:
+    if value is not None and value not in _EFFORTS:
+        raise HTTPException(400, f"invalid effort: {value}")
+
+
+def _validate_autonomy(value: str | None) -> None:
+    if value is not None and value not in _AUTONOMIES:
+        raise HTTPException(400, f"invalid autonomy: {value}")
+
+
+def _validate_default(field: str, value: str) -> None:
+    if field == "default_effort" and value != "" and value not in _EFFORTS:
+        raise HTTPException(400, f"invalid default_effort: {value}")
+    if field == "default_autonomy" and value != "" and value not in _AUTONOMIES:
+        raise HTTPException(400, f"invalid default_autonomy: {value}")
 
 
 def create_app(home: Path, config: ForgeConfig, llm: LLMClient) -> FastAPI:
@@ -67,12 +88,18 @@ def create_app(home: Path, config: ForgeConfig, llm: LLMClient) -> FastAPI:
             project = projects.get(body.project_id)
             if project is None:
                 raise HTTPException(400, f"unknown project: {body.project_id}")
+        effort = body.effort or (project.default_effort if project else None) or None
+        autonomy = body.autonomy or (project.default_autonomy if project else None) or None
+        # Validate the RESOLVED values (guards both bad request bodies and legacy
+        # projects poisoned with invalid defaults) so SessionMeta never 500s.
+        _validate_effort(effort)
+        _validate_autonomy(autonomy)
         actor = manager.create(
             cwd=body.cwd or (project.cwd if project else None),
             model=body.model or (project.default_model if project else None) or None,
-            autonomy=body.autonomy or (project.default_autonomy if project else None) or None,
+            autonomy=autonomy,
             project_id=body.project_id,
-            effort=body.effort or (project.default_effort if project else None) or None)
+            effort=effort)
         return actor.meta.model_dump()
 
     @app.post("/api/sessions/{sid}/messages", status_code=202)
@@ -106,7 +133,7 @@ def create_app(home: Path, config: ForgeConfig, llm: LLMClient) -> FastAPI:
 
     @app.post("/api/sessions/{sid}/effort")
     async def set_effort(sid: str, body: SetEffort):
-        if body.effort not in ("default", "low", "medium", "high"):
+        if body.effort not in _EFFORTS:
             raise HTTPException(400, f"invalid effort: {body.effort}")
         _actor(sid).set_effort(body.effort)
         return {}
@@ -185,6 +212,8 @@ def create_app(home: Path, config: ForgeConfig, llm: LLMClient) -> FastAPI:
         cwd = Path(body.cwd).expanduser()
         if not cwd.is_dir():
             raise HTTPException(400, f"not a directory: {body.cwd}")
+        _validate_default("default_effort", body.default_effort)
+        _validate_default("default_autonomy", body.default_autonomy)
         return projects.create(
             name=body.name, cwd=str(cwd), default_model=body.default_model,
             default_autonomy=body.default_autonomy,
@@ -198,6 +227,10 @@ def create_app(home: Path, config: ForgeConfig, llm: LLMClient) -> FastAPI:
             if cwd is None or not cwd.is_dir():
                 raise HTTPException(400, f"not a directory: {fields['cwd']}")
             fields["cwd"] = str(cwd)
+        if "default_effort" in fields and fields["default_effort"] is not None:
+            _validate_default("default_effort", fields["default_effort"])
+        if "default_autonomy" in fields and fields["default_autonomy"] is not None:
+            _validate_default("default_autonomy", fields["default_autonomy"])
         try:
             p = projects.update(pid, fields)
         except ValidationError:

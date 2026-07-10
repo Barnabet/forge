@@ -86,6 +86,27 @@ def test_patch_cwd_validated_and_expanded(client, tmp_path):
     assert p3["cwd"] == str(Path.home())
 
 
+def test_create_project_rejects_bogus_default_effort(client, tmp_path):
+    work = tmp_path / "proj"
+    work.mkdir()
+    r = client.post("/api/projects", json={
+        "name": "n", "cwd": str(work), "default_effort": "turbo"})
+    assert r.status_code == 400
+    # nothing persisted
+    assert client.get("/api/projects").json() == []
+
+
+def test_update_project_rejects_bogus_default_autonomy(client, tmp_path):
+    work = tmp_path / "proj"
+    work.mkdir()
+    p = client.post("/api/projects", json={"name": "n", "cwd": str(work)}).json()
+    r = client.patch(f"/api/projects/{p['id']}", json={
+        "default_effort": "maximal", "default_autonomy": "banana"})
+    assert r.status_code == 400
+    # unchanged on disk and in memory
+    assert client.get("/api/projects").json() == [p]
+
+
 def test_recent_dirs_distinct_most_recent_first(client, tmp_path):
     a, b = tmp_path / "a", tmp_path / "b"
     a.mkdir()

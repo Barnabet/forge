@@ -260,6 +260,26 @@ def test_set_effort_and_llm_receives_it(make_client):
         assert llm.efforts == ["default", "high"]
 
 
+def test_create_session_rejects_bogus_effort_400_not_500(make_client):
+    client = make_client()
+    with client:
+        r = client.post("/api/sessions", json={"effort": "turbo"})
+        assert r.status_code == 400
+        assert client.get("/api/sessions").json() == []
+
+
+def test_create_session_recovers_from_poisoned_project(tmp_path):
+    # Simulate legacy bad data: hand-write projects.json with an invalid default.
+    import json as _json
+    (tmp_path / "projects.json").write_text(_json.dumps([{
+        "id": "poison01", "name": "legacy", "cwd": str(tmp_path),
+        "default_model": "", "default_autonomy": "", "default_effort": "turbo"}]))
+    with TestClient(create_app(tmp_path, load_config(tmp_path), FakeLLM([]))) as client:
+        r = client.post("/api/sessions", json={"project_id": "poison01"})
+        assert r.status_code == 400  # recovery path: 400, not a 500 crash
+        assert client.get("/api/sessions").json() == []
+
+
 def test_effort_validation_and_replay(tmp_path):
     config = load_config(tmp_path)
     with TestClient(create_app(tmp_path, config, FakeLLM([]))) as client:
