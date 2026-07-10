@@ -27,5 +27,9 @@ class SetAutonomy(BaseModel):
     autonomy: str
 
 
+class SetModel(BaseModel):
+    model: str
+
+
 class RenameSession(BaseModel):
     name: str

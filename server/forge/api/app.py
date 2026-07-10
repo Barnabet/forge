@@ -7,11 +7,12 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from urllib.parse import urlparse
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.staticfiles import StaticFiles
 
 from forge.api.schemas import (
     CreateSession, PostMessage, RenameSession, ResolveApproval, SetAutonomy,
+    SetModel,
 )
 from forge.engine.bus import EventBus
 from forge.engine.manager import SessionManager
@@ -72,6 +73,13 @@ def create_app(home: Path, config: ForgeConfig, llm: LLMClient) -> FastAPI:
     @app.post("/api/sessions/{sid}/autonomy")
     async def set_autonomy(sid: str, body: SetAutonomy):
         manager.get(sid).set_autonomy(body.autonomy)
+        return {}
+
+    @app.post("/api/sessions/{sid}/model")
+    async def set_model(sid: str, body: SetModel):
+        if body.model not in {m.id for m in config.models}:
+            raise HTTPException(400, f"unknown model: {body.model}")
+        manager.get(sid).set_model(body.model)
         return {}
 
     @app.patch("/api/sessions/{sid}")

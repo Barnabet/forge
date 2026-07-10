@@ -51,6 +51,11 @@ class AutonomyChanged(BaseEvent):
     autonomy: Autonomy
 
 
+class ModelChanged(BaseEvent):
+    type: Literal["model_changed"] = "model_changed"
+    model: str
+
+
 class UserMessage(BaseEvent):
     type: Literal["user_message"] = "user_message"
     text: str
@@ -119,7 +124,7 @@ class ErrorEvent(BaseEvent):
 Event = Annotated[
     Union[
         SessionCreated, SessionRenamed, StatusChanged, AutonomyChanged,
-        UserMessage, AssistantMessage, ToolCallStarted, ToolCallFinished,
+        ModelChanged, UserMessage, AssistantMessage, ToolCallStarted, ToolCallFinished,
         ApprovalRequested, ApprovalResolved, PolicyAdded, ContextCompacted,
         RunFinished, ErrorEvent,
     ],

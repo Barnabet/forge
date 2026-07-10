@@ -11,8 +11,8 @@ from pydantic import BaseModel
 from forge.engine.bus import EventBus
 from forge.engine.events import (
     ApprovalRequested, ApprovalResolved, AssistantMessage, Autonomy,
-    AutonomyChanged, ContextCompacted, ErrorEvent, OutputChunk, PolicyAdded,
-    RunFinished, SessionRenamed, Status, StatusChanged, TextDelta,
+    AutonomyChanged, ContextCompacted, ErrorEvent, ModelChanged, OutputChunk,
+    PolicyAdded, RunFinished, SessionRenamed, Status, StatusChanged, TextDelta,
     ToolCallFinished, ToolCallSpec, ToolCallStarted, UserMessage,
 )
 from forge.engine.projection import dangling_call_ids, to_messages
@@ -85,6 +85,10 @@ class SessionActor:
     def set_autonomy(self, autonomy: Autonomy) -> None:
         self.meta.autonomy = autonomy
         self.emit(self._e(AutonomyChanged, autonomy=autonomy))
+
+    def set_model(self, model: str) -> None:
+        self.meta.model = model
+        self.emit(self._e(ModelChanged, model=model))
 
     def cancel(self) -> None:
         if self.run_task and not self.run_task.done():

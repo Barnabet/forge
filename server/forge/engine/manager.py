@@ -88,6 +88,8 @@ class SessionManager:
                 meta.name = e.name
             elif meta and e.type == "autonomy_changed":
                 meta.autonomy = e.autonomy
+            elif meta and e.type == "model_changed":
+                meta.model = e.model
         if meta:
             meta.status = "idle"
         return meta
