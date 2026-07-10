@@ -1,13 +1,13 @@
 import type {
   Changeset, Event, OutputChunk, Project, SessionDeleted, SessionMeta, TextDelta,
-  ToolCallPending,
+  Todo, ToolCallPending,
 } from './generated'
 
 export type DurableEvent = Event
 export type WireEvent = Event | TextDelta | OutputChunk | SessionDeleted | ToolCallPending
 export type {
   Changeset, OutputChunk, Project, SessionDeleted, SessionMeta, TextDelta,
-  ToolCallPending,
+  Todo, ToolCallPending,
 }
 
 // Pydantic defaults make autonomy/status optional in the generated SessionMeta;
@@ -15,6 +15,8 @@ export type {
 export type Autonomy = NonNullable<SessionMeta['autonomy']>
 export type Status = NonNullable<SessionMeta['status']>
 export type Effort = NonNullable<SessionMeta['effort']>
+export type Mode = NonNullable<SessionMeta['mode']>
+export type TodoStatus = NonNullable<Todo['status']>
 
 export interface DiffStats {
   path: string

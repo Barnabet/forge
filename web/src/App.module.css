@@ -16,6 +16,10 @@
   display: flex; flex-direction: column;
   min-width: 0;
 }
+
+/* empty when there are no todos (the strip renders null): zero height */
+.todoSlot { flex: none; padding: 0 24px; }
+.todoSlot:has(> *) { padding-top: 8px; }
 .connBanner {
   text-align: center;
   font-size: 11px;

@@ -19,6 +19,7 @@ describe('protocol', () => {
       'policy_added', 'context_compacted', 'run_finished', 'error',
       'text_delta', 'output_chunk',
       'session_archived', 'session_unarchived', 'effort_changed', 'session_deleted',
+      'mode_changed', 'plan_proposed', 'plan_resolved', 'todos_updated',
     ]) expect(src).toContain(`"${t}"`)
   })
 

@@ -337,3 +337,81 @@ describe('reducer: pending tool calls (live stream announcements)', () => {
     expect(s2.items.map(i => i.kind)).toEqual(['info'])
   })
 })
+
+describe('reducer: plan mode & todos (v1.2)', () => {
+  it('mode_changed updates mode', () => {
+    seq = 0
+    const s = run([ev('mode_changed', { mode: 'plan' })])
+    expect(s.mode).toBe('plan')
+    expect(s.items).toHaveLength(0)
+  })
+
+  it('todos_updated replaces the snapshot wholesale', () => {
+    seq = 0
+    const s = run([
+      ev('todos_updated', { todos: [{ text: 'a', status: 'in_progress' }] }),
+      ev('todos_updated', { todos: [
+        { text: 'a', status: 'completed' }, { text: 'b', status: 'pending' }] }),
+    ])
+    expect(s.todos).toEqual([
+      { text: 'a', status: 'completed' }, { text: 'b', status: 'pending' }])
+  })
+
+  it('plan_proposed pushes a pending card, replacing the pending tool line', () => {
+    seq = 0
+    const s = run([
+      eph('tool_call_pending', { call_id: 'p1', tool: 'propose_plan' }),
+      ev('plan_proposed', { call_id: 'p1', plan: '# Plan' }),
+    ])
+    expect(s.items).toHaveLength(1)
+    expect(s.items[0]).toMatchObject({ kind: 'plan', callId: 'p1', plan: '# Plan', state: 'pending' })
+  })
+
+  it('approve marks the card approved and swallows the tool result', () => {
+    seq = 0
+    const s = run([
+      ev('plan_proposed', { call_id: 'p1', plan: '# Plan' }),
+      ev('plan_resolved', { call_id: 'p1', decision: 'approve' }),
+      ev('mode_changed', { mode: 'act' }),
+      ev('tool_call_finished', { call_id: 'p1', tool: 'propose_plan', output: 'Plan approved.' }),
+    ])
+    expect(s.items).toHaveLength(1)
+    expect(s.items[0]).toMatchObject({ kind: 'plan', state: 'approved' })
+    expect(s.mode).toBe('act')
+  })
+
+  it('revise keeps the card with feedback; a new proposal adds a fresh card', () => {
+    seq = 0
+    const s = run([
+      ev('plan_proposed', { call_id: 'p1', plan: 'v1' }),
+      ev('plan_resolved', { call_id: 'p1', decision: 'revise', feedback: 'more tests' }),
+      ev('tool_call_finished', { call_id: 'p1', tool: 'propose_plan', output: 'User requested changes' }),
+      ev('plan_proposed', { call_id: 'p2', plan: 'v2' }),
+    ])
+    expect(s.items).toHaveLength(2)
+    expect(s.items[0]).toMatchObject({ kind: 'plan', state: 'revising', feedback: 'more tests' })
+    expect(s.items[1]).toMatchObject({ kind: 'plan', callId: 'p2', state: 'pending' })
+  })
+
+  it('a dangling close removes a still-pending card and keeps the error line', () => {
+    seq = 0
+    const s = run([
+      ev('plan_proposed', { call_id: 'p1', plan: 'v1' }),
+      ev('tool_call_finished', {
+        call_id: 'p1', tool: 'propose_plan',
+        output: '[Cancelled by user — no result]', is_error: true }),
+    ])
+    expect(s.items.filter(it => it.kind === 'plan')).toHaveLength(0)
+    expect(s.items).toHaveLength(1)
+    expect(s.items[0]).toMatchObject({ kind: 'tool', status: 'error' })
+  })
+
+  it('session meta seeds are overridden by later events on replay', () => {
+    seq = 0
+    const s = run([
+      ev('mode_changed', { mode: 'plan' }),
+      ev('mode_changed', { mode: 'act' }),
+    ])
+    expect(s.mode).toBe('act')
+  })
+})

@@ -1,0 +1,82 @@
+.card {
+  background: var(--bg-raised-1);
+  border: 1px solid var(--hair-4);
+  border-radius: var(--r-card);
+  overflow: hidden;
+}
+.card[data-state='pending'] {
+  border-color: rgba(229, 184, 75, 0.25);
+  box-shadow: 0 0 24px rgba(229, 184, 75, 0.06);
+}
+.card[data-state='revising'] { opacity: 0.75; }
+
+.header {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; text-align: left;
+  padding: 11px 14px;
+}
+.header:disabled { cursor: default; }
+
+.label {
+  font-family: var(--font-mono); font-size: 10.5px;
+  letter-spacing: 0.08em; color: var(--text-ghost);
+}
+
+.badge {
+  font-size: 11px; padding: 2px 8px;
+  border-radius: var(--r-btn-lg);
+}
+.badge[data-state='pending'] { color: var(--warn-title); background: rgba(229, 184, 75, 0.12); }
+.badge[data-state='approved'] { color: var(--accent); background: color-mix(in oklab, var(--accent) 12%, transparent); }
+.badge[data-state='revising'] { color: var(--text-secondary); background: rgba(255, 255, 255, 0.06); }
+
+.chevron { margin-left: auto; color: var(--text-ghost); font-size: 11px; }
+
+.body {
+  padding: 0 16px 12px;
+  font-size: 13px; line-height: 1.6; color: var(--text-body);
+  max-height: 420px; overflow-y: auto;
+}
+.body :is(h1, h2, h3) { font-size: 13.5px; margin: 12px 0 6px; }
+.body code { font-family: var(--font-mono); font-size: 12px; }
+
+.feedbackNote {
+  padding: 8px 16px 12px;
+  font-size: 12px; color: var(--text-secondary);
+  font-style: italic;
+}
+
+.actions {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--hair-2);
+}
+
+.approve {
+  background: var(--accent); color: var(--ink);
+  font-size: 12px; font-weight: 600;
+  border-radius: var(--r-btn-lg);
+  padding: 6px 14px;
+  box-shadow: 0 4px 14px color-mix(in oklab, var(--accent) 30%, transparent),
+              inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.ghost {
+  border: 1px solid var(--hair-5);
+  color: var(--text-secondary);
+  font-size: 12px;
+  border-radius: var(--r-btn-lg);
+  padding: 6px 12px;
+}
+.ghost:hover { border-color: var(--hair-hover); }
+
+.reviseRow { display: flex; gap: 8px; flex: 1; align-items: flex-start; }
+.reviseInput {
+  flex: 1; resize: none; min-height: 34px;
+  background: var(--bg-card);
+  border: 1px solid var(--hair-4);
+  border-radius: var(--r-btn-lg);
+  color: var(--text-body);
+  font-size: 12.5px; padding: 7px 10px;
+}
+.reviseInput:focus { outline: none; border-color: var(--hair-hover); }

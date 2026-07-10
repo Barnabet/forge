@@ -42,6 +42,7 @@ export default function Composer() {
 
   const archived = stream?.archived ?? false
   const effortPart = stream && stream.effort !== 'default' ? `${stream.effort} · ` : ''
+  const planMode = stream?.mode === 'plan'
 
   const usage = stream?.usageTokens ?? 0
   const ctxWindow = models.find(m => m.id === stream?.model)?.context_window ?? 0
@@ -80,6 +81,7 @@ export default function Composer() {
       <div
         className={s.card}
         data-dragover={dragOver || undefined}
+        data-plan={planMode || undefined}
         onDragOver={e => {
           if (archived || ![...e.dataTransfer.items].some(i => i.kind === 'file')) return
           e.preventDefault()
@@ -163,6 +165,7 @@ export default function Composer() {
             title={healthy ? undefined : 'CLIProxyAPI unreachable'}
           >
             {!healthy && <span className={s.healthDot} />}
+            {planMode && <span className={s.planTag}>plan · </span>}
             {modelName} · {effortPart}{stream?.autonomy ?? 'yolo'}
           </span>
           <button

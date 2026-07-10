@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import ChatStream from './components/ChatStream'
 import Composer from './components/Composer'
+import TodoStrip from './components/TodoStrip'
 import DetailDrawer from './components/DetailDrawer'
 import NewProjectDialog from './components/NewProjectDialog'
 import NewSessionDialog from './components/NewSessionDialog'
@@ -53,6 +54,7 @@ export default function App() {
             <>
               <div className={s.chatCol}>
                 <ChatStream />
+                <div className={s.todoSlot}><TodoStrip /></div>
                 <Composer />
               </div>
               <DetailDrawer />

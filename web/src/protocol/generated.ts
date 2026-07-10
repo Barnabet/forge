@@ -19,7 +19,11 @@ export type Event =
   | ErrorEvent
   | SessionArchived
   | SessionUnarchived
-  | EffortChanged;
+  | EffortChanged
+  | ModeChanged
+  | PlanProposed
+  | PlanResolved
+  | TodosUpdated;
 
 export interface SessionCreated {
   seq?: number;
@@ -178,6 +182,41 @@ export interface EffortChanged {
   type?: "effort_changed";
   effort: "default" | "low" | "medium" | "high";
 }
+export interface ModeChanged {
+  seq?: number;
+  session_id: string;
+  ts: number;
+  type?: "mode_changed";
+  mode: "act" | "plan";
+}
+export interface PlanProposed {
+  seq?: number;
+  session_id: string;
+  ts: number;
+  type?: "plan_proposed";
+  call_id: string;
+  plan: string;
+}
+export interface PlanResolved {
+  seq?: number;
+  session_id: string;
+  ts: number;
+  type?: "plan_resolved";
+  call_id: string;
+  decision: "approve" | "revise";
+  feedback?: string;
+}
+export interface TodosUpdated {
+  seq?: number;
+  session_id: string;
+  ts: number;
+  type?: "todos_updated";
+  todos: Todo[];
+}
+export interface Todo {
+  text: string;
+  status?: "pending" | "in_progress" | "completed";
+}
 
 export interface TextDelta {
   seq?: number;
@@ -223,6 +262,7 @@ export interface SessionMeta {
   project_id?: string | null;
   archived?: boolean;
   effort?: "default" | "low" | "medium" | "high";
+  mode?: "act" | "plan";
 }
 
 export interface Changeset {

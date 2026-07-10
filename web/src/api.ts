@@ -1,5 +1,5 @@
 import type {
-  Autonomy, Changeset, Effort, ModelInfo, Project, SessionMeta, WireEvent,
+  Autonomy, Changeset, Effort, Mode, ModelInfo, Project, SessionMeta, WireEvent,
 } from './protocol'
 
 export class ApiError extends Error {
@@ -77,4 +77,8 @@ export const api = {
     del<object>(`/api/sessions/${sid}`).then(() => undefined),
   setEffort: (sid: string, effort: Effort) =>
     post<object>(`/api/sessions/${sid}/effort`, { effort }).then(() => undefined),
+  setMode: (sid: string, mode: Mode) =>
+    post<object>(`/api/sessions/${sid}/mode`, { mode }).then(() => undefined),
+  resolvePlan: (sid: string, callId: string, decision: 'approve' | 'revise', feedback = '') =>
+    post<object>(`/api/sessions/${sid}/plan/${callId}`, { decision, feedback }).then(() => undefined),
 }

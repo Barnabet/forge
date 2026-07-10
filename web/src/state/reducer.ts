@@ -1,4 +1,9 @@
-import { seqOf, type Autonomy, type DiffStats, type Effort, type Status, type WireEvent } from '../protocol'
+import { seqOf, type Autonomy, type DiffStats, type Effort, type Mode, type Status, type TodoStatus, type WireEvent } from '../protocol'
+
+export interface TodoItem {
+  text: string
+  status: TodoStatus
+}
 
 export type StreamItem =
   | { kind: 'user'; seq: number; text: string; images: string[] }
@@ -10,12 +15,15 @@ export type StreamItem =
       // by tool_call_started (or a gate) and pruned if the turn drops it.
       pending?: boolean }
   | { kind: 'gate'; seq: number; callId: string; tool: string; display: string; denied: boolean }
+  | { kind: 'plan'; seq: number; callId: string; plan: string;
+      state: 'pending' | 'approved' | 'revising'; feedback: string }
   | { kind: 'error'; seq: number; message: string }
   | { kind: 'info'; seq: number; text: string }
   | { kind: 'compacted'; seq: number }
 
 type ToolItem = Extract<StreamItem, { kind: 'tool' }>
 type GateItem = Extract<StreamItem, { kind: 'gate' }>
+type PlanItem = Extract<StreamItem, { kind: 'plan' }>
 
 export interface SessionStream {
   lastSeq: number
@@ -29,6 +37,8 @@ export interface SessionStream {
   projectId: string | null
   archived: boolean
   effort: Effort
+  mode: Mode
+  todos: TodoItem[]
   usageTokens: number
 }
 
@@ -36,7 +46,8 @@ export function emptyStream(): SessionStream {
   return {
     lastSeq: 0, items: [], name: 'New session', cwd: '', model: '',
     autonomy: 'yolo', status: 'idle', steps: 0,
-    projectId: null, archived: false, effort: 'default', usageTokens: 0,
+    projectId: null, archived: false, effort: 'default',
+    mode: 'act', todos: [], usageTokens: 0,
   }
 }
 
@@ -70,6 +81,34 @@ export function reduce(s: SessionStream, e: WireEvent): SessionStream {
     case 'effort_changed':
       n.effort = e.effort
       break
+    case 'mode_changed':
+      n.mode = e.mode
+      break
+    case 'todos_updated':
+      n.todos = e.todos.map(t => ({ text: t.text, status: t.status ?? 'pending' }))
+      break
+
+    case 'plan_proposed': {
+      // The plan card takes over the pending tool line's story (like a gate).
+      const i = n.items.findLastIndex(
+        it => it.kind === 'tool' && it.callId === e.call_id && it.pending)
+      if (i >= 0) n.items.splice(i, 1)
+      n.items.push({ kind: 'plan', seq, callId: e.call_id, plan: e.plan,
+                     state: 'pending', feedback: '' })
+      break
+    }
+
+    case 'plan_resolved': {
+      const i = n.items.findLastIndex(it => it.kind === 'plan' && it.callId === e.call_id)
+      if (i >= 0) {
+        n.items[i] = {
+          ...(n.items[i] as PlanItem),
+          state: e.decision === 'approve' ? 'approved' : 'revising',
+          feedback: e.feedback ?? '',
+        }
+      }
+      break
+    }
     case 'session_deleted':
       break // the store intercepts this in applyEvent; never reduced into a stream
     case 'session_renamed':
@@ -155,6 +194,15 @@ export function reduce(s: SessionStream, e: WireEvent): SessionStream {
 
     case 'tool_call_finished': {
       const status = (e.is_error ?? false) ? 'error' as const : 'done' as const
+      // propose_plan results: the plan card already tells the story. A dangling
+      // close (cancel/restart while gated) removes a still-pending card and
+      // falls through to the error tool line.
+      const p = n.items.findLastIndex(it => it.kind === 'plan' && it.callId === e.call_id)
+      if (p >= 0) {
+        if (status !== 'error') break
+        if ((n.items[p] as PlanItem).state === 'pending') n.items.splice(p, 1)
+        else break
+      }
       const i = n.items.findLastIndex(it => it.kind === 'tool' && it.callId === e.call_id)
       if (i >= 0) {
         n.items[i] = {

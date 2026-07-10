@@ -7,7 +7,7 @@ from pydantic import TypeAdapter
 
 from forge.engine.actor import SessionMeta
 from forge.engine.events import (
-    Event, OutputChunk, SessionDeleted, TextDelta, Todo, ToolCallPending,
+    Event, OutputChunk, SessionDeleted, TextDelta, ToolCallPending,
 )
 from forge.store.changesets import Changeset
 from forge.store.projects import Project
@@ -22,6 +22,5 @@ if __name__ == "__main__":
         "session_meta": SessionMeta.model_json_schema(),
         "changeset": Changeset.model_json_schema(),
         "project": Project.model_json_schema(),
-        "todo": Todo.model_json_schema(),
     }
     print(json.dumps(bundle, indent=2))

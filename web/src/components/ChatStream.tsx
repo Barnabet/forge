@@ -4,6 +4,7 @@ import { api } from '../api'
 import { useForge } from '../state/store'
 import { familyOf, segmentItems } from '../lib/toolActivity'
 import ApprovalGate from './ApprovalGate'
+import PlanCard from './PlanCard'
 import ToolActivity from './ToolActivity'
 import s from './ChatStream.module.css'
 
@@ -106,6 +107,15 @@ export default function ChatStream() {
                   item={item}
                   onResolve={(decision, always) =>
                     void api.resolveApproval(session.id, item.callId, decision, always)}
+                />
+              )
+            case 'plan':
+              return (
+                <PlanCard
+                  key={key}
+                  item={item}
+                  onResolve={(decision, feedback) =>
+                    void api.resolvePlan(session.id, item.callId, decision, feedback)}
                 />
               )
             case 'error':

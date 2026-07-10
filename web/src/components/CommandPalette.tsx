@@ -8,6 +8,7 @@ const COMMANDS = [
   { cmd: 'model', hint: 'switch model' },
   { cmd: 'autonomy', hint: 'yolo / guarded' },
   { cmd: 'effort', hint: 'reasoning effort' },
+  { cmd: 'mode', hint: 'act / plan' },
   { cmd: 'compact', hint: 'compact context now' },
   { cmd: 'cancel', hint: 'stop the current run' },
 ]
@@ -19,7 +20,7 @@ export default function CommandPalette({
   query: string
   onClose(): void
 }) {
-  const [step, setStep] = useState<'root' | 'model' | 'autonomy' | 'effort'>('root')
+  const [step, setStep] = useState<'root' | 'model' | 'autonomy' | 'effort' | 'mode'>('root')
   const [error, setError] = useState<string | null>(null)
   const activeId = useForge(st => st.activeId)
   const models = useForge(st => st.models)
@@ -46,6 +47,7 @@ export default function CommandPalette({
       case 'model': return setStep('model')
       case 'autonomy': return setStep('autonomy')
       case 'effort': return setStep('effort')
+      case 'mode': return setStep('mode')
       case 'compact': return void run(() => api.compact(activeId!))
       case 'cancel': return void run(() => api.cancel(activeId!))
     }
@@ -81,6 +83,16 @@ export default function CommandPalette({
           <button key={lvl} className={s.row}
                   onClick={() => void run(() => api.setEffort(activeId!, lvl))}>
             {lvl}
+          </button>
+        ))}
+      {step === 'mode' &&
+        (['act', 'plan'] as const).map(m => (
+          <button key={m} className={s.row}
+                  onClick={() => void run(() => api.setMode(activeId!, m))}>
+            {m}
+            <span className={s.hint}>
+              {m === 'plan' ? 'read-only until you approve a plan' : 'execute directly'}
+            </span>
           </button>
         ))}
     </div>

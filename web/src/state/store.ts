@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { api } from '../api'
-import type { Changeset, Effort, ModelInfo, Project, SessionMeta, WireEvent } from '../protocol'
+import type { Changeset, Effort, Mode, ModelInfo, Project, SessionMeta, WireEvent } from '../protocol'
 import { emptyStream, reduce, type SessionStream } from './reducer'
 
 export interface DrawerState {
@@ -37,6 +37,7 @@ function seedFromMeta(state: SessionState, meta: SessionMeta): SessionState {
       projectId: meta.project_id ?? state.stream.projectId,
       archived: meta.archived ?? state.stream.archived,
       effort: meta.effort ?? state.stream.effort,
+      mode: meta.mode ?? state.stream.mode,
     },
   }
 }
@@ -73,6 +74,7 @@ export interface ForgeState {
   unarchiveSession(sid: string): Promise<void>
   deleteSession(sid: string): Promise<void>
   setEffort(effort: Effort): Promise<void>
+  setMode(mode: Mode): Promise<void>
   newSessionInProject(pid: string): Promise<void>
   newAdhocSession(body: { cwd: string; model?: string; autonomy?: string; effort?: string }): Promise<void>
 }
@@ -266,6 +268,11 @@ export const useForge = create<ForgeState>()((set, get) => {
     setEffort: async effort => {
       const a = active()
       if (a) await api.setEffort(a.id, effort)
+    },
+
+    setMode: async mode => {
+      const a = active()
+      if (a) await api.setMode(a.id, mode)
     },
 
     newSessionInProject: async pid => {
