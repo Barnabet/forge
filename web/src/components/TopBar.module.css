@@ -17,37 +17,6 @@
 }
 .name { font-size: 13.5px; font-weight: 600; letter-spacing: -0.01em; }
 
-.tabs {
-  display: flex; align-items: center;
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: var(--r-seg);
-  padding: 3px;
-}
-.tab, .tabActive {
-  display: flex; align-items: center; gap: 7px;
-  padding: 5px 12px;
-  font-size: 12px; font-weight: 500;
-  border-radius: var(--r-btn);
-  border: 1px solid transparent;
-  color: var(--text-secondary);
-  max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.tabActive {
-  background: var(--bg-raised-1);
-  border-color: var(--hair-4);
-  color: var(--text-primary);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-}
-.tab:hover { border-color: var(--hair-hover); }
-
-.dot { width: 6px; height: 6px; border-radius: 50%; flex: none; }
-.dot[data-state='active'] { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
-.dot[data-state='busy'] { background: var(--warn-dot); }
-.dot[data-state='idle'] { background: #3d3d47; }
-
-.plus { color: var(--text-faint); padding: 5px 10px; font-size: 13px; }
-.plus:hover { color: var(--text-secondary); }
-
 .right { margin-left: auto; display: flex; align-items: center; gap: 14px; }
 .queuePill {
   display: flex; align-items: center; gap: 6px;

@@ -2,6 +2,9 @@ import { useEffect } from 'react'
 import ChatStream from './components/ChatStream'
 import Composer from './components/Composer'
 import DetailDrawer from './components/DetailDrawer'
+import NewProjectDialog from './components/NewProjectDialog'
+import NewSessionDialog from './components/NewSessionDialog'
+import Sidebar from './components/Sidebar'
 import TopBar from './components/TopBar'
 import { cursors, useForge } from './state/store'
 import { startWs } from './ws'
@@ -35,20 +38,31 @@ export default function App() {
   }, [])
 
   const connection = useForge(st => st.connection)
+  const activeId = useForge(st => st.activeId)
+  const dialog = useForge(st => st.dialog)
 
   return (
     <div className={s.frame}>
-      <TopBar />
-      {connection !== 'open' && (
-        <div className={s.connBanner}>reconnecting…</div>
-      )}
-      <div className={s.main}>
-        <div className={s.chatCol}>
-          <ChatStream />
-          <Composer />
+      <Sidebar />
+      <div className={s.rightCol}>
+        <TopBar />
+        {connection !== 'open' && <div className={s.connBanner}>reconnecting…</div>}
+        <div className={s.main}>
+          {activeId ? (
+            <>
+              <div className={s.chatCol}>
+                <ChatStream />
+                <Composer />
+              </div>
+              <DetailDrawer />
+            </>
+          ) : (
+            <div className={s.empty}>No session — create one from the sidebar</div>
+          )}
         </div>
-        <DetailDrawer />
       </div>
+      {dialog === 'new-session' && <NewSessionDialog />}
+      {dialog === 'new-project' && <NewProjectDialog />}
     </div>
   )
 }

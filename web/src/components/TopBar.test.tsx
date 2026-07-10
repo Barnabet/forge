@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import { useForge } from '../state/store'
 import type { WireEvent } from '../protocol'
 import TopBar from './TopBar'
@@ -17,18 +16,6 @@ beforeEach(() => {
 })
 
 describe('TopBar', () => {
-  it('renders a tab per session, active first', () => {
-    render(<TopBar />)
-    expect(screen.getByRole('tab', { name: /fix the bug/ })).toHaveAttribute('aria-selected', 'true')
-    expect(screen.getByRole('tab', { name: /write docs/ })).toHaveAttribute('aria-selected', 'false')
-  })
-
-  it('clicking a tab switches the active session', async () => {
-    render(<TopBar />)
-    await userEvent.click(screen.getByRole('tab', { name: /write docs/ }))
-    expect(useForge.getState().activeId).toBe('bb')
-  })
-
   it('shows the queue pill count and the active cwd abbreviated', () => {
     render(<TopBar />)
     expect(screen.getByText('1 queued')).toBeInTheDocument()
@@ -39,5 +26,10 @@ describe('TopBar', () => {
     useForge.getState().applyEvent(ev('status_changed', 'bb', 3, { status: 'idle' }))
     render(<TopBar />)
     expect(screen.queryByText(/queued/)).not.toBeInTheDocument()
+  })
+
+  it('renders no session tabs', () => {
+    render(<TopBar />)
+    expect(screen.queryAllByRole('tab')).toHaveLength(0)
   })
 })

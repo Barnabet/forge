@@ -1,7 +1,10 @@
 .frame {
   height: 100%;
-  display: flex;
-  flex-direction: column;
+  display: flex;            /* row: sidebar + right column */
+}
+.rightCol {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column;
 }
 .main {
   flex: 1;
@@ -10,8 +13,7 @@
 }
 .chatCol {
   flex: 1;
-  display: flex;
-  flex-direction: column;
+  display: flex; flex-direction: column;
   min-width: 0;
 }
 .connBanner {
@@ -20,4 +22,9 @@
   color: var(--warn);
   background: rgba(229, 184, 75, 0.08);
   padding: 3px;
+}
+.empty {
+  flex: 1;
+  display: grid; place-items: center;
+  font-size: 12.5px; color: var(--text-ghost);
 }

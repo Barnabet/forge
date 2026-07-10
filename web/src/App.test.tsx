@@ -30,7 +30,12 @@ describe('App', () => {
   it('boots: hydrates, opens the websocket, renders the frame', async () => {
     render(<App />)
     expect(await screen.findByText('Forge')).toBeInTheDocument()          // brand
-    expect(screen.getByPlaceholderText('Reply, steer, or queue another task…')).toBeInTheDocument()
+    // Seed a session so the chat column (and its composer) mounts.
+    useForge.getState().applyEvent({
+      type: 'session_created', session_id: 'aa', seq: 1, ts: 0,
+      name: 'hello world', cwd: '/w', model: 'm', autonomy: 'yolo',
+    } as never)
+    expect(await screen.findByPlaceholderText('Reply, steer, or queue another task…')).toBeInTheDocument()
     expect(FakeWebSocket.instances.length).toBeGreaterThan(0)
     expect(FakeWebSocket.instances[0].url).toMatch(/\/ws$/)
   })
@@ -70,6 +75,12 @@ describe('App', () => {
       type: 'session_created', session_id: 'aa', seq: 1, ts: 0,
       name: 'hello world', cwd: '/w', model: 'm', autonomy: 'yolo',
     } as never)
-    expect(await screen.findByRole('tab', { name: /hello world/ })).toBeInTheDocument()
+    expect(await screen.findByText('hello world')).toBeInTheDocument()  // sidebar row
+  })
+
+  it('shows the empty state when no session exists', async () => {
+    render(<App />)
+    expect(await screen.findByText(/No session — create one from the sidebar/)).toBeInTheDocument()
+    expect(screen.queryByPlaceholderText('Reply, steer, or queue another task…')).not.toBeInTheDocument()
   })
 })
