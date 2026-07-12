@@ -19,13 +19,13 @@
    The brand ember flame — same indicator as ChatStream's status line. */
 .pulse {
   position: absolute;
-  left: -30px;
+  left: -36px;
   top: 50%;
-  margin-top: -12px;
-  width: 24px; height: 24px;
+  margin-top: -16px;
+  width: 32px; height: 32px;
 }
 /* Indented lines inside an expanded group: keep the sparks in the gutter. */
-.line[data-indent] .pulse { left: -48px; }
+.line[data-indent] .pulse { left: -54px; }
 
 .verb { flex: none; }
 
