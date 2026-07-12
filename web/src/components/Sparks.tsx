@@ -20,7 +20,9 @@ export function Sparks({ className }: { className?: string }) {
   return (
     <svg
       className={className ? `${s.sparks} ${className}` : s.sparks}
-      viewBox="0 0 24 24"
+      // Framed tightly around the animated spark spread (bbox center ≈ 8.5,12.9
+      // in the 0–24 draw space) so box-centering in the gutter lands it right.
+      viewBox="2 6.5 13 13"
       aria-hidden="true"
       focusable="false"
     >
