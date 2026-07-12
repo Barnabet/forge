@@ -10,6 +10,7 @@ import { useLightbox } from './Lightbox'
 import PlanCard from './PlanCard'
 import ToolActivity from './ToolActivity'
 import TodoStrip from './TodoStrip'
+import { Sparks } from './Sparks'
 import s from './ChatStream.module.css'
 
 // Module-level so the array identity is stable across renders.
@@ -287,9 +288,10 @@ export default function ChatStream() {
               )
             }
             case 'prose':
-              // data-live puts the gutter spinner on the line being written
+              // data-live puts the gutter sparks on the line being written
               return (
                 <div key={key} className={s.prose} data-live={item.streaming || undefined}>
+                  {item.streaming && <Sparks className={s.proseSparks} />}
                   <Markdown remarkPlugins={gfmPlugins}>{item.text}</Markdown>
                 </div>
               )
@@ -330,7 +332,7 @@ export default function ChatStream() {
               <CompactionProgress phase={compactionPhase} label={compactionLabel} />
             ) : statusText && (
               <>
-                <span className={s.spinner} aria-hidden="true" />
+                <Sparks className={s.spinner} />
                 <span data-thinking={thinking || undefined}>{statusText}</span>
                 {thinking && thinkingSince !== null && <ThinkingTimer since={thinkingSince} />}
               </>

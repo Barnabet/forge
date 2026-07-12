@@ -3,6 +3,9 @@
   --accent: #35e0c2;
   --ink: color-mix(in oklab, var(--accent) 20%, #050505);
 
+  /* brand ember — the "working" sparks (matches the logo) */
+  --spark: #ff7a18;
+
   /* backgrounds */
   --bg-app: #0a0a0c;
   --bg-bar: linear-gradient(180deg, #0e0e11, #0b0b0d);

@@ -87,19 +87,14 @@
   line-height: 1.65;
   color: var(--text-primary);
 }
-/* Streaming prose carries the gutter spinner on its last line — the spinner
-   "follows" the line being written. */
+/* Streaming prose carries the gutter sparks on its last line — the sparks
+   "follow" the line being written. */
 .prose[data-live] { position: relative; }
-.prose[data-live]::after {
-  content: '';
+.proseSparks {
   position: absolute;
-  left: -24px;
-  bottom: 5px;
-  width: 12px; height: 12px;
-  border: 1.5px solid var(--hair-2);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  left: -30px;
+  bottom: -2px;
+  width: 24px; height: 24px;
 }
 .prose :global(p + p) { margin-top: 8px; }
 .prose :global(h1), .prose :global(h2), .prose :global(h3),
@@ -216,30 +211,21 @@
     animation: pulse 1.2s ease-in-out infinite;
     transform: none;
   }
-}
-
-.spinner {
-  position: absolute; /* gutter: left of the text margin */
-  left: -24px;
-  top: 50%;
-  margin-top: -6px;
-  width: 12px; height: 12px;
-  border: 1.5px solid var(--hair-2);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) {
-  .spinner, .prose[data-live]::after {
-    animation: pulse 1.2s ease-in-out infinite;
-    border-color: var(--accent);
-  }
-  .statusLine [data-thinking] { animation: none; }
   @keyframes pulse {
     0%, 100% { opacity: 0.3; }
     50% { opacity: 1; }
   }
+}
+
+.spinner {
+  position: absolute; /* gutter: left of the text margin */
+  left: -30px;
+  top: 50%;
+  margin-top: -12px;
+  width: 24px; height: 24px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .statusLine [data-thinking] { animation: none; }
 }
 
 .userActions {

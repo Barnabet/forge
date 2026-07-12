@@ -3,6 +3,7 @@ import { parseUnifiedDiff } from '../lib/diff'
 import { familyOf, groupLabel, groupState, relDisplay, toolVerb, type ToolItem } from '../lib/toolActivity'
 import { useForge } from '../state/store'
 import { useLightbox } from './Lightbox'
+import { Sparks } from './Sparks'
 import s from './ToolActivity.module.css'
 
 const TAIL = 12
@@ -68,7 +69,7 @@ function Line({
         data-clickable={hasBody}
         onClick={() => hasBody && setOpen(o => !o)}
       >
-        {inFlight && <span className={s.pulse} aria-hidden="true" />}
+        {inFlight && <Sparks className={s.pulse} />}
         <span className={s.verb}>{toolVerb(item)}</span>
         {/* pending: arguments haven't landed, so there's nothing to name yet —
             the "About to X" verb stands alone. Every later state has a display. */}
@@ -147,7 +148,7 @@ export default function ToolActivity({
   return (
     <div>
       <div className={s.row} data-clickable="true" onClick={() => setOpen(o => !o)}>
-        {inFlight && <span className={s.pulse} aria-hidden="true" />}
+        {inFlight && <Sparks className={s.pulse} />}
         {isEdit ? (
           <>
             <span className={s.verb}>{editVerb[groupState(items)]}</span>

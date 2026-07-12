@@ -1,0 +1,43 @@
+/* Sparks flying off a struck anvil: each ember streak launches from a low
+   strike point, shoots outward along its own vector (--dx/--dy), stretches in
+   flight and fades — a repeating shower. Staggered delays keep the burst
+   irregular. Shared by the chat status line, streaming prose, and tool
+   gutters. */
+.sparks {
+  overflow: visible;
+}
+.spark {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation-name: sparkFly;
+  animation-timing-function: cubic-bezier(0.15, 0.6, 0.5, 1);
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes sparkFly {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(var(--rot)) scaleY(0.35);
+  }
+  12% {
+    opacity: 1;
+    transform: translate(calc(var(--dx) * 0.35px), calc(var(--dy) * 0.35px)) rotate(var(--rot)) scaleY(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(var(--dx) * 1px), calc(var(--dy) * 1px)) rotate(var(--rot)) scaleY(0.55);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spark {
+    animation: sparkGlow 1.2s ease-in-out infinite;
+    animation-delay: 0s !important;
+    transform: translate(calc(var(--dx) * 0.55px), calc(var(--dy) * 0.55px)) rotate(var(--rot));
+  }
+  @keyframes sparkGlow {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+}
