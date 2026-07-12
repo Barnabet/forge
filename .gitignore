@@ -2,3 +2,8 @@
 .superpowers/
 web/node_modules
 web/dist
+
+# Local design explorations and generated test/showcase artifacts
+/assets/
+/pdf_showcase/
+/test_stuff/
