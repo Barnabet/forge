@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useForge } from '../state/store'
+import FolderBrowser from './FolderBrowser'
 import Modal from './Modal'
 import s from './Dialogs.module.css'
 
@@ -34,8 +35,7 @@ export default function NewProjectDialog() {
     <Modal title="New project" onClose={closeDialog}>
       <input className={s.nameInput} placeholder="Project name" value={name}
              onChange={e => setName(e.target.value)} autoFocus />
-      <input className={s.pathInput} placeholder="/path/to/folder" value={cwd}
-             onChange={e => setCwd(e.target.value)} />
+      <FolderBrowser value={cwd} onChange={setCwd} />
       <div className={s.selects}>
         <label className={s.field}>
           Model

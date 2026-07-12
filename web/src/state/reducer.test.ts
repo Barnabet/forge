@@ -94,7 +94,18 @@ describe('reducer: messages and tool calls', () => {
     })
   })
 
-  it('finished with diff stats keeps them for the drawer link', () => {
+  it('finished with images keeps them on the tool card', () => {
+    seq = 0
+    const s = run([
+      ev('tool_call_started', { call_id: 'c1', tool: 'view', display: 'out.pdf' }),
+      ev('tool_call_finished', { call_id: 'c1', tool: 'view', output: 'Rendered 2 page(s).', images: ['data:image/png;base64,AAAA', 'data:image/png;base64,BBBB'] }),
+    ])
+    expect(s.items[0]).toMatchObject({
+      kind: 'tool', status: 'done', images: ['data:image/png;base64,AAAA', 'data:image/png;base64,BBBB'],
+    })
+  })
+
+  it('finished with diff stats keeps them for the inline diff', () => {
     seq = 0
     const s = run([
       ev('tool_call_started', { call_id: 'c1', tool: 'edit_file', display: 'app.py' }),
@@ -413,5 +424,409 @@ describe('reducer: plan mode & todos (v1.2)', () => {
       ev('mode_changed', { mode: 'act' }),
     ])
     expect(s.mode).toBe('act')
+  })
+})
+
+describe('reducer: thinking interval', () => {
+  it('starts null and anchors on status_changed→running (ms from ts seconds)', () => {
+    seq = 0
+    expect(emptyStream().thinkingSince).toBeNull()
+    // ts is epoch seconds; anchor must be ms
+    const s = run([
+      { type: 'status_changed', session_id: 's1', seq: 1, ts: 1700, status: 'running' } as unknown as WireEvent,
+    ])
+    expect(s.thinkingSince).toBe(1_700_000)
+  })
+
+  it('clears the anchor when status leaves running', () => {
+    seq = 0
+    const s = run([
+      { type: 'status_changed', session_id: 's1', seq: 1, ts: 1700, status: 'running' } as unknown as WireEvent,
+      { type: 'status_changed', session_id: 's1', seq: 2, ts: 1701, status: 'idle' } as unknown as WireEvent,
+    ])
+    expect(s.thinkingSince).toBeNull()
+  })
+
+  it('does not anchor when a tool is visibly running under status_changed', () => {
+    seq = 0
+    const s = run([
+      ev('tool_call_started', { call_id: 'c1', tool: 'bash', display: 'ls' }, { seq: 1 }),
+      { type: 'status_changed', session_id: 's1', seq: 2, ts: 1700, status: 'running' } as unknown as WireEvent,
+    ])
+    expect(s.thinkingSince).toBeNull()
+  })
+
+  it('clears on tool start/text/assistant and restarts after a lone tool finishes mid-run', () => {
+    seq = 0
+    const s = run([
+      { type: 'status_changed', session_id: 's1', seq: 1, ts: 1700, status: 'running' } as unknown as WireEvent,
+      ev('tool_call_started', { call_id: 'c1', tool: 'bash', display: 'ls' }, { seq: 2 }),
+    ])
+    expect(s.thinkingSince).toBeNull() // tool visibly running hides Thinking
+    const s2 = run([
+      { type: 'tool_call_finished', session_id: 's1', seq: 3, ts: 1710,
+        call_id: 'c1', tool: 'bash', output: 'ok' } as unknown as WireEvent,
+    ], s)
+    expect(s2.thinkingSince).toBe(1_710_000) // back to silence: fresh anchor
+  })
+
+  it('a finished tool while another still runs keeps Thinking hidden', () => {
+    seq = 0
+    const s = run([
+      { type: 'status_changed', session_id: 's1', seq: 1, ts: 1700, status: 'running' } as unknown as WireEvent,
+      ev('tool_call_started', { call_id: 'c1', tool: 'bash', display: 'a' }, { seq: 2 }),
+      ev('tool_call_started', { call_id: 'c2', tool: 'bash', display: 'b' }, { seq: 3 }),
+      { type: 'tool_call_finished', session_id: 's1', seq: 4, ts: 1710,
+        call_id: 'c1', tool: 'bash', output: 'ok' } as unknown as WireEvent,
+    ])
+    expect(s.thinkingSince).toBeNull()
+  })
+
+  it('clears on run_finished and error', () => {
+    seq = 0
+    const s = run([
+      { type: 'status_changed', session_id: 's1', seq: 1, ts: 1700, status: 'running' } as unknown as WireEvent,
+      ev('run_finished', { reason: 'completed' }, { seq: 2 }),
+    ])
+    expect(s.thinkingSince).toBeNull()
+  })
+
+  it('an approved plan tool completion leaves no stale anchor', () => {
+    seq = 0
+    const s = run([
+      { type: 'status_changed', session_id: 's1', seq: 1, ts: 1700, status: 'running' } as unknown as WireEvent,
+      ev('plan_proposed', { call_id: 'p1', plan: '# Plan' }, { seq: 2 }),
+      ev('plan_resolved', { call_id: 'p1', decision: 'approve' }, { seq: 3 }),
+      { type: 'tool_call_finished', session_id: 's1', seq: 4, ts: 1710,
+        call_id: 'p1', tool: 'propose_plan', output: 'Plan approved.' } as unknown as WireEvent,
+    ])
+    // The plan card early-breaks; Thinking is visible again (no live content),
+    // so a fresh anchor is correct rather than a stale one.
+    expect(s.thinkingSince).toBe(1_710_000)
+  })
+})
+
+describe('reducer: message_checkpointed', () => {
+  it('attaches the checkpoint to an already-published bubble', () => {
+    seq = 0
+    let s = run([ev('user_message', { text: 'hi' }, { seq: 1 })])
+    expect((s.items[0] as { checkpoint?: string | null }).checkpoint).toBeNull()
+    s = reduce(s, ev('message_checkpointed', { user_seq: 1, checkpoint: 'cp1' }, { seq: 2 }))
+    expect((s.items[0] as { checkpoint?: string | null }).checkpoint).toBe('cp1')
+  })
+})
+
+describe('reducer: rewind', () => {
+  it('truncates active items, keeps the monotonic cursor, and clears run state', () => {
+    seq = 0
+    let s = run([
+      ev('user_message', { text: 'keep', workspace_checkpoint: 'cp1' }, { seq: 1 }),
+      ev('assistant_message', { text: 'kept reply', usage_tokens: 100 }, { seq: 2 }),
+      ev('user_message', { text: 'remove', workspace_checkpoint: 'cp2' }, { seq: 3 }),
+      ev('tool_call_started', { call_id: 'c1', tool: 'bash', display: 'x' }, { seq: 4 }),
+      eph('text_delta', { text: 'live' }),
+    ])
+    s = { ...s, todos: [{ text: 'x', status: 'in_progress' }], memoryState: 'running',
+      thinkingSince: 123, usageTokens: 100 }
+    s = reduce(s, ev('history_rewound', {
+      target_user_seq: 3, target_checkpoint: 'cp2', safety_checkpoint: 'cp3',
+      replacement: false,
+    }, { seq: 9 }))
+    expect(s.items.map(it => [it.kind, it.seq])).toEqual([
+      ['user', 1], ['prose', 2],
+    ])
+    expect(s.lastSeq).toBe(9)
+    expect(s).toMatchObject({ steps: 0, subagents: null, todos: [], memoryState: null,
+      thinkingSince: null, usageTokens: 0 })
+  })
+
+  it('clears the compacting flag', () => {
+    seq = 0
+    let s = run([ev('user_message', { text: 'x', workspace_checkpoint: 'cp1' }, { seq: 1 })])
+    s = { ...s, compacting: true }
+    s = reduce(s, ev('history_rewound', {
+      target_user_seq: 1, target_checkpoint: 'cp1', safety_checkpoint: 'cp2',
+      replacement: false,
+    }, { seq: 9 }))
+    expect(s.compacting).toBe(false)
+  })
+})
+
+describe('reducer: compaction indicator', () => {
+  it('toggles compacting on running and off on done', () => {
+    let s = emptyStream()
+    expect(s.compacting).toBe(false)
+    s = reduce(s, eph('compaction', { state: 'running' }))
+    expect(s.compacting).toBe(true)
+    s = reduce(s, eph('compaction', { state: 'done' }))
+    expect(s.compacting).toBe(false)
+  })
+
+  it('tracks section phase/label and resets them on done', () => {
+    let s = emptyStream()
+    s = reduce(s, eph('compaction', { state: 'running', phase: 3, label: 'Files and Code Sections' }))
+    expect(s.compactionPhase).toBe(3)
+    expect(s.compactionLabel).toBe('Files and Code Sections')
+    s = reduce(s, eph('compaction', { state: 'done' }))
+    expect(s.compactionPhase).toBe(0)
+    expect(s.compactionLabel).toBe('')
+  })
+})
+
+describe('reducer: subagents', () => {
+  const upd = (fields: object) =>
+    eph('subagent_update', { call_id: 'sp1', worker: 1, task: 't1', mode: 'read', ...fields })
+
+  it('upserts workers through the lifecycle and accumulates activity', () => {
+    seq = 0
+    const s = run([
+      upd({ state: 'queued' }),
+      upd({ state: 'queued', worker: 2, task: 't2', mode: 'write' }),
+      upd({ state: 'running' }),
+      upd({ state: 'running', activity: 'grep · foo' }),
+      upd({ state: 'running', activity: 'read_file · bar.py' }),
+      upd({ state: 'done', report: 'all good' }),
+    ])
+    expect(s.subagents?.callId).toBe('sp1')
+    expect(s.subagents?.workers).toHaveLength(2)
+    expect(s.subagents?.workers[0]).toMatchObject({
+      worker: 1, state: 'done', report: 'all good',
+      activity: ['grep · foo', 'read_file · bar.py'], activityCount: 2,
+    })
+    expect(s.subagents?.workers[1]).toMatchObject({ worker: 2, mode: 'write', state: 'queued' })
+  })
+
+  it('a new spawn call replaces the previous crew', () => {
+    seq = 0
+    const s = run([
+      upd({ state: 'queued' }),
+      upd({ state: 'done', report: 'r1' }),
+      eph('subagent_update', { call_id: 'sp2', worker: 1, task: 'next', mode: 'read', state: 'queued' }),
+    ])
+    expect(s.subagents?.callId).toBe('sp2')
+    expect(s.subagents?.workers).toHaveLength(1)
+    expect(s.subagents?.workers[0]).toMatchObject({ task: 'next', state: 'queued' })
+  })
+
+  it('a steering message keeps the live crew and ghosts the bubble', () => {
+    seq = 0
+    const mid = run([upd({ state: 'running' })])
+    const s = run([ev('user_message', { text: 'also do X', steering: true })], mid)
+    expect(s.subagents?.workers[0].state).toBe('running')
+    expect(s.items[0]).toMatchObject({ kind: 'user', text: 'also do X', pending: true })
+  })
+
+  it('assistant_message un-ghosts steering it consumed via context_seq', () => {
+    seq = 0
+    const mid = run([ev('user_message', { text: 'steer', steering: true })])
+    expect(mid.items[0]).toMatchObject({ pending: true })
+    const before = run([ev('assistant_message', { text: 'ok', tool_calls: [], context_seq: 0 })], mid)
+    expect(before.items[0]).toMatchObject({ pending: true })
+    const after = run([ev('assistant_message', { text: 'on it', tool_calls: [], context_seq: 1 })], mid)
+    expect(after.items[0]).toMatchObject({ pending: false })
+  })
+
+  it('steering_consumed un-ghosts immediately, before the reply arrives', () => {
+    seq = 0
+    const mid = run([ev('user_message', { text: 'steer', steering: true })])
+    expect(mid.items[0]).toMatchObject({ pending: true })
+    // The next completion's request goes out; the reply hasn't landed yet.
+    const s = run([eph('steering_consumed', { context_seq: 1 })], mid)
+    expect(s.items[0]).toMatchObject({ kind: 'user', text: 'steer', pending: false })
+  })
+
+  it('steering_consumed relocates past the batch it interrupted', () => {
+    seq = 0
+    const s = run([
+      ev('assistant_message', { text: '', tool_calls: [
+        { id: 'c1', name: 'bash', arguments: '{}' },
+        { id: 'c2', name: 'bash', arguments: '{}' },
+      ] }),
+      ev('tool_call_started', { call_id: 'c1', tool: 'bash', display: 'sleep' }),
+      ev('user_message', { text: 'also do X', steering: true }),
+      ev('tool_call_finished', { call_id: 'c1', tool: 'bash', output: 'ok' }),
+      ev('tool_call_started', { call_id: 'c2', tool: 'bash', display: 'ls' }),
+      ev('tool_call_finished', { call_id: 'c2', tool: 'bash', output: 'ok' }),
+      eph('steering_consumed', { context_seq: 6 }),
+    ])
+    expect(s.items.map(it => it.kind)).toEqual(['tool', 'tool', 'user'])
+    expect(s.items[2]).toMatchObject({ kind: 'user', text: 'also do X', pending: false })
+  })
+
+  it('un-ghosting moves the steering bubble past the batch it interrupted', () => {
+    seq = 0
+    // Steering lands mid-batch: c1 running, then c2 starts and finishes after
+    // it. The model only sees the message after both results, so the bubble
+    // must end up after both tool lines, before the reply.
+    const s = run([
+      ev('assistant_message', { text: '', tool_calls: [
+        { id: 'c1', name: 'bash', arguments: '{}' },
+        { id: 'c2', name: 'bash', arguments: '{}' },
+      ] }),
+      ev('tool_call_started', { call_id: 'c1', tool: 'bash', display: 'sleep' }),
+      ev('user_message', { text: 'also do X', steering: true }),
+      ev('tool_call_finished', { call_id: 'c1', tool: 'bash', output: 'ok' }),
+      ev('tool_call_started', { call_id: 'c2', tool: 'bash', display: 'ls' }),
+      ev('tool_call_finished', { call_id: 'c2', tool: 'bash', output: 'ok' }),
+      ev('assistant_message', { text: 'on it', tool_calls: [], context_seq: 6 }),
+    ])
+    expect(s.items.map(it => it.kind)).toEqual(['tool', 'tool', 'user', 'prose'])
+    expect(s.items[2]).toMatchObject({ kind: 'user', text: 'also do X', pending: false })
+  })
+
+  it('a moved steering bubble stops before a later (non-consumed) user message', () => {
+    seq = 0
+    const s = run([
+      ev('assistant_message', { text: '', tool_calls: [
+        { id: 'c1', name: 'bash', arguments: '{}' },
+      ] }),
+      ev('tool_call_started', { call_id: 'c1', tool: 'bash', display: 'sleep' }),
+      ev('user_message', { text: 'first steer', steering: true }),
+      ev('tool_call_finished', { call_id: 'c1', tool: 'bash', output: 'ok' }),
+      // consumed by the same completion; must keep send order
+      ev('user_message', { text: 'second steer', steering: true }),
+      ev('assistant_message', { text: 'on it', tool_calls: [], context_seq: 5 }),
+    ])
+    expect(s.items.map(it => it.kind)).toEqual(['tool', 'user', 'user', 'prose'])
+    expect(s.items[1]).toMatchObject({ text: 'first steer', pending: false })
+    expect(s.items[2]).toMatchObject({ text: 'second steer', pending: false })
+  })
+
+  it('a new user message clears the crew; run_finished closes stragglers', () => {
+    seq = 0
+    const mid = run([
+      upd({ state: 'running' }),
+      ev('run_finished', { reason: 'cancelled' }),
+    ])
+    expect(mid.subagents?.workers[0].state).toBe('error')
+    const s = run([ev('user_message', { text: 'again' })], mid)
+    expect(s.subagents).toBeNull()
+  })
+
+  it('a new non-steering user message clears a durable-only crew too', () => {
+    seq = 0
+    const mid = run([
+      ev('subagent_state', { call_id: 'sp1', worker: 1, task: 't1', mode: 'read', state: 'done', report: 'r' }),
+    ])
+    expect(mid.subagents?.workers[0].state).toBe('done')
+    const s = run([ev('user_message', { text: 'again' })], mid)
+    expect(s.subagents).toBeNull()
+  })
+})
+
+describe('reducer: durable subagent_state', () => {
+  const st = (fields: object) =>
+    ev('subagent_state', { call_id: 'sp1', worker: 1, task: 't1', mode: 'read', ...fields })
+  const upd = (fields: object) =>
+    eph('subagent_update', { call_id: 'sp1', worker: 1, task: 't1', mode: 'read', ...fields })
+
+  it('reconstructs a completed crew from durable states alone (refresh replay)', () => {
+    seq = 0
+    const s = run([
+      st({ state: 'queued' }),
+      st({ worker: 2, task: 't2', mode: 'write', state: 'queued' }),
+      st({ state: 'running' }),
+      st({ state: 'done', report: 'all good' }),
+      st({ worker: 2, task: 't2', mode: 'write', state: 'error', report: 'boom' }),
+    ])
+    expect(s.subagents?.callId).toBe('sp1')
+    expect(s.subagents?.workers).toHaveLength(2)
+    expect(s.subagents?.workers[0]).toMatchObject({
+      worker: 1, task: 't1', mode: 'read', state: 'done', report: 'all good',
+      activity: [], activityCount: 0,
+    })
+    expect(s.subagents?.workers[1]).toMatchObject({
+      worker: 2, task: 't2', mode: 'write', state: 'error', report: 'boom',
+    })
+    // Durable states carry no activity feed.
+    expect(s.subagents?.lastActivity).toBeNull()
+  })
+
+  it('a durable terminal state preserves activity collected by ephemeral updates', () => {
+    seq = 0
+    const s = run([
+      st({ state: 'running' }),
+      upd({ state: 'running', activity: 'grep · foo' }),
+      upd({ state: 'running', activity: 'read_file · bar.py' }),
+      st({ state: 'done', report: 'done via durable' }),
+    ])
+    expect(s.subagents?.workers[0]).toMatchObject({
+      state: 'done', report: 'done via durable',
+      activity: ['grep · foo', 'read_file · bar.py'], activityCount: 2,
+    })
+  })
+
+  it('a durable state upsert keeps a report already recorded when none is sent', () => {
+    seq = 0
+    const s = run([
+      st({ state: 'done', report: 'first report' }),
+      st({ state: 'done' }),
+    ])
+    expect(s.subagents?.workers[0].report).toBe('first report')
+  })
+
+  it('a running activity tick does not regress a durable terminal state', () => {
+    seq = 0
+    const s = run([
+      st({ state: 'done', report: 'settled' }),
+      upd({ state: 'running', activity: 'straggler · tick' }),
+    ])
+    expect(s.subagents?.workers[0]).toMatchObject({
+      state: 'done', report: 'settled', activity: ['straggler · tick'],
+    })
+  })
+
+  it('a different call_id replaces the durable crew', () => {
+    seq = 0
+    const s = run([
+      st({ state: 'done', report: 'r1' }),
+      ev('subagent_state', { call_id: 'sp2', worker: 1, task: 'next', mode: 'read', state: 'running' }),
+    ])
+    expect(s.subagents?.callId).toBe('sp2')
+    expect(s.subagents?.workers).toHaveLength(1)
+    expect(s.subagents?.workers[0]).toMatchObject({ task: 'next', state: 'running' })
+  })
+})
+
+describe('reducer: session pill (unread/lastRunReason)', () => {
+  it('completed run_finished with unread sets pill state and lastRunSeq', () => {
+    seq = 0
+    const s = run([
+      ev('status_changed', { status: 'running' }, { seq: 1 }),
+      ev('run_finished', { reason: 'completed', unread: true }, { seq: 2 }),
+    ])
+    expect(s).toMatchObject({ lastRunReason: 'completed', unread: true, lastRunSeq: 2 })
+  })
+
+  it('completed run_finished without unread records reason but leaves unread false', () => {
+    seq = 0
+    const s = run([ev('run_finished', { reason: 'completed' }, { seq: 5 })])
+    expect(s).toMatchObject({ lastRunReason: 'completed', unread: false, lastRunSeq: 5 })
+  })
+
+  it('non-success run_finished clears unread and records the reason', () => {
+    let s = run([ev('run_finished', { reason: 'completed', unread: true }, { seq: 2 })])
+    s = reduce(s, ev('run_finished', { reason: 'cancelled' }, { seq: 3 }))
+    expect(s).toMatchObject({ lastRunReason: 'cancelled', unread: false })
+  })
+
+  it('run_acknowledged clears unread only for the matching run_seq', () => {
+    let s = run([ev('run_finished', { reason: 'completed', unread: true }, { seq: 2 })])
+    s = reduce(s, ev('run_acknowledged', { run_seq: 1 }, { seq: 3 }))
+    expect(s.unread).toBe(true) // stale ack for a different run is ignored
+    s = reduce(s, ev('run_acknowledged', { run_seq: 2 }, { seq: 4 }))
+    expect(s.unread).toBe(false)
+  })
+
+  it('history_rewound drops stale pill state', () => {
+    let s = run([
+      ev('user_message', { text: 'hi', workspace_checkpoint: 'cp1' }, { seq: 1 }),
+      ev('run_finished', { reason: 'completed', unread: true }, { seq: 2 }),
+      ev('user_message', { text: 'more', workspace_checkpoint: 'cp2' }, { seq: 3 }),
+    ])
+    s = reduce(s, ev('history_rewound', {
+      target_user_seq: 3, target_checkpoint: 'cp2', safety_checkpoint: 'cp4', replacement: false,
+    }, { seq: 9 }))
+    expect(s).toMatchObject({ lastRunReason: null, unread: false, lastRunSeq: 0 })
   })
 })

@@ -19,6 +19,11 @@ class OpenAILLM:
         self.client = AsyncOpenAI(base_url=base_url, api_key=api_key)
         self.retry_delays = retry_delays
 
+    def reconfigure(self, base_url: str, api_key: str) -> None:
+        """Point the client at new credentials so a config change to
+        base_url/api_key takes effect without a restart."""
+        self.client = AsyncOpenAI(base_url=base_url, api_key=api_key)
+
     async def complete(self, model: str, messages: list[dict], tools: list[dict],
                        on_text_delta: OnTextDelta, effort: str = "default",
                        on_tool_start: OnToolCallStart | None = None,

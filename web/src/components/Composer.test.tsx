@@ -3,12 +3,14 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useForge } from '../state/store'
 import type { WireEvent } from '../protocol'
+import { api } from '../api'
 import Composer, { atQuery, paletteQuery } from './Composer'
 
 const ev = (type: string, seq: number, fields: object = {}): WireEvent =>
   ({ type, session_id: 'aa', ts: 0, seq, ...fields }) as unknown as WireEvent
 
 beforeEach(() => {
+  localStorage.clear()
   useForge.setState(useForge.getInitialState(), true)
   useForge.getState().applyEvent(
     ev('session_created', 1, { name: 'n', cwd: '/w', model: 'opus-5', autonomy: 'yolo' }))
@@ -39,18 +41,46 @@ describe('Composer', () => {
     expect(box).toHaveValue('line1\nline2')
   })
 
-  it('shows the model pill with autonomy and health', () => {
+  it('shows the model pill selectors with autonomy and health', () => {
     render(<Composer />)
-    expect(screen.getByText('opus-5 · yolo')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'opus-5' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'yolo' })).toBeInTheDocument()
     useForge.setState({ healthy: false })
     render(<Composer />)
     expect(screen.getAllByTitle('CLIProxyAPI unreachable').length).toBeGreaterThan(0)
   })
 
-  it('pill includes non-default effort', () => {
+  it('pill reflects the current effort', () => {
     useForge.getState().applyEvent(ev('effort_changed', 2, { effort: 'high' }))
     render(<Composer />)
-    expect(screen.getByText('opus-5 · high · yolo')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'high' })).toBeInTheDocument()
+  })
+
+  it('selecting an effort posts it to the API', async () => {
+    const setEffort = vi.spyOn(api, 'setEffort').mockResolvedValue(undefined)
+    render(<Composer />)
+    await userEvent.hover(screen.getByRole('button', { name: 'default' }))
+    await userEvent.click(screen.getByRole('option', { name: /high/ }))
+    expect(setEffort).toHaveBeenCalledWith('aa', 'high')
+  })
+
+  it('persists the draft and restores it after a remount (crash recovery)', async () => {
+    const { unmount } = render(<Composer />)
+    const box = screen.getByPlaceholderText('Reply, steer, or queue another task…')
+    await userEvent.type(box, 'half-written prompt')
+    unmount()  // simulates the app crashing and remounting
+    render(<Composer />)
+    expect(screen.getByPlaceholderText('Reply, steer, or queue another task…'))
+      .toHaveValue('half-written prompt')
+  })
+
+  it('clears the persisted draft once sent', async () => {
+    const send = vi.fn(async () => {})
+    useForge.setState({ send })
+    render(<Composer />)
+    await userEvent.type(
+      screen.getByPlaceholderText('Reply, steer, or queue another task…'), 'go{Enter}')
+    expect(localStorage.getItem('forge.composer.draft')).toBeNull()
   })
 
   it('archived session locks the composer', () => {
@@ -78,7 +108,7 @@ describe('draft triggers', () => {
 })
 
 describe('context usage pill', () => {
-  it('shows tokens and percent of the model window', () => {
+  it('shows tokens and percent of the model window', async () => {
     useForge.setState({
       models: [{ id: 'opus-5', display_name: 'opus-5', context_window: 200_000 }],
     })
@@ -86,7 +116,9 @@ describe('context usage pill', () => {
       ev('assistant_message', 2, { text: 'x', tool_calls: [], usage_tokens: 62_000 }))
     render(<Composer />)
     expect(screen.getByText('62k · 31%')).toBeInTheDocument()
-    expect(screen.getByTitle(/62,000 of 200,000/)).toBeInTheDocument()
+    await userEvent.hover(screen.getByText('62k · 31%'))
+    expect(screen.getByText('62,000')).toBeInTheDocument()
+    expect(screen.getByText('200,000')).toBeInTheDocument()
   })
 
   it('warns at the 75% compaction threshold and hides with no usage', () => {
@@ -101,5 +133,18 @@ describe('context usage pill', () => {
     render(<Composer />)
     const pill = screen.getByText('80k · 80%')
     expect(pill).toHaveAttribute('data-warn', 'true')
+  })
+
+  it('compacts the conversation from the hover flyout', async () => {
+    const compact = vi.spyOn(api, 'compact').mockResolvedValue(undefined)
+    useForge.setState({
+      models: [{ id: 'opus-5', display_name: 'opus-5', context_window: 200_000 }],
+    })
+    useForge.getState().applyEvent(
+      ev('assistant_message', 2, { text: 'x', tool_calls: [], usage_tokens: 62_000 }))
+    render(<Composer />)
+    await userEvent.hover(screen.getByText('62k · 31%'))
+    await userEvent.click(screen.getByRole('button', { name: /compact conversation/i }))
+    expect(compact).toHaveBeenCalledWith('aa')
   })
 })

@@ -1,21 +1,45 @@
 .bar {
+  position: absolute; /* overlay the chat instead of consuming layout height */
+  top: 0; left: 0; right: 0;
+  z-index: 20;
   height: 52px;
-  flex: none;
   display: flex;
   align-items: center;
   gap: 16px;
   padding: 0 18px;
-  background: var(--bg-bar);
-  border-bottom: 1px solid var(--hair-2);
+  background: transparent;
+  pointer-events: none; /* let chat under the empty band scroll/click through */
+}
+.bar > * { pointer-events: auto; }
+
+.brand {
+  display: flex; align-items: center; gap: 9px;
+  padding: 4px 8px; margin: 0 -8px;
+  border-radius: var(--r-btn);
+}
+.brand:hover { background: var(--tint-3); }
+
+.name {
+  font-size: 13.5px; font-weight: 600; letter-spacing: -0.01em;
+  max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.chevron {
+  font-size: 10px;
+  color: var(--text-faint);
+  transition: transform 150ms ease;
+}
+.chevron[data-open] { transform: rotate(180deg); }
+@media (prefers-reduced-motion: reduce) {
+  .chevron { transition: none; }
 }
 
-.brand { display: flex; align-items: center; gap: 9px; }
-.logo {
-  width: 20px; height: 20px; border-radius: 6px;
-  background: linear-gradient(135deg, var(--accent), color-mix(in oklab, var(--accent) 60%, #0a0a0c));
-  box-shadow: 0 0 12px color-mix(in oklab, var(--accent) 30%, transparent);
+.newSession {
+  color: var(--text-faint);
+  font-size: 14px;
+  padding: 4px 8px;
+  border-radius: var(--r-btn);
 }
-.name { font-size: 13.5px; font-weight: 600; letter-spacing: -0.01em; }
+.newSession:hover { color: var(--text-secondary); background: var(--tint-3); }
 
 .right { margin-left: auto; display: flex; align-items: center; gap: 14px; }
 .queuePill {
@@ -26,7 +50,32 @@
   padding: 4px 10px;
 }
 .queueDot { width: 5px; height: 5px; border-radius: 50%; background: var(--warn-dot); }
+
+.memoryPill {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11.5px; color: var(--text-secondary);
+  border: 1px solid var(--hair-3);
+  border-radius: var(--r-pill);
+  padding: 4px 10px;
+}
+.memoryDot { width: 5px; height: 5px; border-radius: 50%; }
+.running .memoryDot { background: var(--warn-dot); animation: memoryPulse 1.2s ease-in-out infinite; }
+.written .memoryDot { background: var(--ok); }
+.unchanged .memoryDot { background: var(--text-faint); }
+.error .memoryDot { background: var(--danger); }
+@keyframes memoryPulse {
+  50% { opacity: 0.3; }
+}
 .cwd { font-family: var(--font-mono); font-size: 11.5px; color: var(--text-faint); }
+
+.settings {
+  color: var(--text-faint);
+  font-size: 14px;
+  padding: 4px 8px;
+  margin-right: -8px;
+  border-radius: var(--r-btn);
+}
+.settings:hover { color: var(--text-secondary); background: var(--tint-3); }
 
 .sidebarToggle {
   color: var(--text-faint);
@@ -35,4 +84,4 @@
   margin-left: -8px;
   border-radius: var(--r-btn);
 }
-.sidebarToggle:hover { color: var(--text-secondary); background: rgba(255, 255, 255, 0.04); }
+.sidebarToggle:hover { color: var(--text-secondary); background: var(--tint-3); }

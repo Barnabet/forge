@@ -1,12 +1,38 @@
 .scroller {
   flex: 1;
   overflow-y: auto;
-  background: radial-gradient(1200px 500px at 50% -200px, rgba(255, 255, 255, 0.025), transparent);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.column {
+/* Sticky at the bottom of the scroll surface: in normal flow it settles just
+   below the last message (pushing the conversation up when you're at the
+   bottom); scroll up and it stays pinned, floating over the chat. */
+.todoDock {
+  width: 100%;
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  padding: 8px 24px 12px;
+  pointer-events: none;
+}
+.todoDockInner {
   max-width: 700px;
   margin: 0 auto;
+  pointer-events: auto;
+}
+/* Nothing to show: collapse so it never reserves space or catches events. */
+.todoDock:not(:has(.todoDockInner > *)) { display: none; }
+
+.column {
+  width: 100%;
+  max-width: 910px;
+  /* Vertical auto margins center short conversations in the viewport and
+     collapse to a top-anchored, fully scrollable layout once content overflows
+     (flex margins resolve to 0 with no positive free space). The scroller's
+     align-items:center handles horizontal centering without shrinking width. */
+  margin-block: auto;
   padding: 24px;
   display: flex;
   flex-direction: column;
@@ -19,7 +45,7 @@
   gap: 3px;
 }
 
-.userRow { display: flex; justify-content: flex-end; }
+.userRow { display: flex; flex-direction: column; align-items: flex-end; }
 .userBubble {
   max-width: 500px;
   background: var(--bg-raised-2);
@@ -28,10 +54,18 @@
   border-radius: 16px 16px 6px 16px;
   font-size: 13.5px;
   line-height: 1.6;
-  color: #e3e3e8;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-bubble);
   white-space: pre-wrap;
   word-break: break-word;
+}
+
+/* Steering sent into a live run: the model hasn't received it yet. */
+.userBubble[data-pending] {
+  opacity: 0.45;
+  border-style: dashed;
+  box-shadow: none;
+  transition: opacity 300ms ease;
 }
 
 .userImages {
@@ -45,6 +79,7 @@
   max-height: 160px;
   border-radius: 8px;
   display: block;
+  cursor: zoom-in;
 }
 
 .prose {
@@ -67,6 +102,22 @@
   animation: spin 0.8s linear infinite;
 }
 .prose :global(p + p) { margin-top: 8px; }
+.prose :global(h1), .prose :global(h2), .prose :global(h3),
+.prose :global(h4), .prose :global(h5), .prose :global(h6) {
+  margin: 16px 0 8px;
+  line-height: 1.3;
+  font-weight: 600;
+}
+.prose :global(h1) { font-size: 18px; }
+.prose :global(h2) { font-size: 16px; }
+.prose :global(h3) { font-size: 14.5px; }
+.prose :global(h4), .prose :global(h5), .prose :global(h6) { font-size: 13.5px; }
+.prose :global(:first-child) { margin-top: 0; }
+.prose :global(hr) {
+  border: 0;
+  border-top: 1px solid var(--hair-3);
+  margin: 16px 0;
+}
 .prose :global(ul), .prose :global(ol) {
   /* the global reset zeroes list padding — restore the indent inside prose */
   padding-left: 22px;
@@ -77,7 +128,7 @@
 .prose :global(code) {
   font-family: var(--font-mono);
   font-size: 12px;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--tint-4);
   border-radius: 4px;
   padding: 1px 5px;
 }
@@ -90,6 +141,27 @@
   margin: 8px 0;
 }
 .prose :global(pre code) { background: none; padding: 0; font-size: 11.5px; line-height: 1.75; }
+
+.prose :global(table) {
+  border-collapse: collapse;
+  margin: 8px 0;
+  font-size: 12px;
+  display: block; max-width: 100%; overflow-x: auto;
+}
+.prose :global(th), .prose :global(td) {
+  border: 1px solid var(--hair-3);
+  padding: 4px 10px;
+  text-align: left;
+}
+.prose :global(th) {
+  font-weight: 600;
+  color: var(--text-body);
+  background: var(--tint-2);
+}
+.prose :global(td) { color: var(--text-secondary); }
+.prose :global(tbody tr:nth-child(even)) { background: var(--tint-1); }
+
+.prose :global(del) { color: var(--text-faint); }
 
 .errorLine { font-size: 12.5px; color: var(--danger-dim); }
 .infoLine { font-size: 12px; color: var(--text-muted); }
@@ -109,6 +181,43 @@
   0%, 100% { color: var(--text-muted); }
   50% { color: var(--text-ghost-2); }
 }
+.compaction {
+  display: flex; flex-direction: column; gap: 6px;
+  width: 100%; max-width: 320px;
+}
+.compactionHead {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  font-size: 12px; color: var(--text-muted);
+}
+.compactionCount {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-ghost-2);
+}
+.compactionTrack {
+  height: 3px; border-radius: 2px;
+  background: var(--hair-2);
+  overflow: hidden;
+}
+.compactionFill {
+  height: 100%; border-radius: 2px;
+  background: var(--accent);
+  transition: width 0.35s ease;
+}
+.compactionFill[data-indeterminate] {
+  width: 40%;
+  animation: compactionSlide 1.2s ease-in-out infinite;
+}
+@keyframes compactionSlide {
+  0% { transform: translateX(-110%); }
+  100% { transform: translateX(275%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .compactionFill[data-indeterminate] {
+    animation: pulse 1.2s ease-in-out infinite;
+    transform: none;
+  }
+}
+
 .spinner {
   position: absolute; /* gutter: left of the text margin */
   left: -24px;
@@ -132,3 +241,93 @@
     50% { opacity: 1; }
   }
 }
+
+.userActions {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+  margin-top: 5px;
+  margin-right: 2px;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+.userRow:hover .userActions,
+.userRow:focus-within .userActions { opacity: 1; }
+.userAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted, #888);
+  background: none;
+  border: none;
+  border-radius: 6px;
+  padding: 5px;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+.userAction svg { width: 15px; height: 15px; }
+.userAction:hover {
+  color: var(--text-primary, #eee);
+  background: var(--bg-raised-2);
+}
+.userAction:focus-visible {
+  opacity: 1;
+  outline: 2px solid var(--accent, #6cf);
+  outline-offset: 1px;
+}
+.userActionDisabled {
+  font-size: 12px;
+  color: var(--text-muted, #888);
+  opacity: 0.6;
+  cursor: not-allowed;
+  padding: 4px 8px;
+}
+
+.editBubble {
+  width: 100%;
+  max-width: 500px;
+  background: var(--bg-raised-2);
+  border: 1px solid var(--accent);
+  padding: 10px 12px;
+  border-radius: 16px 16px 6px 16px;
+  box-shadow: var(--shadow-bubble);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.editInput {
+  width: 100%;
+  resize: none;
+  font: inherit;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background: none;
+  border: none;
+  outline: none;
+  padding: 0;
+}
+.editActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+.editCancel, .editSave {
+  font: inherit;
+  font-size: 12px;
+  border-radius: 6px;
+  padding: 4px 12px;
+  cursor: pointer;
+  border: 1px solid var(--hair-2);
+}
+.editCancel {
+  background: none;
+  color: var(--text-muted);
+}
+.editCancel:hover { color: var(--text-primary); background: var(--bg-raised-2); }
+.editSave {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg-card);
+}
+.editSave:disabled { opacity: 0.5; cursor: not-allowed; }

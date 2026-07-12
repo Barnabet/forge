@@ -1,0 +1,1001 @@
+order_id,order_date,customer,segment,region,channel,sales_rep,product,category,unit_price,quantity,discount,gross_amount,net_amount
+ORD-100344,2024-01-01,Robert Davis,Enterprise,West,Online,A. Morgan,Laptop Stand,Accessories,34.5,8,0,276.0,276.0
+ORD-100264,2024-01-02,Liam Kim,Enterprise,West,Online,B. Chen,Cable Organizer,Accessories,14.99,1,0,14.99,14.99
+ORD-100740,2024-01-02,Sofia Patel,Enterprise,North,Wholesale,B. Chen,Standing Desk,Furniture,399.0,8,0.05,3192.0,3032.4
+ORD-100741,2024-01-02,Ahmed Anderson,Enterprise,East,Retail,A. Morgan,Desk Lamp,Home Office,45.0,8,0,360.0,360.0
+ORD-100320,2024-01-03,David Williams,Enterprise,North,Wholesale,B. Chen,Monitor 27in,Electronics,179.99,4,0,719.96,719.96
+ORD-100445,2024-01-03,Ahmed Smith,SMB,Central,Online,A. Morgan,Wireless Mouse,Electronics,24.99,9,0,224.91,224.91
+ORD-100895,2024-01-03,Liam Anderson,Enterprise,Central,Online,B. Chen,Webcam 1080p,Electronics,59.99,1,0.15,59.99,50.99
+ORD-100003,2024-01-04,Sofia Anderson,SMB,South,Online,C. Diaz,Cable Organizer,Accessories,14.99,3,0.15,44.97,38.22
+ORD-100158,2024-01-04,Robert Lopez,SMB,East,Online,A. Morgan,Laptop Stand,Accessories,34.5,5,0,172.5,172.5
+ORD-100304,2024-01-04,Wei Anderson,SMB,East,Retail,F. Oyelaran,Desk Lamp,Home Office,45.0,6,0.2,270.0,216.0
+ORD-100540,2024-01-04,James Patel,Enterprise,South,Wholesale,C. Diaz,Notebook Pack,Stationery,12.99,9,0,116.91,116.91
+ORD-100730,2024-01-06,John Smith,SMB,North,Wholesale,A. Morgan,Ballpoint Pens (12),Stationery,8.49,1,0.2,8.49,6.79
+ORD-100106,2024-01-08,Linda Brown,SMB,North,Wholesale,B. Chen,Standing Desk,Furniture,399.0,7,0,2793.0,2793.0
+ORD-100354,2024-01-08,Mary Patel,Enterprise,East,Wholesale,F. Oyelaran,Noise-Cancelling Headphones,Electronics,199.99,4,0,799.96,799.96
+ORD-100911,2024-01-08,James Miller,Consumer,South,Retail,F. Oyelaran,Laptop Stand,Accessories,34.5,2,0.2,69.0,55.2
+ORD-100190,2024-01-09,Linda Jones,SMB,West,Online,E. Novak,Ballpoint Pens (12),Stationery,8.49,9,0.1,76.41,68.77
+ORD-100232,2024-01-09,Patricia Kim,Enterprise,East,Wholesale,F. Oyelaran,Webcam 1080p,Electronics,59.99,6,0.15,359.94,305.95
+ORD-100754,2024-01-09,James Smith,Consumer,North,Wholesale,F. Oyelaran,Portable SSD 1TB,Electronics,119.99,8,0,959.92,959.92
+ORD-100815,2024-01-09,Ahmed Jones,SMB,Central,Wholesale,C. Diaz,Ergonomic Chair,Furniture,249.0,6,0,1494.0,1494.0
+ORD-100640,2024-01-10,Elizabeth Davis,Enterprise,East,Online,F. Oyelaran,Webcam 1080p,Electronics,59.99,6,0,359.94,359.94
+ORD-100748,2024-01-10,Linda Jones,Consumer,South,Wholesale,A. Morgan,Ergonomic Chair,Furniture,249.0,10,0,2490.0,2490.0
+ORD-100021,2024-01-11,Linda Smith,Consumer,North,Online,A. Morgan,Notebook Pack,Stationery,12.99,9,0,116.91,116.91
+ORD-100590,2024-01-12,David Jones,Enterprise,West,Wholesale,A. Morgan,USB-C Hub,Electronics,39.99,2,0,79.98,79.98
+ORD-100784,2024-01-12,Robert Haddad,SMB,West,Retail,F. Oyelaran,Noise-Cancelling Headphones,Electronics,199.99,7,0.15,1399.93,1189.94
+ORD-100044,2024-01-13,Sofia Davis,SMB,South,Wholesale,A. Morgan,USB-C Hub,Electronics,39.99,6,0.2,239.94,191.95
+ORD-100067,2024-01-14,James Williams,Enterprise,West,Online,D. Kim,Portable SSD 1TB,Electronics,119.99,7,0.1,839.93,755.94
+ORD-100066,2024-01-15,Wei Garcia,SMB,South,Wholesale,E. Novak,Desk Lamp,Home Office,45.0,6,0.15,270.0,229.5
+ORD-100950,2024-01-15,Sofia Johnson,SMB,East,Online,B. Chen,Cable Organizer,Accessories,14.99,3,0,44.97,44.97
+ORD-100153,2024-01-16,Wei Kim,SMB,East,Online,C. Diaz,Mechanical Keyboard,Electronics,89.99,9,0,809.91,809.91
+ORD-100022,2024-01-17,Linda Lopez,Enterprise,West,Online,E. Novak,Coffee Mug,Home Office,11.5,6,0,69.0,69.0
+ORD-100397,2024-01-17,Linda Brown,SMB,South,Retail,F. Oyelaran,USB-C Hub,Electronics,39.99,10,0,399.9,399.9
+ORD-100608,2024-01-17,Nina Lopez,Consumer,East,Online,E. Novak,Notebook Pack,Stationery,12.99,7,0.15,90.93,77.29
+ORD-100666,2024-01-17,Elizabeth Anderson,Consumer,North,Online,D. Kim,Ballpoint Pens (12),Stationery,8.49,10,0.2,84.9,67.92
+ORD-100838,2024-01-17,Elizabeth Garcia,SMB,West,Online,C. Diaz,USB-C Hub,Electronics,39.99,9,0.15,359.91,305.92
+ORD-100125,2024-01-18,Robert Williams,SMB,East,Wholesale,D. Kim,Notebook Pack,Stationery,12.99,6,0.15,77.94,66.25
+ORD-100413,2024-01-18,Robert Brown,SMB,South,Online,B. Chen,Standing Desk,Furniture,399.0,10,0.1,3990.0,3591.0
+ORD-100791,2024-01-18,Robert Nguyen,SMB,Central,Online,E. Novak,Ballpoint Pens (12),Stationery,8.49,6,0,50.94,50.94
+ORD-100868,2024-01-18,Nina Haddad,Enterprise,West,Retail,F. Oyelaran,Noise-Cancelling Headphones,Electronics,199.99,2,0.2,399.98,319.98
+ORD-100718,2024-01-19,Elizabeth Lopez,Consumer,West,Wholesale,B. Chen,Monitor 27in,Electronics,179.99,10,0.15,1799.9,1529.91
+ORD-100746,2024-01-19,Mary Patel,Consumer,South,Wholesale,F. Oyelaran,Webcam 1080p,Electronics,59.99,1,0,59.99,59.99
+ORD-100933,2024-01-19,Mary Wilson,SMB,West,Wholesale,F. Oyelaran,Ballpoint Pens (12),Stationery,8.49,3,0.1,25.47,22.92
+ORD-100246,2024-01-20,Jennifer Johnson,SMB,West,Online,F. Oyelaran,Portable SSD 1TB,Electronics,119.99,3,0.05,359.97,341.97
+ORD-100949,2024-01-21,Ahmed Wilson,SMB,East,Retail,D. Kim,Standing Desk,Furniture,399.0,3,0,1197.0,1197.0
+ORD-100196,2024-01-22,Wei Haddad,SMB,North,Wholesale,B. Chen,Webcam 1080p,Electronics,59.99,5,0.1,299.95,269.95
+ORD-100267,2024-01-23,Michael Johnson,Consumer,Central,Retail,B. Chen,Desk Lamp,Home Office,45.0,8,0,360.0,360.0
+ORD-100607,2024-01-23,Mary Miller,Consumer,West,Online,A. Morgan,Coffee Mug,Home Office,11.5,3,0,34.5,34.5
+ORD-100761,2024-01-23,Jennifer Garcia,Consumer,West,Wholesale,A. Morgan,Mechanical Keyboard,Electronics,89.99,1,0.1,89.99,80.99
+ORD-100291,2024-01-24,David Johnson,Consumer,East,Online,B. Chen,Portable SSD 1TB,Electronics,119.99,2,0.15,239.98,203.98
+ORD-100925,2024-01-24,Robert Brown,Enterprise,North,Retail,D. Kim,Cable Organizer,Accessories,14.99,9,0,134.91,134.91
+ORD-100189,2024-01-25,Liam Williams,Consumer,West,Wholesale,E. Novak,Laptop Stand,Accessories,34.5,7,0.15,241.5,205.28
+ORD-100270,2024-01-25,Sarah Kim,SMB,South,Retail,D. Kim,Webcam 1080p,Electronics,59.99,7,0.2,419.93,335.94
+ORD-100283,2024-01-25,Robert Davis,Consumer,South,Online,B. Chen,Cable Organizer,Accessories,14.99,1,0.05,14.99,14.24
+ORD-100400,2024-01-25,Sofia Garcia,SMB,West,Retail,C. Diaz,Desk Lamp,Home Office,45.0,8,0.15,360.0,306.0
+ORD-100451,2024-01-25,Patricia Smith,Consumer,North,Retail,D. Kim,Notebook Pack,Stationery,12.99,1,0.15,12.99,11.04
+ORD-100488,2024-01-25,Sofia Anderson,Enterprise,North,Online,F. Oyelaran,Portable SSD 1TB,Electronics,119.99,7,0.05,839.93,797.93
+ORD-100896,2024-01-25,Mary Williams,Enterprise,Central,Retail,A. Morgan,Cable Organizer,Accessories,14.99,5,0,74.95,74.95
+ORD-100904,2024-01-25,Patricia Kim,SMB,North,Retail,F. Oyelaran,Standing Desk,Furniture,399.0,2,0,798.0,798.0
+ORD-100883,2024-01-27,Ahmed Johnson,Consumer,East,Wholesale,E. Novak,Webcam 1080p,Electronics,59.99,4,0.05,239.96,227.96
+ORD-100472,2024-01-28,Liam Anderson,Enterprise,Central,Wholesale,D. Kim,Coffee Mug,Home Office,11.5,4,0.2,46.0,36.8
+ORD-100656,2024-01-28,Liam Rossi,Consumer,Central,Online,B. Chen,Monitor 27in,Electronics,179.99,9,0,1619.91,1619.91
+ORD-100692,2024-01-28,Jennifer Rossi,Enterprise,East,Retail,C. Diaz,Mechanical Keyboard,Electronics,89.99,7,0.05,629.93,598.43
+ORD-100760,2024-01-28,Michael Kim,SMB,East,Wholesale,D. Kim,Ballpoint Pens (12),Stationery,8.49,6,0,50.94,50.94
+ORD-100834,2024-01-28,James Garcia,SMB,Central,Wholesale,C. Diaz,Coffee Mug,Home Office,11.5,2,0.05,23.0,21.85
+ORD-100957,2024-01-28,Nina Smith,Consumer,Central,Online,A. Morgan,Notebook Pack,Stationery,12.99,9,0,116.91,116.91
+ORD-100988,2024-01-28,Linda Williams,Enterprise,Central,Retail,A. Morgan,Coffee Mug,Home Office,11.5,6,0.1,69.0,62.1
+ORD-100391,2024-01-29,James Haddad,Consumer,East,Wholesale,B. Chen,Laptop Stand,Accessories,34.5,10,0,345.0,345.0
+ORD-100423,2024-01-29,Elizabeth Patel,Consumer,Central,Wholesale,A. Morgan,Standing Desk,Furniture,399.0,3,0,1197.0,1197.0
+ORD-100622,2024-01-29,Sofia Kim,Consumer,South,Wholesale,F. Oyelaran,Portable SSD 1TB,Electronics,119.99,6,0,719.94,719.94
+ORD-100840,2024-01-29,Wei Nguyen,SMB,East,Online,A. Morgan,Desk Lamp,Home Office,45.0,5,0.05,225.0,213.75
+ORD-100962,2024-01-31,James Johnson,SMB,West,Online,C. Diaz,Notebook Pack,Stationery,12.99,6,0,77.94,77.94
+ORD-100171,2024-02-01,Sarah Williams,Enterprise,South,Online,B. Chen,Ergonomic Chair,Furniture,249.0,2,0.2,498.0,398.4
+ORD-100253,2024-02-01,Elizabeth Garcia,SMB,Central,Wholesale,C. Diaz,Ballpoint Pens (12),Stationery,8.49,2,0.05,16.98,16.13
+ORD-100379,2024-02-01,Michael Patel,SMB,North,Wholesale,E. Novak,Coffee Mug,Home Office,11.5,4,0,46.0,46.0
+ORD-100384,2024-02-01,Robert Kim,Consumer,Central,Online,F. Oyelaran,Mechanical Keyboard,Electronics,89.99,5,0.05,449.95,427.45
+ORD-100522,2024-02-02,Mary Miller,Enterprise,East,Retail,D. Kim,Noise-Cancelling Headphones,Electronics,199.99,6,0,1199.94,1199.94
+ORD-100752,2024-02-02,Sofia Garcia,Enterprise,East,Wholesale,B. Chen,Mechanical Keyboard,Electronics,89.99,5,0,449.95,449.95
+ORD-100143,2024-02-03,Sarah Patel,Enterprise,Central,Retail,D. Kim,USB-C Hub,Electronics,39.99,5,0.1,199.95,179.95
+ORD-100211,2024-02-03,Nina Kim,SMB,Central,Online,B. Chen,Noise-Cancelling Headphones,Electronics,199.99,7,0.15,1399.93,1189.94
+ORD-100500,2024-02-03,Sofia Brown,Consumer,Central,Wholesale,F. Oyelaran,Laptop Stand,Accessories,34.5,4,0.2,138.0,110.4
+ORD-100699,2024-02-03,Sofia Kim,Enterprise,East,Wholesale,F. Oyelaran,Webcam 1080p,Electronics,59.99,4,0.2,239.96,191.97
+ORD-100782,2024-02-03,John Patel,Consumer,East,Online,A. Morgan,Laptop Stand,Accessories,34.5,8,0,276.0,276.0
+ORD-100981,2024-02-03,Linda Lopez,Consumer,North,Wholesale,F. Oyelaran,USB-C Hub,Electronics,39.99,5,0.1,199.95,179.95
+ORD-100990,2024-02-03,Liam Johnson,SMB,Central,Wholesale,D. Kim,Cable Organizer,Accessories,14.99,3,0,44.97,44.97
+ORD-100991,2024-02-03,Mary Wilson,SMB,West,Online,E. Novak,Mechanical Keyboard,Electronics,89.99,1,0.1,89.99,80.99
+ORD-100167,2024-02-04,Elizabeth Lopez,Enterprise,North,Retail,E. Novak,Ergonomic Chair,Furniture,249.0,8,0.15,1992.0,1693.2
+ORD-100137,2024-02-05,Michael Davis,SMB,South,Wholesale,A. Morgan,Coffee Mug,Home Office,11.5,9,0,103.5,103.5
+ORD-100261,2024-02-05,Elizabeth Kim,Consumer,South,Wholesale,F. Oyelaran,Portable SSD 1TB,Electronics,119.99,8,0,959.92,959.92
+ORD-100094,2024-02-06,Michael Kim,Consumer,Central,Online,F. Oyelaran,Ballpoint Pens (12),Stationery,8.49,4,0,33.96,33.96
+ORD-100609,2024-02-06,Nina Williams,SMB,North,Retail,E. Novak,Wireless Mouse,Electronics,24.99,4,0.15,99.96,84.97
+ORD-100762,2024-02-06,Liam Anderson,SMB,South,Wholesale,F. Oyelaran,Portable SSD 1TB,Electronics,119.99,4,0.15,479.96,407.97
+ORD-100168,2024-02-07,Mary Johnson,SMB,East,Online,F. Oyelaran,Noise-Cancelling Headphones,Electronics,199.99,8,0.05,1599.92,1519.92
+ORD-100297,2024-02-07,Wei Jones,Enterprise,West,Retail,C. Diaz,Mechanical Keyboard,Electronics,89.99,5,0,449.95,449.95
+ORD-100502,2024-02-07,David Williams,Enterprise,South,Retail,D. Kim,Wireless Mouse,Electronics,24.99,3,0.2,74.97,59.98
+ORD-100735,2024-02-07,Wei Anderson,Consumer,East,Retail,B. Chen,Noise-Cancelling Headphones,Electronics,199.99,1,0.05,199.99,189.99
+ORD-100738,2024-02-07,David Rossi,Consumer,West,Online,F. Oyelaran,Mechanical Keyboard,Electronics,89.99,10,0.15,899.9,764.91
+ORD-100166,2024-02-08,Liam Anderson,Enterprise,East,Online,D. Kim,USB-C Hub,Electronics,39.99,8,0.05,319.92,303.92
+ORD-100374,2024-02-08,Patricia Jones,Consumer,South,Retail,D. Kim,Laptop Stand,Accessories,34.5,3,0.2,103.5,82.8
+ORD-100403,2024-02-08,Nina Smith,SMB,South,Wholesale,D. Kim,Standing Desk,Furniture,399.0,2,0,798.0,798.0
+ORD-100848,2024-02-08,Elizabeth Lopez,Consumer,East,Wholesale,D. Kim,Coffee Mug,Home Office,11.5,9,0,103.5,103.5
+ORD-100303,2024-02-09,Nina Miller,SMB,North,Online,C. Diaz,Webcam 1080p,Electronics,59.99,5,0,299.95,299.95
+ORD-100398,2024-02-09,Jennifer Williams,Enterprise,East,Retail,A. Morgan,Laptop Stand,Accessories,34.5,6,0,207.0,207.0
+ORD-100720,2024-02-09,Robert Lopez,SMB,East,Online,F. Oyelaran,Coffee Mug,Home Office,11.5,5,0,57.5,57.5
+ORD-100469,2024-02-10,Liam Williams,SMB,West,Retail,A. Morgan,Ergonomic Chair,Furniture,249.0,8,0.2,1992.0,1593.6
+ORD-100092,2024-02-11,John Garcia,Consumer,West,Retail,F. Oyelaran,USB-C Hub,Electronics,39.99,4,0,159.96,159.96
+ORD-100985,2024-02-11,James Davis,Enterprise,West,Online,B. Chen,Portable SSD 1TB,Electronics,119.99,10,0.2,1199.9,959.92
+ORD-100539,2024-02-12,Sofia Lopez,Consumer,North,Wholesale,F. Oyelaran,Noise-Cancelling Headphones,Electronics,199.99,10,0.1,1999.9,1799.91
+ORD-100626,2024-02-12,Mary Patel,SMB,North,Retail,E. Novak,Ergonomic Chair,Furniture,249.0,10,0.15,2490.0,2116.5
+ORD-100301,2024-02-13,Jennifer Patel,Consumer,South,Retail,C. Diaz,Monitor 27in,Electronics,179.99,9,0,1619.91,1619.91
+ORD-100311,2024-02-13,Ahmed Garcia,Enterprise,Central,Online,E. Novak,Mechanical Keyboard,Electronics,89.99,4,0.15,359.96,305.97
+ORD-100315,2024-02-13,Elizabeth Anderson,SMB,South,Wholesale,D. Kim,Mechanical Keyboard,Electronics,89.99,3,0,269.97,269.97
+ORD-100350,2024-02-13,Elizabeth Smith,Enterprise,East,Online,E. Novak,Laptop Stand,Accessories,34.5,9,0.1,310.5,279.45
+ORD-100579,2024-02-13,Linda Davis,Enterprise,East,Retail,F. Oyelaran,Ballpoint Pens (12),Stationery,8.49,7,0,59.43,59.43
+ORD-100632,2024-02-13,Robert Wilson,Consumer,East,Wholesale,A. Morgan,Mechanical Keyboard,Electronics,89.99,1,0,89.99,89.99
+ORD-100346,2024-02-15,Sarah Nguyen,SMB,South,Retail,B. Chen,Monitor 27in,Electronics,179.99,2,0,359.98,359.98
+ORD-100116,2024-02-16,Patricia Rossi,Consumer,East,Online,A. Morgan,Desk Lamp,Home Office,45.0,2,0.2,90.0,72.0
+ORD-100128,2024-02-16,David Brown,SMB,East,Wholesale,F. Oyelaran,Cable Organizer,Accessories,14.99,7,0,104.93,104.93
+ORD-100169,2024-02-16,Wei Rossi,Enterprise,Central,Wholesale,A. Morgan,Notebook Pack,Stationery,12.99,10,0.1,129.9,116.91
+ORD-100471,2024-02-16,Elizabeth Miller,Enterprise,West,Retail,C. Diaz,Cable Organizer,Accessories,14.99,10,0.1,149.9,134.91
+ORD-100082,2024-02-17,Linda Wilson,Enterprise,Central,Retail,D. Kim,Noise-Cancelling Headphones,Electronics,199.99,4,0.05,799.96,759.96
+ORD-100300,2024-02-17,Sarah Patel,Consumer,East,Retail,D. Kim,Notebook Pack,Stationery,12.99,10,0.2,129.9,103.92
+ORD-100338,2024-02-17,Ahmed Williams,Enterprise,West,Online,D. Kim,Monitor 27in,Electronics,179.99,8,0.15,1439.92,1223.93
+ORD-100668,2024-02-17,Ahmed Patel,Consumer,West,Wholesale,A. Morgan,Cable Organizer,Accessories,14.99,5,0,74.95,74.95
+ORD-100732,2024-02-17,Michael Brown,Enterprise,North,Online,E. Novak,Wireless Mouse,Electronics,24.99,10,0.15,249.9,212.41
+ORD-100944,2024-02-17,Nina Miller,SMB,North,Retail,F. Oyelaran,Wireless Mouse,Electronics,24.99,7,0,174.93,174.93
+ORD-100024,2024-02-19,Sofia Kim,SMB,North,Wholesale,F. Oyelaran,Ballpoint Pens (12),Stationery,8.49,7,0,59.43,59.43
+ORD-100147,2024-02-19,Robert Johnson,Enterprise,Central,Wholesale,C. Diaz,Monitor 27in,Electronics,179.99,6,0.2,1079.94,863.95
+ORD-100027,2024-02-20,James Williams,Consumer,South,Retail,D. Kim,Wireless Mouse,Electronics,24.99,9,0.2,224.91,179.93
+ORD-100186,2024-02-20,Robert Jones,Consumer,East,Retail,F. Oyelaran,Coffee Mug,Home Office,11.5,6,0.2,69.0,55.2
+ORD-100638,2024-02-20,John Garcia,Consumer,Central,Retail,E. Novak,Portable SSD 1TB,Electronics,119.99,6,0.05,719.94,683.94
+ORD-100823,2024-02-20,Nina Nguyen,Enterprise,Central,Online,D. Kim,Portable SSD 1TB,Electronics,119.99,4,0.1,479.96,431.96
+ORD-100928,2024-02-20,Robert Brown,Consumer,West,Retail,A. Morgan,USB-C Hub,Electronics,39.99,6,0,239.94,239.94
+ORD-100035,2024-02-21,David Jones,SMB,North,Online,C. Diaz,Mechanical Keyboard,Electronics,89.99,9,0,809.91,809.91
+ORD-100004,2024-02-22,Ahmed Nguyen,Enterprise,East,Online,F. Oyelaran,Mechanical Keyboard,Electronics,89.99,7,0,629.93,629.93
+ORD-100183,2024-02-22,Patricia Wilson,Consumer,South,Retail,D. Kim,Monitor 27in,Electronics,179.99,9,0.2,1619.91,1295.93
+ORD-100037,2024-02-23,Patricia Brown,Enterprise,Central,Online,C. Diaz,Portable SSD 1TB,Electronics,119.99,3,0,359.97,359.97
+ORD-100149,2024-02-23,Robert Haddad,Consumer,North,Retail,E. Novak,Notebook Pack,Stationery,12.99,9,0,116.91,116.91
+ORD-100298,2024-02-24,Liam Nguyen,SMB,North,Online,A. Morgan,Mechanical Keyboard,Electronics,89.99,1,0,89.99,89.99
+ORD-100600,2024-02-24,Sarah Nguyen,SMB,South,Online,F. Oyelaran,USB-C Hub,Electronics,39.99,8,0,319.92,319.92
+ORD-100613,2024-02-24,Liam Kim,Consumer,South,Online,E. Novak,Cable Organizer,Accessories,14.99,10,0,149.9,149.9
+ORD-100141,2024-02-25,Mary Wilson,SMB,North,Online,D. Kim,Ergonomic Chair,Furniture,249.0,9,0,2241.0,2241.0
+ORD-100833,2024-02-25,Nina Davis,Enterprise,South,Online,A. Morgan,Mechanical Keyboard,Electronics,89.99,5,0.05,449.95,427.45
+ORD-100994,2024-02-25,John Miller,Enterprise,South,Wholesale,E. Novak,Mechanical Keyboard,Electronics,89.99,1,0.1,89.99,80.99
+ORD-100926,2024-02-26,Patricia Johnson,Enterprise,North,Online,F. Oyelaran,Mechanical Keyboard,Electronics,89.99,10,0.1,899.9,809.91
+ORD-100597,2024-02-27,James Garcia,SMB,Central,Online,D. Kim,Laptop Stand,Accessories,34.5,7,0,241.5,241.5
+ORD-100696,2024-02-27,Jennifer Wilson,SMB,Central,Wholesale,B. Chen,Webcam 1080p,Electronics,59.99,8,0.05,479.92,455.92
+ORD-100721,2024-02-27,Robert Rossi,SMB,South,Retail,F. Oyelaran,Notebook Pack,Stationery,12.99,3,0.1,38.97,35.07
+ORD-100307,2024-02-28,Jennifer Smith,Enterprise,West,Wholesale,B. Chen,Portable SSD 1TB,Electronics,119.99,10,0,1199.9,1199.9
+ORD-100317,2024-02-28,Patricia Garcia,Enterprise,South,Wholesale,B. Chen,Wireless Mouse,Electronics,24.99,6,0.15,149.94,127.45
+ORD-100330,2024-02-28,Ahmed Johnson,Enterprise,West,Wholesale,B. Chen,Noise-Cancelling Headphones,Electronics,199.99,9,0.2,1799.91,1439.93
+ORD-100510,2024-02-28,Mary Rossi,Enterprise,Central,Online,C. Diaz,USB-C Hub,Electronics,39.99,10,0.2,399.9,319.92
+ORD-100689,2024-02-28,Patricia Miller,Enterprise,East,Wholesale,C. Diaz,Wireless Mouse,Electronics,24.99,10,0.1,249.9,224.91
+ORD-100779,2024-02-28,Michael Davis,SMB,East,Retail,E. Novak,Ballpoint Pens (12),Stationery,8.49,8,0.15,67.92,57.73
+ORD-100324,2024-02-29,Robert Patel,SMB,Central,Online,E. Novak,USB-C Hub,Electronics,39.99,6,0.15,239.94,203.95
+ORD-100358,2024-02-29,Mary Wilson,Enterprise,South,Online,A. Morgan,Ergonomic Chair,Furniture,249.0,10,0.1,2490.0,2241.0
+ORD-100363,2024-02-29,Mary Smith,Consumer,North,Retail,C. Diaz,Laptop Stand,Accessories,34.5,9,0,310.5,310.5
+ORD-100408,2024-02-29,Nina Lopez,Consumer,Central,Retail,B. Chen,Noise-Cancelling Headphones,Electronics,199.99,7,0.05,1399.93,1329.93
+ORD-100795,2024-02-29,Linda Rossi,SMB,North,Retail,A. Morgan,Noise-Cancelling Headphones,Electronics,199.99,1,0.05,199.99,189.99
+ORD-100276,2024-03-01,Michael Patel,Consumer,Central,Retail,C. Diaz,Monitor 27in,Electronics,179.99,8,0,1439.92,1439.92
+ORD-100332,2024-03-01,Ahmed Kim,Consumer,Central,Online,B. Chen,Cable Organizer,Accessories,14.99,4,0,59.96,59.96
+ORD-100454,2024-03-01,Patricia Haddad,Consumer,Central,Online,C. Diaz,Noise-Cancelling Headphones,Electronics,199.99,2,0.2,399.98,319.98
+ORD-100528,2024-03-01,Sarah Brown,SMB,West,Retail,B. Chen,Ballpoint Pens (12),Stationery,8.49,4,0.05,33.96,32.26
+ORD-100673,2024-03-01,Patricia Miller,Enterprise,West,Retail,A. Morgan,Wireless Mouse,Electronics,24.99,8,0.15,199.92,169.93
+ORD-100927,2024-03-01,Jennifer Wilson,Enterprise,West,Wholesale,D. Kim,Coffee Mug,Home Office,11.5,4,0,46.0,46.0
+ORD-100376,2024-03-02,Elizabeth Johnson,Consumer,East,Online,A. Morgan,Mechanical Keyboard,Electronics,89.99,3,0.2,269.97,215.98
+ORD-100831,2024-03-03,Nina Lopez,Enterprise,Central,Wholesale,C. Diaz,Laptop Stand,Accessories,34.5,7,0.15,241.5,205.28
+ORD-100659,2024-03-04,Liam Nguyen,Consumer,Central,Wholesale,D. Kim,Mechanical Keyboard,Electronics,89.99,2,0.15,179.98,152.98
+ORD-100891,2024-03-04,Elizabeth Garcia,Consumer,Central,Retail,E. Novak,Webcam 1080p,Electronics,59.99,2,0,119.98,119.98
+ORD-100977,2024-03-04,Liam Smith,Consumer,North,Retail,F. Oyelaran,Ergonomic Chair,Furniture,249.0,6,0,1494.0,1494.0
+ORD-100580,2024-03-05,Jennifer Smith,Consumer,East,Retail,D. Kim,USB-C Hub,Electronics,39.99,9,0.2,359.91,287.93
+ORD-100042,2024-03-06,Mary Nguyen,Consumer,South,Wholesale,A. Morgan,Wireless Mouse,Electronics,24.99,5,0,124.95,124.95
+ORD-100176,2024-03-06,Sofia Nguyen,Consumer,East,Retail,B. Chen,Ballpoint Pens (12),Stationery,8.49,9,0,76.41,76.41
+ORD-100479,2024-03-06,Sarah Patel,SMB,Central,Wholesale,B. Chen,Mechanical Keyboard,Electronics,89.99,7,0.15,629.93,535.44
+ORD-100996,2024-03-06,Ahmed Wilson,Enterprise,Central,Online,B. Chen,Noise-Cancelling Headphones,Electronics,199.99,10,0.05,1999.9,1899.9
+ORD-100392,2024-03-07,Sarah Johnson,Consumer,South,Wholesale,F. Oyelaran,Webcam 1080p,Electronics,59.99,3,0.2,179.97,143.98
+ORD-100464,2024-03-07,Sofia Rossi,Consumer,North,Retail,F. Oyelaran,Ergonomic Chair,Furniture,249.0,8,0,1992.0,1992.0
+ORD-100733,2024-03-07,Jennifer Brown,Enterprise,South,Retail,C. Diaz,Desk Lamp,Home Office,45.0,10,0.2,450.0,360.0
+ORD-100023,2024-03-08,Nina Davis,SMB,West,Online,A. Morgan,Monitor 27in,Electronics,179.99,10,0.1,1799.9,1619.91
+ORD-100899,2024-03-08,Ahmed Miller,SMB,West,Retail,D. Kim,Webcam 1080p,Electronics,59.99,2,0.2,119.98,95.98
+ORD-100530,2024-03-09,Robert Johnson,Consumer,East,Online,E. Novak,Ballpoint Pens (12),Stationery,8.49,9,0,76.41,76.41
+ORD-100974,2024-03-09,Nina Smith,Consumer,South,Retail,E. Novak,Ballpoint Pens (12),Stationery,8.49,1,0.1,8.49,7.64
+ORD-100584,2024-03-10,James Haddad,SMB,East,Online,D. Kim,Webcam 1080p,Electronics,59.99,5,0.05,299.95,284.95
+ORD-100205,2024-03-11,Sarah Lopez,Consumer,North,Online,F. Oyelaran,Standing Desk,Furniture,399.0,6,0.05,2394.0,2274.3
+ORD-100619,2024-03-11,Linda Davis,SMB,East,Online,E. Novak,Noise-Cancelling Headphones,Electronics,199.99,6,0.1,1199.94,1079.95
+ORD-100650,2024-03-11,Mary Kim,Consumer,East,Retail,B. Chen,USB-C Hub,Electronics,39.99,4,0,159.96,159.96
+ORD-100187,2024-03-12,James Williams,Consumer,East,Online,B. Chen,Cable Organizer,Accessories,14.99,8,0.05,119.92,113.92
+ORD-100390,2024-03-13,Nina Wilson,Consumer,West,Online,A. Morgan,Notebook Pack,Stationery,12.99,4,0.2,51.96,41.57
+ORD-100393,2024-03-13,Ahmed Williams,SMB,West,Wholesale,A. Morgan,Cable Organizer,Accessories,14.99,2,0.2,29.98,23.98
+ORD-100963,2024-03-13,Wei Brown,Consumer,South,Online,E. Novak,Desk Lamp,Home Office,45.0,6,0,270.0,270.0
+ORD-100801,2024-03-14,Sarah Williams,Enterprise,West,Online,A. Morgan,Laptop Stand,Accessories,34.5,5,0.05,172.5,163.88
+ORD-100961,2024-03-14,John Jones,SMB,West,Wholesale,B. Chen,USB-C Hub,Electronics,39.99,5,0.2,199.95,159.96
+ORD-100485,2024-03-15,David Garcia,SMB,East,Online,A. Morgan,Wireless Mouse,Electronics,24.99,1,0,24.99,24.99
+ORD-100645,2024-03-15,Sarah Williams,Enterprise,Central,Wholesale,A. Morgan,Ballpoint Pens (12),Stationery,8.49,10,0,84.9,84.9
+ORD-100912,2024-03-15,Michael Williams,SMB,West,Online,D. Kim,Ballpoint Pens (12),Stationery,8.49,4,0.05,33.96,32.26
+ORD-100056,2024-03-16,Nina Williams,SMB,West,Wholesale,E. Novak,Wireless Mouse,Electronics,24.99,1,0,24.99,24.99
+ORD-100165,2024-03-16,David Miller,Consumer,Central,Online,F. Oyelaran,Laptop Stand,Accessories,34.5,2,0,69.0,69.0
+ORD-100854,2024-03-16,Elizabeth Kim,SMB,East,Online,F. Oyelaran,Laptop Stand,Accessories,34.5,3,0.15,103.5,87.97
+ORD-100935,2024-03-16,Michael Rossi,Enterprise,East,Wholesale,D. Kim,Monitor 27in,Electronics,179.99,7,0.05,1259.93,1196.93
+ORD-100095,2024-03-17,Robert Williams,Consumer,South,Retail,E. Novak,Portable SSD 1TB,Electronics,119.99,5,0.2,599.95,479.96
+ORD-100661,2024-03-17,Mary Kim,SMB,East,Wholesale,D. Kim,USB-C Hub,Electronics,39.99,3,0,119.97,119.97
+ORD-100680,2024-03-17,Wei Garcia,Enterprise,Central,Retail,B. Chen,Noise-Cancelling Headphones,Electronics,199.99,1,0,199.99,199.99
+ORD-100071,2024-03-19,Patricia Miller,SMB,East,Retail,B. Chen,Laptop Stand,Accessories,34.5,3,0.05,103.5,98.32
+ORD-100179,2024-03-19,Jennifer Rossi,Consumer,West,Retail,F. Oyelaran,USB-C Hub,Electronics,39.99,3,0.2,119.97,95.98
+ORD-100356,2024-03-19,John Miller,Consumer,Central,Retail,D. Kim,Noise-Cancelling Headphones,Electronics,199.99,2,0,399.98,399.98
+ORD-100709,2024-03-19,James Williams,Enterprise,North,Online,F. Oyelaran,Noise-Cancelling Headphones,Electronics,199.99,3,0,599.97,599.97
+ORD-100835,2024-03-19,Patricia Williams,Enterprise,Central,Retail,D. Kim,Noise-Cancelling Headphones,Electronics,199.99,10,0.1,1999.9,1799.91
+ORD-100133,2024-03-20,Patricia Haddad,Enterprise,West,Retail,A. Morgan,Portable SSD 1TB,Electronics,119.99,7,0.15,839.93,713.94
+ORD-100209,2024-03-21,Ahmed Davis,Consumer,South,Online,B. Chen,Monitor 27in,Electronics,179.99,3,0.2,539.97,431.98
+ORD-100219,2024-03-21,Liam Miller,SMB,Central,Online,C. Diaz,Ergonomic Chair,Furniture,249.0,7,0.05,1743.0,1655.85
+ORD-100341,2024-03-21,Sofia Miller,Enterprise,South,Wholesale,C. Diaz,Ergonomic Chair,Furniture,249.0,8,0,1992.0,1992.0
+ORD-100404,2024-03-21,Michael Miller,SMB,Central,Wholesale,F. Oyelaran,Wireless Mouse,Electronics,24.99,2,0,49.98,49.98
+ORD-100948,2024-03-21,Sofia Brown,Consumer,East,Wholesale,C. Diaz,Standing Desk,Furniture,399.0,6,0,2394.0,2394.0
+ORD-100013,2024-03-22,John Patel,SMB,Central,Retail,E. Novak,Cable Organizer,Accessories,14.99,7,0.1,104.93,94.44
+ORD-100342,2024-03-22,Ahmed Lopez,Consumer,East,Wholesale,F. Oyelaran,Coffee Mug,Home Office,11.5,5,0,57.5,57.5
+ORD-100182,2024-03-23,Robert Lopez,Consumer,West,Retail,E. Novak,Coffee Mug,Home Office,11.5,4,0.2,46.0,36.8
+ORD-100214,2024-03-23,Elizabeth Williams,SMB,South,Wholesale,E. Novak,Webcam 1080p,Electronics,59.99,4,0,239.96,239.96
+ORD-100813,2024-03-24,Linda Miller,Enterprise,Central,Wholesale,E. Novak,Mechanical Keyboard,Electronics,89.99,4,0,359.96,359.96
+ORD-100343,2024-03-25,Elizabeth Davis,SMB,North,Wholesale,A. Morgan,Wireless Mouse,Electronics,24.99,7,0.15,174.93,148.69
+ORD-100783,2024-03-25,Robert Haddad,Consumer,South,Wholesale,F. Oyelaran,Noise-Cancelling Headphones,Electronics,199.99,2,0.15,399.98,339.98
+ORD-100360,2024-03-26,David Brown,Consumer,East,Retail,C. Diaz,Webcam 1080p,Electronics,59.99,3,0.15,179.97,152.97
+ORD-100724,2024-03-26,Ahmed Johnson,Enterprise,East,Online,A. Morgan,Laptop Stand,Accessories,34.5,10,0.15,345.0,293.25
+ORD-100725,2024-03-26,Elizabeth Haddad,Enterprise,Central,Online,D. Kim,Ergonomic Chair,Furniture,249.0,7,0.05,1743.0,1655.85
+ORD-100969,2024-03-26,David Lopez,Enterprise,West,Retail,F. Oyelaran,Wireless Mouse,Electronics,24.99,1,0.05,24.99,23.74
+ORD-100055,2024-03-27,Sarah Williams,Consumer,East,Online,B. Chen,Ballpoint Pens (12),Stationery,8.49,2,0,16.98,16.98
+ORD-100164,2024-03-27,Patricia Miller,SMB,East,Wholesale,F. Oyelaran,Mechanical Keyboard,Electronics,89.99,9,0.15,809.91,688.42
+ORD-100282,2024-03-27,Jennifer Johnson,Enterprise,North,Online,F. Oyelaran,USB-C Hub,Electronics,39.99,9,0.05,359.91,341.91
+ORD-100450,2024-03-27,Mary Patel,Enterprise,East,Wholesale,E. Novak,Mechanical Keyboard,Electronics,89.99,6,0.15,539.94,458.95
+ORD-100876,2024-03-27,Sofia Lopez,Consumer,North,Retail,B. Chen,Wireless Mouse,Electronics,24.99,7,0.1,174.93,157.44
+ORD-100234,2024-03-28,Wei Jones,Enterprise,South,Online,E. Novak,Standing Desk,Furniture,399.0,10,0.2,3990.0,3192.0
+ORD-100437,2024-03-28,Elizabeth Brown,SMB,South,Wholesale,C. Diaz,Coffee Mug,Home Office,11.5,9,0,103.5,103.5
+ORD-100323,2024-03-29,John Jones,SMB,North,Online,C. Diaz,Coffee Mug,Home Office,11.5,5,0.1,57.5,51.75
+ORD-100424,2024-03-29,Mary Davis,Consumer,West,Online,C. Diaz,Laptop Stand,Accessories,34.5,4,0.2,138.0,110.4
+ORD-100816,2024-03-29,Patricia Davis,Consumer,South,Wholesale,B. Chen,Monitor 27in,Electronics,179.99,5,0,899.95,899.95
+ORD-100053,2024-03-30,Wei Smith,SMB,East,Online,D. Kim,Notebook Pack,Stationery,12.99,10,0,129.9,129.9
+ORD-100126,2024-03-30,Ahmed Lopez,Consumer,East,Retail,C. Diaz,Laptop Stand,Accessories,34.5,3,0.2,103.5,82.8
+ORD-100395,2024-03-30,Ahmed Davis,Enterprise,Central,Online,D. Kim,Monitor 27in,Electronics,179.99,9,0.15,1619.91,1376.92
+ORD-100516,2024-03-30,David Jones,Enterprise,South,Retail,F. Oyelaran,Ballpoint Pens (12),Stationery,8.49,10,0,84.9,84.9
+ORD-100862,2024-03-30,Sofia Lopez,Enterprise,North,Retail,E. Novak,Laptop Stand,Accessories,34.5,5,0.05,172.5,163.88
+ORD-100389,2024-03-31,Ahmed Smith,Enterprise,East,Wholesale,E. Novak,Laptop Stand,Accessories,34.5,10,0,345.0,345.0
+ORD-100443,2024-03-31,Liam Lopez,Consumer,South,Wholesale,B. Chen,Webcam 1080p,Electronics,59.99,1,0,59.99,59.99
+ORD-100743,2024-03-31,Michael Wilson,Enterprise,West,Online,F. Oyelaran,Standing Desk,Furniture,399.0,1,0.05,399.0,379.05
+ORD-100086,2024-04-01,Robert Lopez,Consumer,North,Wholesale,C. Diaz,Noise-Cancelling Headphones,Electronics,199.99,1,0.15,199.99,169.99
+ORD-100543,2024-04-01,Nina Lopez,SMB,Central,Retail,F. Oyelaran,Webcam 1080p,Electronics,59.99,9,0.1,539.91,485.92
+ORD-100558,2024-04-01,Michael Lopez,Consumer,South,Retail,F. Oyelaran,Ergonomic Chair,Furniture,249.0,6,0,1494.0,1494.0
+ORD-100667,2024-04-01,Jennifer Rossi,Enterprise,Central,Retail,A. Morgan,USB-C Hub,Electronics,39.99,5,0.1,199.95,179.95
+ORD-100068,2024-04-03,Sarah Miller,SMB,East,Retail,D. Kim,Wireless Mouse,Electronics,24.99,5,0.05,124.95,118.7
+ORD-100213,2024-04-03,Mary Brown,Enterprise,South,Retail,B. Chen,Cable Organizer,Accessories,14.99,3,0.05,44.97,42.72
+ORD-100088,2024-04-04,Nina Brown,Consumer,West,Retail,A. Morgan,Wireless Mouse,Electronics,24.99,5,0.2,124.95,99.96
+ORD-100271,2024-04-04,Linda Davis,SMB,South,Retail,A. Morgan,Cable Organizer,Accessories,14.99,9,0.05,134.91,128.16
+ORD-100646,2024-04-04,James Anderson,SMB,West,Retail,D. Kim,Webcam 1080p,Electronics,59.99,3,0.15,179.97,152.97
+ORD-100206,2024-04-05,Patricia Lopez,SMB,West,Online,E. Novak,Ergonomic Chair,Furniture,249.0,9,0.05,2241.0,2128.95
+ORD-100299,2024-04-05,Sofia Brown,Consumer,North,Retail,E. Novak,Desk Lamp,Home Office,45.0,8,0.1,360.0,324.0
+ORD-100319,2024-04-05,James Miller,SMB,Central,Retail,D. Kim,Ballpoint Pens (12),Stationery,8.49,7,0.05,59.43,56.46
+ORD-100803,2024-04-05,Nina Johnson,SMB,Central,Retail,D. Kim,Coffee Mug,Home Office,11.5,7,0,80.5,80.5
+ORD-100588,2024-04-06,Robert Wilson,Consumer,West,Wholesale,D. Kim,Coffee Mug,Home Office,11.5,2,0,23.0,23.0
+ORD-100223,2024-04-07,Liam Haddad,SMB,West,Online,A. Morgan,Cable Organizer,Accessories,14.99,3,0.05,44.97,42.72
+ORD-100476,2024-04-07,Sofia Johnson,Enterprise,Central,Online,D. Kim,Monitor 27in,Electronics,179.99,6,0,1079.94,1079.94
+ORD-100612,2024-04-07,Linda Garcia,Enterprise,Central,Retail,F. Oyelaran,Laptop Stand,Accessories,34.5,9,0.15,310.5,263.93
+ORD-100006,2024-04-08,Linda Wilson,Consumer,South,Online,D. Kim,Monitor 27in,Electronics,179.99,2,0,359.98,359.98
+ORD-100085,2024-04-08,Elizabeth Brown,Consumer,East,Online,C. Diaz,Laptop Stand,Accessories,34.5,8,0,276.0,276.0
+ORD-100414,2024-04-08,John Kim,Consumer,South,Wholesale,C. Diaz,USB-C Hub,Electronics,39.99,1,0.05,39.99,37.99
+ORD-100499,2024-04-08,Patricia Garcia,Enterprise,Central,Online,F. Oyelaran,Webcam 1080p,Electronics,59.99,9,0,539.91,539.91
+ORD-100943,2024-04-08,Patricia Jones,Enterprise,West,Retail,A. Morgan,Coffee Mug,Home Office,11.5,6,0.05,69.0,65.55
+ORD-100057,2024-04-09,Wei Davis,Consumer,North,Online,D. Kim,Monitor 27in,Electronics,179.99,7,0.05,1259.93,1196.93
+ORD-100181,2024-04-09,Liam Wilson,SMB,Central,Wholesale,D. Kim,Webcam 1080p,Electronics,59.99,10,0.05,599.9,569.9
+ORD-100552,2024-04-09,James Lopez,Consumer,West,Wholesale,A. Morgan,Ergonomic Chair,Furniture,249.0,7,0.1,1743.0,1568.7
+ORD-100759,2024-04-09,Nina Haddad,Consumer,South,Wholesale,A. Morgan,Mechanical Keyboard,Electronics,89.99,3,0.15,269.97,229.47
+ORD-100568,2024-04-10,James Garcia,SMB,West,Online,F. Oyelaran,USB-C Hub,Electronics,39.99,3,0.05,119.97,113.97
+ORD-100986,2024-04-10,John Brown,Consumer,West,Retail,A. Morgan,USB-C Hub,Electronics,39.99,6,0,239.94,239.94
+ORD-100229,2024-04-11,Mary Johnson,Consumer,South,Wholesale,C. Diaz,Notebook Pack,Stationery,12.99,9,0.05,116.91,111.06
+ORD-100693,2024-04-11,Liam Jones,Consumer,West,Online,D. Kim,Monitor 27in,Electronics,179.99,9,0,1619.91,1619.91
+ORD-100936,2024-04-11,Mary Anderson,SMB,South,Wholesale,E. Novak,Portable SSD 1TB,Electronics,119.99,5,0,599.95,599.95
+ORD-100245,2024-04-12,Elizabeth Johnson,Consumer,Central,Online,E. Novak,Cable Organizer,Accessories,14.99,5,0,74.95,74.95
+ORD-100559,2024-04-12,David Miller,Consumer,South,Online,E. Novak,Laptop Stand,Accessories,34.5,4,0.2,138.0,110.4
+ORD-100548,2024-04-13,Michael Johnson,Enterprise,Central,Wholesale,F. Oyelaran,Coffee Mug,Home Office,11.5,9,0,103.5,103.5
+ORD-100836,2024-04-13,David Anderson,Enterprise,Central,Online,A. Morgan,Noise-Cancelling Headphones,Electronics,199.99,8,0.05,1599.92,1519.92
+ORD-100999,2024-04-13,Michael Haddad,Enterprise,West,Wholesale,F. Oyelaran,Cable Organizer,Accessories,14.99,2,0,29.98,29.98
+ORD-100236,2024-04-14,Nina Johnson,Enterprise,South,Wholesale,B. Chen,Desk Lamp,Home Office,45.0,9,0.2,405.0,324.0
+ORD-100855,2024-04-14,Elizabeth Garcia,SMB,Central,Online,D. Kim,Coffee Mug,Home Office,11.5,7,0,80.5,80.5
+ORD-100064,2024-04-15,James Patel,SMB,North,Retail,C. Diaz,Coffee Mug,Home Office,11.5,7,0.05,80.5,76.47
+ORD-100333,2024-04-15,Ahmed Lopez,Enterprise,Central,Online,C. Diaz,Cable Organizer,Accessories,14.99,1,0.1,14.99,13.49
+ORD-100456,2024-04-16,Linda Smith,Consumer,North,Online,E. Novak,Monitor 27in,Electronics,179.99,8,0,1439.92,1439.92
+ORD-100595,2024-04-16,Elizabeth Anderson,Consumer,North,Wholesale,E. Novak,Ergonomic Chair,Furniture,249.0,7,0.15,1743.0,1481.55
+ORD-100564,2024-04-17,Sarah Nguyen,Enterprise,East,Online,E. Novak,Desk Lamp,Home Office,45.0,10,0,450.0,450.0
+ORD-100972,2024-04-17,Sarah Anderson,Enterprise,East,Wholesale,D. Kim,Notebook Pack,Stationery,12.99,9,0.2,116.91,93.53
+ORD-100339,2024-04-18,Elizabeth Anderson,Enterprise,Central,Online,E. Novak,Ergonomic Chair,Furniture,249.0,5,0,1245.0,1245.0
+ORD-100708,2024-04-18,Robert Miller,Enterprise,West,Retail,D. Kim,Ballpoint Pens (12),Stationery,8.49,3,0.05,25.47,24.2
+ORD-100908,2024-04-18,David Brown,SMB,Central,Online,A. Morgan,USB-C Hub,Electronics,39.99,2,0.15,79.98,67.98
+ORD-100970,2024-04-18,Mary Garcia,Enterprise,Central,Wholesale,A. Morgan,Notebook Pack,Stationery,12.99,9,0,116.91,116.91
+ORD-100177,2024-04-19,Linda Jones,Consumer,North,Retail,A. Morgan,Webcam 1080p,Electronics,59.99,8,0,479.92,479.92
+ORD-100156,2024-04-20,Ahmed Kim,Consumer,East,Wholesale,F. Oyelaran,Cable Organizer,Accessories,14.99,9,0,134.91,134.91
+ORD-100260,2024-04-21,Sofia Nguyen,Enterprise,North,Wholesale,A. Morgan,Notebook Pack,Stationery,12.99,2,0,25.98,25.98
+ORD-100058,2024-04-22,Mary Davis,Consumer,West,Online,D. Kim,USB-C Hub,Electronics,39.99,9,0.05,359.91,341.91
+ORD-100764,2024-04-22,Nina Johnson,SMB,South,Online,E. Novak,Mechanical Keyboard,Electronics,89.99,8,0.1,719.92,647.93
+ORD-100269,2024-04-23,Mary Garcia,Enterprise,West,Wholesale,D. Kim,Desk Lamp,Home Office,45.0,5,0,225.0,225.0
+ORD-100313,2024-04-23,Linda Rossi,SMB,West,Retail,F. Oyelaran,Standing Desk,Furniture,399.0,9,0.1,3591.0,3231.9
+ORD-100070,2024-04-24,Mary Smith,Consumer,South,Online,E. Novak,Ballpoint Pens (12),Stationery,8.49,2,0.2,16.98,13.58
+ORD-100430,2024-04-24,Elizabeth Lopez,SMB,West,Retail,D. Kim,Noise-Cancelling Headphones,Electronics,199.99,10,0.2,1999.9,1599.92
+ORD-100984,2024-04-24,Liam Anderson,Consumer,West,Online,C. Diaz,Wireless Mouse,Electronics,24.99,5,0.05,124.95,118.7
+ORD-100239,2024-04-25,Michael Haddad,SMB,West,Retail,E. Novak,Noise-Cancelling Headphones,Electronics,199.99,5,0.15,999.95,849.96
+ORD-100849,2024-04-25,Patricia Anderson,SMB,North,Wholesale,E. Novak,Notebook Pack,Stationery,12.99,2,0.15,25.98,22.08
+ORD-100046,2024-04-26,Michael Patel,SMB,East,Online,C. Diaz,Laptop Stand,Accessories,34.5,1,0.15,34.5,29.32
+ORD-100534,2024-04-27,Patricia Smith,Consumer,Central,Wholesale,F. Oyelaran,Desk Lamp,Home Office,45.0,7,0,315.0,315.0
+ORD-100889,2024-04-27,David Garcia,Enterprise,West,Retail,A. Morgan,USB-C Hub,Electronics,39.99,1,0.05,39.99,37.99
+ORD-100549,2024-04-28,Mary Nguyen,Consumer,North,Online,A. Morgan,Notebook Pack,Stationery,12.99,3,0.15,38.97,33.12
+ORD-100369,2024-04-29,James Anderson,Consumer,West,Wholesale,F. Oyelaran,Standing Desk,Furniture,399.0,6,0.15,2394.0,2034.9
+ORD-100591,2024-04-29,Nina Miller,SMB,West,Retail,D. Kim,Mechanical Keyboard,Electronics,89.99,3,0,269.97,269.97
+ORD-100032,2024-04-30,Linda Johnson,Enterprise,North,Retail,F. Oyelaran,Desk Lamp,Home Office,45.0,2,0.1,90.0,81.0
+ORD-100132,2024-04-30,Wei Rossi,SMB,Central,Retail,E. Novak,Portable SSD 1TB,Electronics,119.99,9,0,1079.91,1079.91
+ORD-100252,2024-04-30,Elizabeth Smith,SMB,East,Wholesale,B. Chen,Ergonomic Chair,Furniture,249.0,5,0,1245.0,1245.0
+ORD-100700,2024-04-30,Nina Brown,Enterprise,Central,Retail,C. Diaz,USB-C Hub,Electronics,39.99,2,0.15,79.98,67.98
+ORD-100722,2024-04-30,Mary Anderson,Consumer,South,Wholesale,B. Chen,Ergonomic Chair,Furniture,249.0,3,0.2,747.0,597.6
+ORD-100180,2024-05-01,Liam Davis,Enterprise,South,Retail,D. Kim,Ergonomic Chair,Furniture,249.0,10,0,2490.0,2490.0
+ORD-100682,2024-05-01,Elizabeth Miller,Enterprise,East,Online,A. Morgan,Webcam 1080p,Electronics,59.99,8,0.2,479.92,383.94
+ORD-100243,2024-05-02,Linda Davis,Consumer,North,Retail,C. Diaz,Laptop Stand,Accessories,34.5,1,0.15,34.5,29.32
+ORD-100520,2024-05-02,Jennifer Jones,SMB,South,Online,E. Novak,Coffee Mug,Home Office,11.5,10,0.15,115.0,97.75
+ORD-100773,2024-05-02,Nina Wilson,Consumer,West,Wholesale,F. Oyelaran,Ballpoint Pens (12),Stationery,8.49,2,0,16.98,16.98
+ORD-100856,2024-05-02,James Davis,SMB,West,Retail,E. Novak,Mechanical Keyboard,Electronics,89.99,3,0,269.97,269.97
+ORD-100119,2024-05-03,Linda Rossi,Enterprise,East,Retail,C. Diaz,Ergonomic Chair,Furniture,249.0,10,0,2490.0,2490.0
+ORD-100221,2024-05-03,Liam Davis,Consumer,North,Online,C. Diaz,Ergonomic Chair,Furniture,249.0,2,0,498.0,498.0
+ORD-100266,2024-05-03,Mary Rossi,Enterprise,North,Online,F. Oyelaran,Laptop Stand,Accessories,34.5,2,0,69.0,69.0
+ORD-100388,2024-05-03,Mary Davis,Enterprise,West,Retail,B. Chen,Noise-Cancelling Headphones,Electronics,199.99,9,0.2,1799.91,1439.93
+ORD-100426,2024-05-03,Liam Garcia,SMB,Central,Wholesale,C. Diaz,Webcam 1080p,Electronics,59.99,8,0.1,479.92,431.93
+ORD-100772,2024-05-03,James Kim,Consumer,South,Retail,C. Diaz,Mechanical Keyboard,Electronics,89.99,9,0.2,809.91,647.93
+ORD-100288,2024-05-04,John Johnson,Consumer,West,Retail,D. Kim,Monitor 27in,Electronics,179.99,4,0,719.96,719.96
+ORD-100598,2024-05-04,Nina Jones,SMB,North,Online,B. Chen,Wireless Mouse,Electronics,24.99,1,0.1,24.99,22.49
+ORD-100078,2024-05-05,Liam Davis,SMB,Central,Wholesale,F. Oyelaran,Coffee Mug,Home Office,11.5,2,0,23.0,23.0
+ORD-100806,2024-05-05,David Haddad,Consumer,Central,Wholesale,C. Diaz,Wireless Mouse,Electronics,24.99,2,0.2,49.98,39.98
+ORD-100843,2024-05-05,Elizabeth Williams,Enterprise,North,Retail,A. Morgan,Laptop Stand,Accessories,34.5,4,0.15,138.0,117.3
+ORD-100929,2024-05-05,Elizabeth Garcia,Consumer,East,Retail,F. Oyelaran,Coffee Mug,Home Office,11.5,8,0,92.0,92.0
+ORD-100014,2024-05-08,Patricia Lopez,Enterprise,East,Online,C. Diaz,Standing Desk,Furniture,399.0,1,0.15,399.0,339.15
+ORD-100039,2024-05-08,Sofia Lopez,Consumer,North,Retail,B. Chen,Portable SSD 1TB,Electronics,119.99,1,0,119.99,119.99
+ORD-100084,2024-05-08,Michael Anderson,Consumer,Central,Wholesale,B. Chen,Laptop Stand,Accessories,34.5,2,0.15,69.0,58.65
+ORD-100489,2024-05-08,Liam Davis,Enterprise,East,Wholesale,E. Novak,Laptop Stand,Accessories,34.5,10,0.2,345.0,276.0
+ORD-100554,2024-05-08,Nina Davis,SMB,West,Wholesale,D. Kim,Monitor 27in,Electronics,179.99,8,0.05,1439.92,1367.92
+ORD-100287,2024-05-09,Wei Williams,SMB,West,Retail,E. Novak,Coffee Mug,Home Office,11.5,6,0,69.0,69.0
+ORD-100431,2024-05-09,Wei Brown,Consumer,Central,Wholesale,C. Diaz,Laptop Stand,Accessories,34.5,8,0,276.0,276.0
+ORD-100146,2024-05-10,Nina Williams,Consumer,North,Online,D. Kim,Webcam 1080p,Electronics,59.99,3,0.15,179.97,152.97
+ORD-100675,2024-05-10,Elizabeth Anderson,Consumer,North,Wholesale,C. Diaz,Cable Organizer,Accessories,14.99,2,0,29.98,29.98
+ORD-100641,2024-05-11,James Lopez,Consumer,South,Retail,D. Kim,Portable SSD 1TB,Electronics,119.99,7,0.2,839.93,671.94
+ORD-100995,2024-05-11,Liam Garcia,Consumer,South,Online,A. Morgan,Webcam 1080p,Electronics,59.99,7,0.05,419.93,398.93
+ORD-100380,2024-05-12,John Miller,Enterprise,West,Online,A. Morgan,Portable SSD 1TB,Electronics,119.99,2,0,239.98,239.98
+ORD-100373,2024-05-13,Wei Anderson,SMB,West,Retail,B. Chen,Coffee Mug,Home Office,11.5,6,0.2,69.0,55.2
+ORD-100518,2024-05-13,Robert Nguyen,SMB,South,Wholesale,F. Oyelaran,Standing Desk,Furniture,399.0,9,0.05,3591.0,3411.45
+ORD-100885,2024-05-13,Sarah Rossi,Consumer,North,Retail,F. Oyelaran,USB-C Hub,Electronics,39.99,9,0.05,359.91,341.91
+ORD-100410,2024-05-14,Mary Jones,Enterprise,North,Online,F. Oyelaran,Laptop Stand,Accessories,34.5,5,0.1,172.5,155.25
+ORD-100524,2024-05-14,Jennifer Patel,Enterprise,West,Retail,E. Novak,Notebook Pack,Stationery,12.99,9,0.1,116.91,105.22
+ORD-100565,2024-05-14,Sarah Nguyen,Consumer,West,Retail,B. Chen,Laptop Stand,Accessories,34.5,5,0.05,172.5,163.88
+ORD-100048,2024-05-15,Sofia Nguyen,Enterprise,East,Retail,E. Novak,Wireless Mouse,Electronics,24.99,2,0.1,49.98,44.98
+ORD-100114,2024-05-15,Wei Williams,SMB,Central,Retail,C. Diaz,Webcam 1080p,Electronics,59.99,10,0.15,599.9,509.91
+ORD-100217,2024-05-15,Sofia Smith,SMB,Central,Retail,F. Oyelaran,Ballpoint Pens (12),Stationery,8.49,4,0.2,33.96,27.17
+ORD-100399,2024-05-15,John Nguyen,SMB,North,Wholesale,A. Morgan,Laptop Stand,Accessories,34.5,4,0.15,138.0,117.3
+ORD-100458,2024-05-15,Jennifer Johnson,SMB,East,Wholesale,C. Diaz,Ergonomic Chair,Furniture,249.0,1,0,249.0,249.0
+ORD-100109,2024-05-16,Elizabeth Haddad,Consumer,West,Wholesale,D. Kim,Coffee Mug,Home Office,11.5,1,0,11.5,11.5
+ORD-100199,2024-05-16,Sofia Williams,SMB,Central,Online,E. Novak,Cable Organizer,Accessories,14.99,2,0.15,29.98,25.48
+ORD-100010,2024-05-17,Sarah Miller,Enterprise,West,Retail,F. Oyelaran,Mechanical Keyboard,Electronics,89.99,4,0.1,359.96,323.96
+ORD-100302,2024-05-17,Jennifer Kim,SMB,West,Retail,D. Kim,Ergonomic Chair,Furniture,249.0,3,0,747.0,747.0
+ORD-100900,2024-05-17,John Kim,SMB,Central,Online,D. Kim,Notebook Pack,Stationery,12.99,10,0.05,129.9,123.41
+ORD-100636,2024-05-18,James Williams,SMB,East,Wholesale,F. Oyelaran,Wireless Mouse,Electronics,24.99,8,0.15,199.92,169.93
+ORD-100690,2024-05-18,Linda Garcia,Consumer,East,Wholesale,C. Diaz,USB-C Hub,Electronics,39.99,5,0.1,199.95,179.95
+ORD-100766,2024-05-18,Mary Johnson,SMB,South,Online,D. Kim,Laptop Stand,Accessories,34.5,6,0,207.0,207.0
+ORD-100097,2024-05-19,Liam Williams,Enterprise,North,Retail,F. Oyelaran,Standing Desk,Furniture,399.0,9,0.05,3591.0,3411.45
+ORD-100589,2024-05-19,Michael Anderson,Consumer,South,Online,E. Novak,Monitor 27in,Electronics,179.99,10,0.05,1799.9,1709.9
+ORD-100973,2024-05-19,Michael Rossi,Enterprise,East,Online,F. Oyelaran,Laptop Stand,Accessories,34.5,6,0,207.0,207.0
+ORD-100202,2024-05-20,Wei Nguyen,Enterprise,South,Online,B. Chen,Ballpoint Pens (12),Stationery,8.49,1,0,8.49,8.49
+ORD-100215,2024-05-20,John Garcia,Enterprise,Central,Online,B. Chen,USB-C Hub,Electronics,39.99,5,0.1,199.95,179.95
+ORD-100240,2024-05-20,Wei Patel,SMB,South,Retail,A. Morgan,Noise-Cancelling Headphones,Electronics,199.99,2,0.1,399.98,359.98
+ORD-100480,2024-05-20,Liam Jones,Consumer,West,Wholesale,F. Oyelaran,Desk Lamp,Home Office,45.0,6,0,270.0,270.0
+ORD-100958,2024-05-20,Liam Williams,Enterprise,Central,Retail,D. Kim,Cable Organizer,Accessories,14.99,4,0,59.96,59.96
+ORD-100138,2024-05-21,David Garcia,Consumer,North,Online,A. Morgan,Coffee Mug,Home Office,11.5,3,0,34.5,34.5
+ORD-100550,2024-05-21,Wei Patel,Enterprise,South,Wholesale,A. Morgan,Cable Organizer,Accessories,14.99,7,0,104.93,104.93
+ORD-100688,2024-05-21,Liam Brown,SMB,South,Online,C. Diaz,Standing Desk,Furniture,399.0,6,0.2,2394.0,1915.2
+ORD-100007,2024-05-22,Ahmed Nguyen,Consumer,East,Wholesale,F. Oyelaran,Ergonomic Chair,Furniture,249.0,6,0,1494.0,1494.0
+ORD-100069,2024-05-22,John Haddad,Consumer,Central,Online,C. Diaz,Cable Organizer,Accessories,14.99,7,0,104.93,104.93
+ORD-100100,2024-05-22,Nina Williams,SMB,East,Retail,C. Diaz,USB-C Hub,Electronics,39.99,10,0.05,399.9,379.9
+ORD-100821,2024-05-22,Jennifer Davis,Enterprise,Central,Online,A. Morgan,Notebook Pack,Stationery,12.99,6,0,77.94,77.94
+ORD-100371,2024-05-23,Sofia Nguyen,SMB,North,Wholesale,A. Morgan,Mechanical Keyboard,Electronics,89.99,1,0,89.99,89.99
+ORD-100383,2024-05-23,Linda Wilson,SMB,West,Wholesale,D. Kim,Ergonomic Chair,Furniture,249.0,3,0,747.0,747.0
+ORD-100387,2024-05-23,Ahmed Davis,Consumer,North,Online,F. Oyelaran,Wireless Mouse,Electronics,24.99,8,0.1,199.92,179.93
+ORD-100979,2024-05-23,James Miller,Enterprise,West,Online,C. Diaz,Ergonomic Chair,Furniture,249.0,10,0,2490.0,2490.0
+ORD-100038,2024-05-24,Sarah Miller,Enterprise,East,Wholesale,D. Kim,Notebook Pack,Stationery,12.99,4,0.15,51.96,44.17
+ORD-100036,2024-05-25,Elizabeth Smith,Enterprise,Central,Retail,F. Oyelaran,USB-C Hub,Electronics,39.99,8,0.2,319.92,255.94
+ORD-100617,2024-05-25,Robert Wilson,Consumer,East,Online,B. Chen,Notebook Pack,Stationery,12.99,1,0.1,12.99,11.69
+ORD-100799,2024-05-25,Liam Williams,Consumer,West,Wholesale,D. Kim,Webcam 1080p,Electronics,59.99,6,0,359.94,359.94
+ORD-100827,2024-05-25,Elizabeth Rossi,Consumer,Central,Retail,C. Diaz,Ergonomic Chair,Furniture,249.0,10,0.15,2490.0,2116.5
+ORD-100937,2024-05-25,Elizabeth Anderson,Enterprise,South,Online,A. Morgan,Laptop Stand,Accessories,34.5,2,0.1,69.0,62.1
+ORD-100029,2024-05-26,Nina Jones,Consumer,East,Online,A. Morgan,Desk Lamp,Home Office,45.0,9,0.15,405.0,344.25
+ORD-100197,2024-05-26,Sarah Lopez,Consumer,East,Retail,D. Kim,Webcam 1080p,Electronics,59.99,1,0.2,59.99,47.99
+ORD-100207,2024-05-26,Patricia Jones,Consumer,West,Online,F. Oyelaran,Monitor 27in,Electronics,179.99,8,0,1439.92,1439.92
+ORD-100105,2024-05-27,James Davis,Enterprise,South,Retail,E. Novak,Ergonomic Chair,Furniture,249.0,8,0,1992.0,1992.0
+ORD-100241,2024-05-27,Liam Lopez,Enterprise,West,Online,B. Chen,Monitor 27in,Electronics,179.99,2,0,359.98,359.98
+ORD-100662,2024-05-27,Robert Miller,Consumer,Central,Retail,A. Morgan,Ballpoint Pens (12),Stationery,8.49,3,0,25.47,25.47
+ORD-100788,2024-05-27,Ahmed Wilson,SMB,South,Wholesale,B. Chen,Cable Organizer,Accessories,14.99,1,0,14.99,14.99
+ORD-100247,2024-05-28,Elizabeth Brown,SMB,East,Retail,F. Oyelaran,Portable SSD 1TB,Electronics,119.99,1,0,119.99,119.99
+ORD-100482,2024-05-28,Robert Garcia,Enterprise,Central,Wholesale,F. Oyelaran,Ballpoint Pens (12),Stationery,8.49,6,0.15,50.94,43.3
+ORD-100519,2024-05-28,John Patel,SMB,Central,Online,F. Oyelaran,USB-C Hub,Electronics,39.99,8,0.1,319.92,287.93
+ORD-100306,2024-05-29,Linda Anderson,SMB,East,Retail,C. Diaz,Monitor 27in,Electronics,179.99,8,0.1,1439.92,1295.93
+ORD-100474,2024-05-29,Patricia Johnson,Consumer,West,Online,F. Oyelaran,Standing Desk,Furniture,399.0,9,0,3591.0,3591.0
+ORD-100585,2024-05-29,James Nguyen,Consumer,West,Wholesale,D. Kim,Notebook Pack,Stationery,12.99,4,0.2,51.96,41.57
+ORD-100669,2024-05-29,David Anderson,Enterprise,West,Wholesale,B. Chen,Ergonomic Chair,Furniture,249.0,3,0,747.0,747.0
+ORD-100810,2024-05-29,Michael Garcia,Consumer,Central,Online,E. Novak,Standing Desk,Furniture,399.0,2,0.1,798.0,718.2
+ORD-100200,2024-05-30,Sarah Wilson,SMB,West,Wholesale,F. Oyelaran,Webcam 1080p,Electronics,59.99,2,0,119.98,119.98
+ORD-100402,2024-05-30,Patricia Williams,SMB,South,Retail,B. Chen,Wireless Mouse,Electronics,24.99,6,0,149.94,149.94
+ORD-100496,2024-05-30,Nina Smith,Consumer,East,Retail,B. Chen,Laptop Stand,Accessories,34.5,10,0.1,345.0,310.5
+ORD-100776,2024-05-31,Michael Williams,Enterprise,East,Wholesale,A. Morgan,Desk Lamp,Home Office,45.0,5,0.15,225.0,191.25
+ORD-100507,2024-06-01,Robert Brown,Consumer,North,Wholesale,E. Novak,Ballpoint Pens (12),Stationery,8.49,6,0,50.94,50.94
+ORD-100907,2024-06-01,Liam Rossi,Enterprise,East,Retail,B. Chen,Webcam 1080p,Electronics,59.99,10,0.15,599.9,509.91
+ORD-100903,2024-06-02,Elizabeth Davis,Enterprise,West,Retail,E. Novak,USB-C Hub,Electronics,39.99,3,0.15,119.97,101.97
+ORD-100971,2024-06-02,Patricia Jones,Enterprise,Central,Retail,D. Kim,Mechanical Keyboard,Electronics,89.99,7,0.15,629.93,535.44
+ORD-100074,2024-06-03,Patricia Johnson,SMB,Central,Retail,F. Oyelaran,Coffee Mug,Home Office,11.5,10,0.2,115.0,92.0
+ORD-100218,2024-06-03,Wei Wilson,SMB,North,Wholesale,A. Morgan,Ergonomic Chair,Furniture,249.0,4,0.2,996.0,796.8
+ORD-100792,2024-06-03,Nina Jones,SMB,East,Online,A. Morgan,Mechanical Keyboard,Electronics,89.99,1,0.05,89.99,85.49
+ORD-100867,2024-06-03,Michael Garcia,SMB,East,Wholesale,D. Kim,Mechanical Keyboard,Electronics,89.99,4,0,359.96,359.96
+ORD-100309,2024-06-04,Robert Kim,SMB,North,Retail,E. Novak,Laptop Stand,Accessories,34.5,5,0.15,172.5,146.62
+ORD-100611,2024-06-04,Patricia Brown,Enterprise,South,Wholesale,D. Kim,Mechanical Keyboard,Electronics,89.99,4,0.1,359.96,323.96
+ORD-100633,2024-06-05,Sarah Miller,Enterprise,Central,Online,B. Chen,Ergonomic Chair,Furniture,249.0,8,0,1992.0,1992.0
+ORD-100370,2024-06-06,Linda Kim,SMB,North,Online,F. Oyelaran,Mechanical Keyboard,Electronics,89.99,4,0.1,359.96,323.96
+ORD-100396,2024-06-06,Jennifer Smith,Enterprise,Central,Retail,E. Novak,Monitor 27in,Electronics,179.99,5,0,899.95,899.95
+ORD-100439,2024-06-06,David Wilson,SMB,North,Retail,A. Morgan,Desk Lamp,Home Office,45.0,6,0,270.0,270.0
+ORD-100749,2024-06-06,Jennifer Williams,Consumer,North,Retail,E. Novak,Coffee Mug,Home Office,11.5,2,0.05,23.0,21.85
+ORD-100817,2024-06-06,John Kim,Enterprise,North,Online,A. Morgan,USB-C Hub,Electronics,39.99,4,0,159.96,159.96
+ORD-100694,2024-06-07,Linda Davis,Consumer,Central,Retail,C. Diaz,Ballpoint Pens (12),Stationery,8.49,8,0.05,67.92,64.52
+ORD-100952,2024-06-07,Wei Haddad,Enterprise,Central,Online,B. Chen,Notebook Pack,Stationery,12.99,8,0,103.92,103.92
+ORD-100154,2024-06-08,John Johnson,Consumer,South,Wholesale,A. Morgan,Monitor 27in,Electronics,179.99,6,0.2,1079.94,863.95
+ORD-100686,2024-06-08,John Anderson,SMB,North,Online,E. Novak,Portable SSD 1TB,Electronics,119.99,1,0.15,119.99,101.99
+ORD-100161,2024-06-09,Wei Kim,SMB,North,Retail,A. Morgan,Notebook Pack,Stationery,12.99,7,0.1,90.93,81.84
+ORD-100322,2024-06-09,Wei Brown,SMB,East,Retail,E. Novak,Notebook Pack,Stationery,12.99,7,0.1,90.93,81.84
+ORD-100375,2024-06-09,Ahmed Miller,SMB,East,Retail,C. Diaz,Desk Lamp,Home Office,45.0,2,0.1,90.0,81.0
+ORD-100465,2024-06-09,Linda Anderson,Enterprise,Central,Wholesale,F. Oyelaran,Wireless Mouse,Electronics,24.99,9,0.2,224.91,179.93
+ORD-100514,2024-06-09,Sofia Lopez,SMB,South,Wholesale,F. Oyelaran,Laptop Stand,Accessories,34.5,4,0.15,138.0,117.3
+ORD-100575,2024-06-09,David Patel,SMB,West,Retail,F. Oyelaran,Webcam 1080p,Electronics,59.99,5,0.15,299.95,254.96
+ORD-100861,2024-06-09,Wei Davis,SMB,South,Online,A. Morgan,Webcam 1080p,Electronics,59.99,10,0.15,599.9,509.91
+ORD-100872,2024-06-09,Jennifer Davis,Enterprise,South,Wholesale,F. Oyelaran,Notebook Pack,Stationery,12.99,2,0,25.98,25.98
+ORD-100326,2024-06-10,Mary Nguyen,Consumer,West,Online,B. Chen,Coffee Mug,Home Office,11.5,8,0.1,92.0,82.8
+ORD-100618,2024-06-10,Robert Brown,Consumer,West,Retail,B. Chen,Wireless Mouse,Electronics,24.99,5,0.1,124.95,112.45
+ORD-100888,2024-06-10,Robert Rossi,Consumer,South,Online,A. Morgan,Monitor 27in,Electronics,179.99,8,0.2,1439.92,1151.94
+ORD-100212,2024-06-11,Liam Nguyen,Consumer,Central,Wholesale,E. Novak,Ballpoint Pens (12),Stationery,8.49,2,0.05,16.98,16.13
+ORD-100790,2024-06-11,David Nguyen,Consumer,South,Wholesale,F. Oyelaran,Notebook Pack,Stationery,12.99,3,0.05,38.97,37.02
+ORD-100220,2024-06-12,Robert Nguyen,Enterprise,Central,Online,C. Diaz,Monitor 27in,Electronics,179.99,6,0.05,1079.94,1025.94
+ORD-100365,2024-06-12,Ahmed Brown,Enterprise,North,Online,B. Chen,Noise-Cancelling Headphones,Electronics,199.99,2,0.1,399.98,359.98
+ORD-100415,2024-06-12,Wei Patel,Enterprise,East,Retail,E. Novak,Portable SSD 1TB,Electronics,119.99,2,0,239.98,239.98
+ORD-100101,2024-06-13,Jennifer Anderson,SMB,West,Retail,F. Oyelaran,Ballpoint Pens (12),Stationery,8.49,2,0.2,16.98,13.58
+ORD-100468,2024-06-13,Mary Davis,Enterprise,West,Retail,B. Chen,Laptop Stand,Accessories,34.5,6,0,207.0,207.0
+ORD-100605,2024-06-13,Wei Miller,Enterprise,West,Wholesale,B. Chen,Monitor 27in,Electronics,179.99,2,0.15,359.98,305.98
+ORD-100630,2024-06-13,James Wilson,Consumer,East,Wholesale,D. Kim,Webcam 1080p,Electronics,59.99,10,0.15,599.9,509.91
+ORD-100098,2024-06-14,John Davis,Enterprise,Central,Wholesale,A. Morgan,Notebook Pack,Stationery,12.99,5,0,64.95,64.95
+ORD-100483,2024-06-14,Ahmed Haddad,Enterprise,Central,Wholesale,F. Oyelaran,Monitor 27in,Electronics,179.99,2,0.2,359.98,287.98
+ORD-100493,2024-06-14,Elizabeth Haddad,Enterprise,Central,Retail,A. Morgan,Notebook Pack,Stationery,12.99,1,0.2,12.99,10.39
+ORD-100811,2024-06-14,Elizabeth Lopez,Enterprise,East,Online,E. Novak,Coffee Mug,Home Office,11.5,6,0.2,69.0,55.2
+ORD-100846,2024-06-14,Nina Brown,Enterprise,South,Retail,D. Kim,Notebook Pack,Stationery,12.99,2,0.2,25.98,20.78
+ORD-100894,2024-06-14,Liam Haddad,SMB,East,Wholesale,F. Oyelaran,USB-C Hub,Electronics,39.99,1,0,39.99,39.99
+ORD-100117,2024-06-15,Ahmed Nguyen,SMB,South,Online,E. Novak,Cable Organizer,Accessories,14.99,1,0,14.99,14.99
+ORD-100162,2024-06-15,Ahmed Williams,SMB,North,Online,D. Kim,USB-C Hub,Electronics,39.99,10,0.05,399.9,379.9
+ORD-100763,2024-06-15,Linda Brown,Consumer,West,Online,D. Kim,Laptop Stand,Accessories,34.5,2,0,69.0,69.0
+ORD-100874,2024-06-16,John Kim,SMB,South,Retail,D. Kim,Cable Organizer,Accessories,14.99,5,0,74.95,74.95
+ORD-100290,2024-06-18,Mary Davis,Consumer,Central,Retail,C. Diaz,Notebook Pack,Stationery,12.99,2,0.1,25.98,23.38
+ORD-100381,2024-06-18,Mary Garcia,Enterprise,West,Wholesale,D. Kim,Mechanical Keyboard,Electronics,89.99,1,0.05,89.99,85.49
+ORD-100515,2024-06-18,Liam Nguyen,SMB,West,Wholesale,A. Morgan,Portable SSD 1TB,Electronics,119.99,8,0.05,959.92,911.92
+ORD-100194,2024-06-19,Sarah Garcia,Enterprise,West,Wholesale,D. Kim,USB-C Hub,Electronics,39.99,1,0,39.99,39.99
+ORD-100674,2024-06-19,Michael Smith,Enterprise,South,Wholesale,C. Diaz,Webcam 1080p,Electronics,59.99,9,0.2,539.91,431.93
+ORD-100062,2024-06-20,Robert Jones,Consumer,West,Wholesale,B. Chen,Webcam 1080p,Electronics,59.99,9,0,539.91,539.91
+ORD-100571,2024-06-20,David Nguyen,Consumer,West,Online,C. Diaz,Noise-Cancelling Headphones,Electronics,199.99,6,0,1199.94,1199.94
+ORD-100394,2024-06-21,Jennifer Kim,Enterprise,West,Wholesale,C. Diaz,Noise-Cancelling Headphones,Electronics,199.99,6,0,1199.94,1199.94
+ORD-100433,2024-06-21,David Lopez,Enterprise,East,Online,B. Chen,Noise-Cancelling Headphones,Electronics,199.99,6,0.2,1199.94,959.95
+ORD-100574,2024-06-21,Wei Williams,Consumer,South,Retail,B. Chen,Desk Lamp,Home Office,45.0,10,0.1,450.0,405.0
+ORD-100844,2024-06-21,Sarah Johnson,SMB,West,Wholesale,E. Novak,USB-C Hub,Electronics,39.99,1,0.1,39.99,35.99
+ORD-100127,2024-06-22,John Jones,Consumer,West,Wholesale,C. Diaz,Cable Organizer,Accessories,14.99,2,0.05,29.98,28.48
+ORD-100145,2024-06-22,Sofia Brown,SMB,West,Retail,F. Oyelaran,Coffee Mug,Home Office,11.5,8,0.05,92.0,87.4
+ORD-100152,2024-06-22,Robert Patel,Consumer,South,Wholesale,F. Oyelaran,Webcam 1080p,Electronics,59.99,1,0,59.99,59.99
+ORD-100173,2024-06-22,Sarah Williams,SMB,North,Wholesale,F. Oyelaran,Ballpoint Pens (12),Stationery,8.49,10,0,84.9,84.9
+ORD-100080,2024-06-23,David Smith,Enterprise,South,Online,B. Chen,Noise-Cancelling Headphones,Electronics,199.99,10,0.15,1999.9,1699.91
+ORD-100676,2024-06-23,James Garcia,Consumer,East,Retail,F. Oyelaran,Desk Lamp,Home Office,45.0,10,0.1,450.0,405.0
+ORD-100842,2024-06-23,Ahmed Nguyen,SMB,East,Online,F. Oyelaran,Desk Lamp,Home Office,45.0,2,0.05,90.0,85.5
+ORD-100110,2024-06-25,Wei Rossi,SMB,South,Wholesale,B. Chen,Webcam 1080p,Electronics,59.99,9,0.2,539.91,431.93
+ORD-100411,2024-06-25,Linda Johnson,SMB,Central,Retail,E. Novak,Cable Organizer,Accessories,14.99,9,0.05,134.91,128.16
+ORD-100427,2024-06-25,John Wilson,Consumer,West,Online,B. Chen,USB-C Hub,Electronics,39.99,5,0.15,199.95,169.96
+ORD-100526,2024-06-25,James Jones,SMB,South,Online,A. Morgan,Ergonomic Chair,Furniture,249.0,8,0.1,1992.0,1792.8
+ORD-100294,2024-06-26,Linda Williams,SMB,Central,Wholesale,E. Novak,Wireless Mouse,Electronics,24.99,2,0.05,49.98,47.48
+ORD-100563,2024-06-26,Patricia Rossi,SMB,North,Online,F. Oyelaran,Desk Lamp,Home Office,45.0,3,0.05,135.0,128.25
+ORD-100316,2024-06-27,Liam Anderson,Consumer,East,Online,F. Oyelaran,Ergonomic Chair,Furniture,249.0,2,0.05,498.0,473.1
+ORD-100047,2024-06-28,Sarah Smith,Consumer,East,Online,E. Novak,Ballpoint Pens (12),Stationery,8.49,9,0.05,76.41,72.59
+ORD-100175,2024-06-28,John Wilson,Enterprise,West,Wholesale,C. Diaz,Noise-Cancelling Headphones,Electronics,199.99,7,0,1399.93,1399.93
+ORD-100191,2024-06-29,Jennifer Williams,Enterprise,East,Online,E. Novak,Laptop Stand,Accessories,34.5,10,0.05,345.0,327.75
+ORD-100043,2024-06-30,Sofia Jones,Consumer,South,Online,D. Kim,Cable Organizer,Accessories,14.99,9,0.2,134.91,107.93
+ORD-100560,2024-07-01,John Haddad,Enterprise,North,Wholesale,A. Morgan,USB-C Hub,Electronics,39.99,2,0,79.98,79.98
+ORD-100809,2024-07-01,Ahmed Kim,Enterprise,East,Online,C. Diaz,USB-C Hub,Electronics,39.99,1,0,39.99,39.99
+ORD-100139,2024-07-02,Sarah Smith,Consumer,East,Online,B. Chen,Cable Organizer,Accessories,14.99,4,0.1,59.96,53.96
+ORD-100923,2024-07-02,Jennifer Garcia,Enterprise,North,Online,C. Diaz,Portable SSD 1TB,Electronics,119.99,5,0,599.95,599.95
+ORD-100637,2024-07-03,Elizabeth Patel,Consumer,West,Wholesale,F. Oyelaran,Coffee Mug,Home Office,11.5,2,0,23.0,23.0
+ORD-100887,2024-07-03,David Lopez,Enterprise,East,Retail,B. Chen,Portable SSD 1TB,Electronics,119.99,7,0,839.93,839.93
+ORD-100076,2024-07-04,Robert Kim,Consumer,Central,Wholesale,C. Diaz,Ballpoint Pens (12),Stationery,8.49,8,0.15,67.92,57.73
+ORD-100104,2024-07-04,Liam Johnson,Consumer,East,Wholesale,B. Chen,Notebook Pack,Stationery,12.99,8,0.15,103.92,88.33
+ORD-100227,2024-07-04,Wei Rossi,Enterprise,East,Wholesale,F. Oyelaran,Standing Desk,Furniture,399.0,5,0,1995.0,1995.0
+ORD-100864,2024-07-04,Elizabeth Smith,Enterprise,Central,Online,F. Oyelaran,Ergonomic Chair,Furniture,249.0,6,0.2,1494.0,1195.2
+ORD-100226,2024-07-06,Mary Patel,Consumer,Central,Wholesale,B. Chen,Cable Organizer,Accessories,14.99,7,0,104.93,104.93
+ORD-100321,2024-07-06,Patricia Lopez,Enterprise,West,Wholesale,F. Oyelaran,Webcam 1080p,Electronics,59.99,4,0.05,239.96,227.96
+ORD-100542,2024-07-06,Wei Miller,SMB,Central,Wholesale,D. Kim,Notebook Pack,Stationery,12.99,5,0.15,64.95,55.21
+ORD-100778,2024-07-06,John Miller,Consumer,East,Online,E. Novak,Webcam 1080p,Electronics,59.99,3,0.15,179.97,152.97
+ORD-100150,2024-07-07,Linda Kim,Enterprise,Central,Wholesale,F. Oyelaran,Mechanical Keyboard,Electronics,89.99,5,0.1,449.95,404.95
+ORD-100368,2024-07-07,Michael Davis,Consumer,North,Retail,A. Morgan,Notebook Pack,Stationery,12.99,8,0.2,103.92,83.14
+ORD-100714,2024-07-07,John Jones,Enterprise,Central,Retail,D. Kim,Mechanical Keyboard,Electronics,89.99,10,0.05,899.9,854.9
+ORD-100075,2024-07-08,Sarah Smith,SMB,West,Online,D. Kim,Mechanical Keyboard,Electronics,89.99,9,0.15,809.91,688.42
+ORD-100409,2024-07-08,Jennifer Rossi,Consumer,East,Retail,D. Kim,Portable SSD 1TB,Electronics,119.99,7,0,839.93,839.93
+ORD-100881,2024-07-08,James Haddad,Consumer,East,Wholesale,D. Kim,Notebook Pack,Stationery,12.99,8,0,103.92,103.92
+ORD-100592,2024-07-09,John Jones,Consumer,East,Retail,A. Morgan,Ergonomic Chair,Furniture,249.0,1,0,249.0,249.0
+ORD-100615,2024-07-09,Sarah Davis,Enterprise,Central,Online,D. Kim,Desk Lamp,Home Office,45.0,7,0.2,315.0,252.0
+ORD-100939,2024-07-09,Patricia Johnson,Enterprise,North,Retail,C. Diaz,Noise-Cancelling Headphones,Electronics,199.99,9,0,1799.91,1799.91
+ORD-100193,2024-07-10,John Nguyen,Consumer,North,Wholesale,F. Oyelaran,Noise-Cancelling Headphones,Electronics,199.99,1,0,199.99,199.99
+ORD-100683,2024-07-10,Michael Williams,SMB,Central,Online,D. Kim,Cable Organizer,Accessories,14.99,1,0.2,14.99,11.99
+ORD-100863,2024-07-10,Sofia Haddad,Enterprise,South,Retail,B. Chen,Monitor 27in,Electronics,179.99,2,0,359.98,359.98
+ORD-100296,2024-07-11,Wei Williams,Enterprise,East,Online,F. Oyelaran,Desk Lamp,Home Office,45.0,3,0.15,135.0,114.75
+ORD-100274,2024-07-12,Mary Williams,Consumer,Central,Wholesale,F. Oyelaran,Ballpoint Pens (12),Stationery,8.49,10,0.1,84.9,76.41
+ORD-100601,2024-07-12,Mary Haddad,Enterprise,West,Wholesale,C. Diaz,Webcam 1080p,Electronics,59.99,3,0,179.97,179.97
+ORD-100079,2024-07-13,Sarah Garcia,SMB,South,Retail,C. Diaz,Webcam 1080p,Electronics,59.99,1,0.05,59.99,56.99
+ORD-100277,2024-07-13,Ahmed Wilson,SMB,East,Wholesale,D. Kim,Ergonomic Chair,Furniture,249.0,9,0.15,2241.0,1904.85
+ORD-100452,2024-07-13,Nina Jones,Consumer,North,Retail,D. Kim,Mechanical Keyboard,Electronics,89.99,9,0,809.91,809.91
+ORD-100045,2024-07-14,Nina Davis,Consumer,West,Retail,C. Diaz,Coffee Mug,Home Office,11.5,1,0.2,11.5,9.2
+ORD-100122,2024-07-14,Elizabeth Wilson,Consumer,West,Retail,A. Morgan,Notebook Pack,Stationery,12.99,6,0.1,77.94,70.15
+ORD-100441,2024-07-14,Mary Jones,Consumer,South,Retail,D. Kim,Standing Desk,Furniture,399.0,5,0.05,1995.0,1895.25
+ORD-100884,2024-07-14,Ahmed Jones,Enterprise,North,Wholesale,B. Chen,Noise-Cancelling Headphones,Electronics,199.99,7,0.15,1399.93,1189.94
+ORD-100222,2024-07-15,Linda Garcia,SMB,Central,Wholesale,C. Diaz,Coffee Mug,Home Office,11.5,10,0.05,115.0,109.25
+ORD-100325,2024-07-15,Jennifer Garcia,SMB,East,Online,B. Chen,Desk Lamp,Home Office,45.0,3,0.05,135.0,128.25
+ORD-100327,2024-07-15,Nina Kim,Enterprise,West,Retail,F. Oyelaran,Standing Desk,Furniture,399.0,9,0.15,3591.0,3052.35
+ORD-100364,2024-07-15,Mary Kim,Consumer,East,Online,D. Kim,Portable SSD 1TB,Electronics,119.99,3,0,359.97,359.97
+ORD-100418,2024-07-15,Nina Johnson,Consumer,East,Retail,B. Chen,Ballpoint Pens (12),Stationery,8.49,8,0.1,67.92,61.13
+ORD-100712,2024-07-15,Sofia Smith,Enterprise,West,Wholesale,B. Chen,Webcam 1080p,Electronics,59.99,4,0,239.96,239.96
+ORD-100112,2024-07-16,Mary Jones,Enterprise,Central,Retail,A. Morgan,Ballpoint Pens (12),Stationery,8.49,3,0.05,25.47,24.2
+ORD-100174,2024-07-16,Robert Anderson,Consumer,Central,Wholesale,B. Chen,Noise-Cancelling Headphones,Electronics,199.99,5,0.15,999.95,849.96
+ORD-100352,2024-07-16,John Smith,SMB,East,Online,D. Kim,Mechanical Keyboard,Electronics,89.99,4,0.05,359.96,341.96
+ORD-100594,2024-07-16,Mary Miller,SMB,North,Wholesale,F. Oyelaran,Cable Organizer,Accessories,14.99,8,0,119.92,119.92
+ORD-100503,2024-07-17,Sarah Smith,SMB,North,Wholesale,A. Morgan,Ergonomic Chair,Furniture,249.0,7,0.05,1743.0,1655.85
+ORD-100065,2024-07-18,Linda Haddad,Consumer,East,Retail,D. Kim,Coffee Mug,Home Office,11.5,7,0.1,80.5,72.45
+ORD-100839,2024-07-18,Nina Haddad,SMB,Central,Online,E. Novak,Ergonomic Chair,Furniture,249.0,2,0.1,498.0,448.2
+ORD-100695,2024-07-19,Sarah Rossi,SMB,North,Online,D. Kim,USB-C Hub,Electronics,39.99,6,0.2,239.94,191.95
+ORD-100729,2024-07-19,Michael Anderson,Enterprise,South,Retail,E. Novak,Ergonomic Chair,Furniture,249.0,4,0.15,996.0,846.6
+ORD-100224,2024-07-20,Michael Nguyen,Consumer,North,Retail,D. Kim,Standing Desk,Furniture,399.0,8,0,3192.0,3192.0
+ORD-100508,2024-07-20,Elizabeth Miller,Enterprise,East,Online,D. Kim,Standing Desk,Furniture,399.0,9,0,3591.0,3591.0
+ORD-100653,2024-07-20,Mary Brown,SMB,West,Online,B. Chen,Notebook Pack,Stationery,12.99,10,0.1,129.9,116.91
+ORD-100034,2024-07-21,Sarah Williams,Consumer,West,Wholesale,E. Novak,USB-C Hub,Electronics,39.99,5,0.05,199.95,189.95
+ORD-100185,2024-07-21,Wei Williams,SMB,South,Online,C. Diaz,Standing Desk,Furniture,399.0,6,0,2394.0,2394.0
+ORD-100586,2024-07-21,Wei Patel,Consumer,East,Online,D. Kim,Laptop Stand,Accessories,34.5,3,0.15,103.5,87.97
+ORD-100909,2024-07-21,Nina Rossi,Enterprise,West,Wholesale,F. Oyelaran,Mechanical Keyboard,Electronics,89.99,1,0,89.99,89.99
+ORD-100295,2024-07-22,David Rossi,SMB,South,Retail,E. Novak,Cable Organizer,Accessories,14.99,6,0,89.94,89.94
+ORD-100544,2024-07-22,Patricia Davis,SMB,South,Online,B. Chen,Monitor 27in,Electronics,179.99,3,0.2,539.97,431.98
+ORD-100562,2024-07-22,Mary Kim,SMB,Central,Online,E. Novak,Laptop Stand,Accessories,34.5,10,0,345.0,345.0
+ORD-100570,2024-07-22,Michael Lopez,SMB,North,Retail,F. Oyelaran,Mechanical Keyboard,Electronics,89.99,3,0,269.97,269.97
+ORD-100012,2024-07-23,Nina Williams,Consumer,North,Online,F. Oyelaran,Webcam 1080p,Electronics,59.99,4,0,239.96,239.96
+ORD-100020,2024-07-23,Liam Brown,Consumer,South,Online,C. Diaz,Ballpoint Pens (12),Stationery,8.49,6,0.05,50.94,48.39
+ORD-100461,2024-07-23,Wei Haddad,SMB,South,Online,B. Chen,Ergonomic Chair,Furniture,249.0,5,0.2,1245.0,996.0
+ORD-100620,2024-07-23,John Anderson,SMB,South,Retail,F. Oyelaran,Notebook Pack,Stationery,12.99,4,0.15,51.96,44.17
+ORD-100897,2024-07-23,Wei Williams,Consumer,South,Online,D. Kim,Noise-Cancelling Headphones,Electronics,199.99,3,0,599.97,599.97
+ORD-100102,2024-07-24,Liam Williams,SMB,East,Retail,A. Morgan,Coffee Mug,Home Office,11.5,9,0,103.5,103.5
+ORD-100142,2024-07-24,Liam Williams,Consumer,East,Wholesale,B. Chen,Desk Lamp,Home Office,45.0,2,0.05,90.0,85.5
+ORD-100614,2024-07-24,Jennifer Rossi,SMB,East,Wholesale,C. Diaz,Standing Desk,Furniture,399.0,6,0.15,2394.0,2034.9
+ORD-100103,2024-07-25,James Rossi,SMB,North,Online,E. Novak,Coffee Mug,Home Office,11.5,9,0.2,103.5,82.8
+ORD-100337,2024-07-25,Ahmed Rossi,SMB,East,Wholesale,A. Morgan,Standing Desk,Furniture,399.0,5,0.15,1995.0,1695.75
+ORD-100449,2024-07-25,Robert Miller,Enterprise,North,Wholesale,E. Novak,Wireless Mouse,Electronics,24.99,4,0,99.96,99.96
+ORD-100898,2024-07-25,Elizabeth Haddad,SMB,East,Wholesale,E. Novak,Noise-Cancelling Headphones,Electronics,199.99,3,0,599.97,599.97
+ORD-100531,2024-07-26,James Wilson,Consumer,South,Retail,E. Novak,Notebook Pack,Stationery,12.99,10,0.15,129.9,110.42
+ORD-100081,2024-07-27,Linda Haddad,Enterprise,West,Retail,A. Morgan,Ergonomic Chair,Furniture,249.0,9,0.2,2241.0,1792.8
+ORD-100825,2024-07-27,Liam Brown,Enterprise,South,Retail,C. Diaz,Mechanical Keyboard,Electronics,89.99,6,0,539.94,539.94
+ORD-100983,2024-07-27,Liam Haddad,SMB,Central,Online,F. Oyelaran,Noise-Cancelling Headphones,Electronics,199.99,2,0.15,399.98,339.98
+ORD-100429,2024-07-28,James Haddad,Consumer,South,Wholesale,A. Morgan,Standing Desk,Furniture,399.0,1,0.2,399.0,319.2
+ORD-100475,2024-07-28,Michael Miller,Consumer,West,Online,D. Kim,Mechanical Keyboard,Electronics,89.99,5,0.1,449.95,404.95
+ORD-100541,2024-07-28,Sofia Lopez,SMB,Central,Retail,E. Novak,Webcam 1080p,Electronics,59.99,2,0,119.98,119.98
+ORD-100802,2024-07-28,Jennifer Rossi,Enterprise,Central,Online,B. Chen,Ballpoint Pens (12),Stationery,8.49,5,0.05,42.45,40.33
+ORD-100880,2024-07-28,Elizabeth Lopez,Consumer,Central,Retail,B. Chen,Cable Organizer,Accessories,14.99,3,0,44.97,44.97
+ORD-100118,2024-07-29,Jennifer Williams,Enterprise,West,Wholesale,F. Oyelaran,Notebook Pack,Stationery,12.99,3,0,38.97,38.97
+ORD-100285,2024-07-29,David Wilson,Consumer,Central,Wholesale,F. Oyelaran,Wireless Mouse,Electronics,24.99,1,0.1,24.99,22.49
+ORD-100786,2024-07-29,Sarah Haddad,Enterprise,Central,Wholesale,D. Kim,Notebook Pack,Stationery,12.99,6,0.15,77.94,66.25
+ORD-100873,2024-07-29,Nina Jones,SMB,South,Wholesale,E. Novak,Cable Organizer,Accessories,14.99,6,0.05,89.94,85.44
+ORD-100992,2024-07-29,James Rossi,SMB,West,Retail,E. Novak,Laptop Stand,Accessories,34.5,10,0.2,345.0,276.0
+ORD-100610,2024-07-31,Mary Lopez,Enterprise,North,Wholesale,A. Morgan,Coffee Mug,Home Office,11.5,6,0.2,69.0,55.2
+ORD-100930,2024-07-31,Sofia Davis,Consumer,West,Retail,D. Kim,Webcam 1080p,Electronics,59.99,4,0,239.96,239.96
+ORD-100090,2024-08-01,Linda Patel,SMB,West,Retail,E. Novak,Notebook Pack,Stationery,12.99,10,0.2,129.9,103.92
+ORD-100280,2024-08-01,Sarah Davis,SMB,Central,Online,D. Kim,Noise-Cancelling Headphones,Electronics,199.99,3,0,599.97,599.97
+ORD-100422,2024-08-01,Liam Miller,SMB,West,Wholesale,C. Diaz,Notebook Pack,Stationery,12.99,2,0,25.98,25.98
+ORD-100484,2024-08-01,Sofia Smith,Enterprise,North,Online,D. Kim,Ballpoint Pens (12),Stationery,8.49,9,0,76.41,76.41
+ORD-100535,2024-08-02,Patricia Garcia,SMB,Central,Wholesale,A. Morgan,Coffee Mug,Home Office,11.5,3,0.1,34.5,31.05
+ORD-100566,2024-08-02,Wei Lopez,SMB,South,Wholesale,B. Chen,Monitor 27in,Electronics,179.99,6,0,1079.94,1079.94
+ORD-100140,2024-08-03,John Haddad,SMB,East,Wholesale,E. Novak,Standing Desk,Furniture,399.0,2,0.15,798.0,678.3
+ORD-100845,2024-08-03,Nina Smith,SMB,West,Wholesale,D. Kim,Noise-Cancelling Headphones,Electronics,199.99,1,0.15,199.99,169.99
+ORD-100869,2024-08-04,Jennifer Lopez,Enterprise,North,Retail,D. Kim,Portable SSD 1TB,Electronics,119.99,2,0.2,239.98,191.98
+ORD-100913,2024-08-04,Robert Rossi,SMB,West,Online,D. Kim,Wireless Mouse,Electronics,24.99,2,0,49.98,49.98
+ORD-100917,2024-08-04,John Lopez,Enterprise,West,Retail,A. Morgan,Notebook Pack,Stationery,12.99,6,0.1,77.94,70.15
+ORD-100968,2024-08-04,Mary Smith,SMB,Central,Retail,F. Oyelaran,Portable SSD 1TB,Electronics,119.99,9,0.05,1079.91,1025.91
+ORD-100331,2024-08-05,Mary Rossi,SMB,East,Online,D. Kim,Mechanical Keyboard,Electronics,89.99,4,0,359.96,359.96
+ORD-100201,2024-08-06,Liam Johnson,Enterprise,East,Wholesale,D. Kim,USB-C Hub,Electronics,39.99,8,0,319.92,319.92
+ORD-100459,2024-08-06,Mary Smith,Consumer,South,Retail,C. Diaz,Monitor 27in,Electronics,179.99,2,0,359.98,359.98
+ORD-100643,2024-08-06,Liam Jones,Consumer,South,Wholesale,E. Novak,Noise-Cancelling Headphones,Electronics,199.99,10,0,1999.9,1999.9
+ORD-100671,2024-08-06,Ahmed Jones,Enterprise,Central,Retail,E. Novak,Notebook Pack,Stationery,12.99,6,0,77.94,77.94
+ORD-100091,2024-08-07,Mary Brown,Consumer,South,Retail,F. Oyelaran,Noise-Cancelling Headphones,Electronics,199.99,10,0.1,1999.9,1799.91
+ORD-100828,2024-08-07,Nina Nguyen,Consumer,North,Wholesale,D. Kim,Laptop Stand,Accessories,34.5,2,0.2,69.0,55.2
+ORD-100286,2024-08-08,Patricia Jones,Consumer,South,Wholesale,E. Novak,Cable Organizer,Accessories,14.99,3,0,44.97,44.97
+ORD-100837,2024-08-08,Liam Anderson,SMB,West,Retail,A. Morgan,Portable SSD 1TB,Electronics,119.99,2,0.05,239.98,227.98
+ORD-100879,2024-08-08,Michael Wilson,Enterprise,South,Retail,B. Chen,Coffee Mug,Home Office,11.5,4,0.1,46.0,41.4
+ORD-100924,2024-08-08,Patricia Davis,SMB,East,Retail,C. Diaz,Mechanical Keyboard,Electronics,89.99,10,0,899.9,899.9
+ORD-100015,2024-08-10,David Garcia,Enterprise,North,Wholesale,C. Diaz,USB-C Hub,Electronics,39.99,8,0,319.92,319.92
+ORD-100501,2024-08-10,Robert Smith,SMB,East,Online,A. Morgan,Ballpoint Pens (12),Stationery,8.49,2,0.15,16.98,14.43
+ORD-100627,2024-08-10,Robert Haddad,Enterprise,South,Retail,D. Kim,Cable Organizer,Accessories,14.99,3,0.2,44.97,35.98
+ORD-100705,2024-08-10,James Patel,Consumer,East,Online,C. Diaz,Monitor 27in,Electronics,179.99,6,0,1079.94,1079.94
+ORD-100770,2024-08-10,Robert Smith,SMB,North,Online,D. Kim,Notebook Pack,Stationery,12.99,4,0.1,51.96,46.76
+ORD-100857,2024-08-11,Jennifer Lopez,Consumer,North,Retail,C. Diaz,Desk Lamp,Home Office,45.0,1,0,45.0,45.0
+ORD-100308,2024-08-12,John Kim,Enterprise,West,Online,F. Oyelaran,Cable Organizer,Accessories,14.99,5,0.2,74.95,59.96
+ORD-100460,2024-08-12,John Nguyen,SMB,South,Online,D. Kim,Notebook Pack,Stationery,12.99,5,0.15,64.95,55.21
+ORD-100753,2024-08-12,Robert Brown,Enterprise,Central,Retail,B. Chen,Laptop Stand,Accessories,34.5,10,0,345.0,345.0
+ORD-100113,2024-08-13,James Jones,SMB,South,Online,D. Kim,Mechanical Keyboard,Electronics,89.99,9,0.05,809.91,769.41
+ORD-100198,2024-08-13,Jennifer Haddad,Enterprise,West,Retail,E. Novak,Portable SSD 1TB,Electronics,119.99,7,0,839.93,839.93
+ORD-100655,2024-08-13,Elizabeth Rossi,Consumer,West,Retail,E. Novak,Desk Lamp,Home Office,45.0,5,0.2,225.0,180.0
+ORD-100736,2024-08-13,Wei Garcia,Enterprise,West,Online,B. Chen,Mechanical Keyboard,Electronics,89.99,8,0,719.92,719.92
+ORD-100946,2024-08-13,Sofia Garcia,Consumer,Central,Online,D. Kim,Monitor 27in,Electronics,179.99,8,0.15,1439.92,1223.93
+ORD-100583,2024-08-14,David Jones,SMB,North,Online,E. Novak,Noise-Cancelling Headphones,Electronics,199.99,6,0.05,1199.94,1139.94
+ORD-100800,2024-08-14,Sofia Kim,Consumer,Central,Wholesale,A. Morgan,Noise-Cancelling Headphones,Electronics,199.99,3,0.2,599.97,479.98
+ORD-100955,2024-08-14,John Garcia,Enterprise,North,Wholesale,F. Oyelaran,Monitor 27in,Electronics,179.99,5,0.15,899.95,764.96
+ORD-100208,2024-08-15,Ahmed Williams,Enterprise,Central,Retail,C. Diaz,Mechanical Keyboard,Electronics,89.99,6,0.15,539.94,458.95
+ORD-100328,2024-08-15,James Davis,SMB,North,Retail,B. Chen,Ergonomic Chair,Furniture,249.0,3,0,747.0,747.0
+ORD-100060,2024-08-16,Nina Rossi,SMB,South,Wholesale,C. Diaz,Portable SSD 1TB,Electronics,119.99,3,0.15,359.97,305.97
+ORD-100256,2024-08-16,Patricia Johnson,Enterprise,Central,Online,E. Novak,Standing Desk,Furniture,399.0,6,0,2394.0,2394.0
+ORD-100797,2024-08-16,Wei Miller,SMB,East,Wholesale,E. Novak,Ballpoint Pens (12),Stationery,8.49,2,0.1,16.98,15.28
+ORD-100026,2024-08-17,David Rossi,Consumer,North,Retail,E. Novak,USB-C Hub,Electronics,39.99,7,0,279.93,279.93
+ORD-100727,2024-08-17,Mary Brown,Enterprise,East,Retail,E. Novak,Desk Lamp,Home Office,45.0,6,0.1,270.0,243.0
+ORD-100170,2024-08-18,Michael Anderson,Enterprise,West,Wholesale,B. Chen,Portable SSD 1TB,Electronics,119.99,10,0.15,1199.9,1019.92
+ORD-100378,2024-08-19,Patricia Rossi,Consumer,South,Online,A. Morgan,Standing Desk,Furniture,399.0,9,0,3591.0,3591.0
+ORD-100523,2024-08-20,Sarah Brown,Enterprise,Central,Wholesale,C. Diaz,Portable SSD 1TB,Electronics,119.99,1,0,119.99,119.99
+ORD-100604,2024-08-20,Jennifer Smith,Enterprise,East,Wholesale,B. Chen,Wireless Mouse,Electronics,24.99,9,0.05,224.91,213.66
+ORD-100658,2024-08-20,John Lopez,SMB,South,Wholesale,F. Oyelaran,Notebook Pack,Stationery,12.99,4,0.05,51.96,49.36
+ORD-100765,2024-08-20,Robert Rossi,Enterprise,South,Wholesale,C. Diaz,USB-C Hub,Electronics,39.99,7,0,279.93,279.93
+ORD-100367,2024-08-21,Elizabeth Wilson,Enterprise,Central,Online,D. Kim,Wireless Mouse,Electronics,24.99,6,0,149.94,149.94
+ORD-100011,2024-08-22,Linda Lopez,Enterprise,Central,Retail,E. Novak,USB-C Hub,Electronics,39.99,5,0,199.95,199.95
+ORD-100249,2024-08-22,Jennifer Smith,Enterprise,East,Retail,E. Novak,Ballpoint Pens (12),Stationery,8.49,5,0.15,42.45,36.08
+ORD-100416,2024-08-22,Sofia Brown,SMB,South,Online,E. Novak,Portable SSD 1TB,Electronics,119.99,1,0.2,119.99,95.99
+ORD-100477,2024-08-22,Robert Haddad,Consumer,Central,Wholesale,A. Morgan,Ballpoint Pens (12),Stationery,8.49,10,0.1,84.9,76.41
+ORD-100652,2024-08-22,Wei Johnson,Enterprise,West,Wholesale,C. Diaz,Portable SSD 1TB,Electronics,119.99,4,0.05,479.96,455.96
+ORD-100663,2024-08-22,James Haddad,Consumer,South,Wholesale,F. Oyelaran,Ergonomic Chair,Furniture,249.0,8,0.1,1992.0,1792.8
+ORD-100767,2024-08-22,Sarah Davis,SMB,Central,Online,F. Oyelaran,Desk Lamp,Home Office,45.0,3,0.2,135.0,108.0
+ORD-100787,2024-08-22,Elizabeth Garcia,SMB,South,Retail,C. Diaz,Noise-Cancelling Headphones,Electronics,199.99,10,0,1999.9,1999.9
+ORD-100931,2024-08-22,Ahmed Smith,SMB,South,Online,F. Oyelaran,Coffee Mug,Home Office,11.5,9,0.2,103.5,82.8
+ORD-100005,2024-08-23,John Wilson,Enterprise,Central,Retail,E. Novak,Standing Desk,Furniture,399.0,2,0.05,798.0,758.1
+ORD-100265,2024-08-23,Michael Brown,Consumer,West,Wholesale,A. Morgan,Webcam 1080p,Electronics,59.99,3,0,179.97,179.97
+ORD-100698,2024-08-24,Linda Davis,Enterprise,South,Retail,D. Kim,Desk Lamp,Home Office,45.0,10,0.05,450.0,427.5
+ORD-100278,2024-08-26,Sarah Miller,SMB,East,Retail,A. Morgan,Mechanical Keyboard,Electronics,89.99,8,0.2,719.92,575.94
+ORD-100581,2024-08-27,Liam Jones,Enterprise,Central,Online,E. Novak,Coffee Mug,Home Office,11.5,9,0,103.5,103.5
+ORD-100734,2024-08-27,Liam Lopez,SMB,East,Retail,B. Chen,Ballpoint Pens (12),Stationery,8.49,2,0.15,16.98,14.43
+ORD-100819,2024-08-28,John Wilson,Enterprise,North,Online,A. Morgan,Mechanical Keyboard,Electronics,89.99,5,0,449.95,449.95
+ORD-100919,2024-08-28,Linda Anderson,Enterprise,West,Online,C. Diaz,Webcam 1080p,Electronics,59.99,8,0,479.92,479.92
+ORD-100997,2024-08-28,Elizabeth Nguyen,Consumer,Central,Wholesale,F. Oyelaran,Noise-Cancelling Headphones,Electronics,199.99,10,0,1999.9,1999.9
+ORD-100244,2024-08-29,Jennifer Kim,Enterprise,West,Retail,F. Oyelaran,Mechanical Keyboard,Electronics,89.99,3,0,269.97,269.97
+ORD-100532,2024-08-29,Linda Kim,Enterprise,South,Wholesale,B. Chen,Coffee Mug,Home Office,11.5,8,0,92.0,92.0
+ORD-100546,2024-08-29,John Williams,SMB,South,Retail,A. Morgan,Portable SSD 1TB,Electronics,119.99,10,0.05,1199.9,1139.9
+ORD-100230,2024-08-30,Robert Anderson,Enterprise,East,Online,D. Kim,Standing Desk,Furniture,399.0,8,0,3192.0,3192.0
+ORD-100506,2024-08-30,Robert Patel,Enterprise,East,Wholesale,B. Chen,USB-C Hub,Electronics,39.99,9,0,359.91,359.91
+ORD-100019,2024-08-31,Sofia Miller,Enterprise,South,Wholesale,C. Diaz,Standing Desk,Furniture,399.0,3,0,1197.0,1197.0
+ORD-100420,2024-08-31,James Anderson,SMB,East,Retail,D. Kim,Portable SSD 1TB,Electronics,119.99,5,0,599.95,599.95
+ORD-100664,2024-08-31,John Smith,Consumer,Central,Retail,E. Novak,Ergonomic Chair,Furniture,249.0,7,0.05,1743.0,1655.85
+ORD-100850,2024-08-31,John Wilson,Enterprise,East,Retail,F. Oyelaran,Desk Lamp,Home Office,45.0,4,0,180.0,180.0
+ORD-100310,2024-09-02,Sofia Johnson,SMB,Central,Wholesale,F. Oyelaran,Notebook Pack,Stationery,12.99,7,0.1,90.93,81.84
+ORD-100677,2024-09-02,Mary Jones,SMB,South,Wholesale,D. Kim,Portable SSD 1TB,Electronics,119.99,8,0.2,959.92,767.94
+ORD-100028,2024-09-03,Jennifer Patel,Consumer,West,Retail,D. Kim,Laptop Stand,Accessories,34.5,7,0,241.5,241.5
+ORD-100538,2024-09-03,Patricia Kim,Consumer,East,Retail,B. Chen,Cable Organizer,Accessories,14.99,7,0,104.93,104.93
+ORD-100561,2024-09-03,Nina Lopez,SMB,South,Wholesale,C. Diaz,Webcam 1080p,Electronics,59.99,10,0,599.9,599.9
+ORD-100818,2024-09-04,Michael Brown,Consumer,Central,Wholesale,A. Morgan,Cable Organizer,Accessories,14.99,7,0,104.93,104.93
+ORD-100340,2024-09-05,Mary Johnson,Consumer,West,Online,A. Morgan,Cable Organizer,Accessories,14.99,6,0.15,89.94,76.45
+ORD-100573,2024-09-06,Wei Wilson,SMB,South,Online,F. Oyelaran,Cable Organizer,Accessories,14.99,8,0,119.92,119.92
+ORD-100710,2024-09-06,John Jones,Enterprise,West,Retail,F. Oyelaran,Ballpoint Pens (12),Stationery,8.49,7,0,59.43,59.43
+ORD-100258,2024-09-07,Mary Rossi,Consumer,Central,Retail,D. Kim,Mechanical Keyboard,Electronics,89.99,9,0.05,809.91,769.41
+ORD-100444,2024-09-07,Sofia Kim,SMB,West,Retail,D. Kim,Cable Organizer,Accessories,14.99,2,0,29.98,29.98
+ORD-100951,2024-09-07,Ahmed Williams,Consumer,West,Retail,E. Novak,Wireless Mouse,Electronics,24.99,2,0.1,49.98,44.98
+ORD-100406,2024-09-08,James Kim,Consumer,East,Wholesale,F. Oyelaran,USB-C Hub,Electronics,39.99,1,0,39.99,39.99
+ORD-100922,2024-09-08,Elizabeth Davis,Consumer,Central,Online,A. Morgan,Mechanical Keyboard,Electronics,89.99,7,0.05,629.93,598.43
+ORD-100210,2024-09-09,Ahmed Rossi,Enterprise,South,Wholesale,A. Morgan,Wireless Mouse,Electronics,24.99,6,0.1,149.94,134.95
+ORD-100723,2024-09-10,Wei Davis,Enterprise,West,Wholesale,F. Oyelaran,Cable Organizer,Accessories,14.99,7,0.2,104.93,83.94
+ORD-100890,2024-09-10,Nina Rossi,SMB,North,Wholesale,B. Chen,Wireless Mouse,Electronics,24.99,8,0,199.92,199.92
+ORD-100918,2024-09-10,Sofia Smith,Consumer,East,Wholesale,B. Chen,Notebook Pack,Stationery,12.99,6,0.05,77.94,74.04
+ORD-100159,2024-09-11,Robert Patel,Enterprise,South,Wholesale,E. Novak,Monitor 27in,Electronics,179.99,7,0,1259.93,1259.93
+ORD-100382,2024-09-11,Sofia Garcia,SMB,South,Online,C. Diaz,Wireless Mouse,Electronics,24.99,7,0.15,174.93,148.69
+ORD-100470,2024-09-11,Wei Kim,Consumer,Central,Wholesale,A. Morgan,Monitor 27in,Electronics,179.99,1,0,179.99,179.99
+ORD-100107,2024-09-12,David Kim,SMB,West,Online,D. Kim,Portable SSD 1TB,Electronics,119.99,5,0.1,599.95,539.96
+ORD-100362,2024-09-12,Ahmed Garcia,SMB,North,Wholesale,F. Oyelaran,Coffee Mug,Home Office,11.5,10,0,115.0,115.0
+ORD-100599,2024-09-12,Mary Johnson,SMB,South,Wholesale,E. Novak,Mechanical Keyboard,Electronics,89.99,10,0,899.9,899.9
+ORD-100355,2024-09-13,Wei Williams,Enterprise,Central,Wholesale,E. Novak,Cable Organizer,Accessories,14.99,7,0.05,104.93,99.68
+ORD-100684,2024-09-13,Nina Wilson,SMB,South,Online,E. Novak,USB-C Hub,Electronics,39.99,4,0,159.96,159.96
+ORD-100386,2024-09-14,Jennifer Smith,SMB,Central,Online,A. Morgan,Webcam 1080p,Electronics,59.99,7,0,419.93,419.93
+ORD-100847,2024-09-14,Elizabeth Nguyen,SMB,South,Retail,F. Oyelaran,Cable Organizer,Accessories,14.99,6,0,89.94,89.94
+ORD-100002,2024-09-15,Michael Kim,Consumer,West,Wholesale,C. Diaz,Notebook Pack,Stationery,12.99,1,0.1,12.99,11.69
+ORD-100144,2024-09-15,Patricia Miller,SMB,West,Online,D. Kim,Notebook Pack,Stationery,12.99,7,0,90.93,90.93
+ORD-100284,2024-09-15,Nina Haddad,Consumer,North,Wholesale,E. Novak,Ergonomic Chair,Furniture,249.0,6,0,1494.0,1494.0
+ORD-100372,2024-09-15,Mary Kim,Enterprise,South,Online,C. Diaz,USB-C Hub,Electronics,39.99,7,0,279.93,279.93
+ORD-100771,2024-09-15,Wei Haddad,Enterprise,North,Retail,D. Kim,Wireless Mouse,Electronics,24.99,7,0.1,174.93,157.44
+ORD-100953,2024-09-15,Liam Rossi,Consumer,East,Online,E. Novak,Ballpoint Pens (12),Stationery,8.49,8,0.2,67.92,54.34
+ORD-100178,2024-09-16,Mary Anderson,Enterprise,South,Wholesale,D. Kim,Cable Organizer,Accessories,14.99,9,0.2,134.91,107.93
+ORD-100545,2024-09-17,Mary Garcia,SMB,North,Online,B. Chen,Desk Lamp,Home Office,45.0,6,0.2,270.0,216.0
+ORD-100697,2024-09-17,Patricia Anderson,Enterprise,North,Retail,E. Novak,Mechanical Keyboard,Electronics,89.99,7,0.2,629.93,503.94
+ORD-100049,2024-09-18,Michael Lopez,Consumer,West,Online,E. Novak,Mechanical Keyboard,Electronics,89.99,7,0.1,629.93,566.94
+ORD-100660,2024-09-18,Wei Johnson,Consumer,East,Wholesale,F. Oyelaran,Notebook Pack,Stationery,12.99,3,0.05,38.97,37.02
+ORD-100798,2024-09-18,Robert Kim,SMB,West,Retail,A. Morgan,Wireless Mouse,Electronics,24.99,6,0.05,149.94,142.44
+ORD-100184,2024-09-19,Linda Rossi,SMB,North,Retail,A. Morgan,USB-C Hub,Electronics,39.99,7,0,279.93,279.93
+ORD-100481,2024-09-19,Sarah Miller,Consumer,South,Wholesale,F. Oyelaran,Noise-Cancelling Headphones,Electronics,199.99,9,0.2,1799.91,1439.93
+ORD-100717,2024-09-19,Sarah Kim,SMB,East,Retail,B. Chen,Portable SSD 1TB,Electronics,119.99,8,0.1,959.92,863.93
+ORD-100916,2024-09-19,Nina Davis,Enterprise,North,Wholesale,A. Morgan,Notebook Pack,Stationery,12.99,10,0.15,129.9,110.42
+ORD-100491,2024-09-20,Sofia Lopez,Enterprise,East,Online,B. Chen,Mechanical Keyboard,Electronics,89.99,7,0,629.93,629.93
+ORD-100527,2024-09-20,Robert Garcia,Consumer,East,Wholesale,F. Oyelaran,Ballpoint Pens (12),Stationery,8.49,5,0,42.45,42.45
+ORD-100777,2024-09-20,Patricia Patel,SMB,West,Wholesale,A. Morgan,Portable SSD 1TB,Electronics,119.99,6,0,719.94,719.94
+ORD-100366,2024-09-21,Liam Wilson,SMB,East,Online,E. Novak,Wireless Mouse,Electronics,24.99,7,0,174.93,174.93
+ORD-100434,2024-09-21,Wei Anderson,Enterprise,South,Wholesale,A. Morgan,Cable Organizer,Accessories,14.99,4,0,59.96,59.96
+ORD-100569,2024-09-21,Nina Wilson,SMB,Central,Wholesale,A. Morgan,Standing Desk,Furniture,399.0,6,0.2,2394.0,1915.2
+ORD-100715,2024-09-21,John Davis,SMB,North,Wholesale,F. Oyelaran,Mechanical Keyboard,Electronics,89.99,9,0.1,809.91,728.92
+ORD-100932,2024-09-21,Sarah Patel,Consumer,West,Online,D. Kim,Mechanical Keyboard,Electronics,89.99,2,0,179.98,179.98
+ORD-100654,2024-09-22,Mary Patel,Enterprise,North,Online,C. Diaz,Standing Desk,Furniture,399.0,7,0.15,2793.0,2374.05
+ORD-100061,2024-09-23,Liam Williams,Enterprise,East,Online,C. Diaz,Ergonomic Chair,Furniture,249.0,4,0,996.0,996.0
+ORD-100596,2024-09-23,Elizabeth Miller,SMB,North,Wholesale,B. Chen,Mechanical Keyboard,Electronics,89.99,5,0.05,449.95,427.45
+ORD-100455,2024-09-24,Sofia Wilson,Consumer,North,Wholesale,D. Kim,Laptop Stand,Accessories,34.5,6,0.15,207.0,175.95
+ORD-100747,2024-09-24,Linda Williams,Consumer,South,Retail,F. Oyelaran,Ergonomic Chair,Furniture,249.0,9,0,2241.0,2241.0
+ORD-100756,2024-09-24,Jennifer Johnson,Enterprise,South,Wholesale,D. Kim,Ergonomic Chair,Furniture,249.0,7,0,1743.0,1743.0
+ORD-100361,2024-09-25,John Haddad,SMB,Central,Retail,A. Morgan,Mechanical Keyboard,Electronics,89.99,5,0.15,449.95,382.46
+ORD-100781,2024-09-26,Elizabeth Rossi,Enterprise,East,Wholesale,F. Oyelaran,Coffee Mug,Home Office,11.5,2,0.05,23.0,21.85
+ORD-100945,2024-09-26,Wei Lopez,Enterprise,West,Wholesale,D. Kim,Desk Lamp,Home Office,45.0,10,0.1,450.0,405.0
+ORD-100960,2024-09-27,John Brown,Consumer,Central,Online,C. Diaz,Webcam 1080p,Electronics,59.99,7,0,419.93,419.93
+ORD-100031,2024-09-28,John Garcia,Consumer,Central,Online,F. Oyelaran,USB-C Hub,Electronics,39.99,1,0.1,39.99,35.99
+ORD-100758,2024-09-28,Linda Rossi,Enterprise,South,Retail,A. Morgan,Mechanical Keyboard,Electronics,89.99,10,0,899.9,899.9
+ORD-100886,2024-09-28,Patricia Anderson,Consumer,South,Retail,C. Diaz,Desk Lamp,Home Office,45.0,3,0,135.0,135.0
+ORD-100536,2024-09-29,Nina Jones,Enterprise,Central,Online,F. Oyelaran,Standing Desk,Furniture,399.0,2,0,798.0,798.0
+ORD-100814,2024-09-29,Patricia Kim,SMB,North,Online,B. Chen,Monitor 27in,Electronics,179.99,9,0.15,1619.91,1376.92
+ORD-100853,2024-09-29,Sofia Johnson,Enterprise,South,Retail,D. Kim,Cable Organizer,Accessories,14.99,10,0.2,149.9,119.92
+ORD-100982,2024-09-29,Liam Smith,SMB,North,Retail,D. Kim,Notebook Pack,Stationery,12.99,5,0.15,64.95,55.21
+ORD-100257,2024-10-01,Liam Brown,Enterprise,South,Wholesale,E. Novak,USB-C Hub,Electronics,39.99,3,0,119.97,119.97
+ORD-100495,2024-10-01,Linda Miller,Enterprise,East,Retail,C. Diaz,Desk Lamp,Home Office,45.0,2,0,90.0,90.0
+ORD-100678,2024-10-01,Sofia Johnson,Enterprise,East,Wholesale,F. Oyelaran,Portable SSD 1TB,Electronics,119.99,6,0.05,719.94,683.94
+ORD-100050,2024-10-02,Sofia Williams,Enterprise,East,Wholesale,C. Diaz,Ballpoint Pens (12),Stationery,8.49,4,0,33.96,33.96
+ORD-100242,2024-10-02,David Jones,Consumer,Central,Wholesale,E. Novak,Noise-Cancelling Headphones,Electronics,199.99,9,0.15,1799.91,1529.92
+ORD-100329,2024-10-02,Liam Haddad,Enterprise,Central,Online,E. Novak,Noise-Cancelling Headphones,Electronics,199.99,3,0.2,599.97,479.98
+ORD-100263,2024-10-03,Jennifer Patel,Enterprise,South,Wholesale,B. Chen,USB-C Hub,Electronics,39.99,6,0,239.94,239.94
+ORD-100405,2024-10-03,Linda Brown,Consumer,West,Wholesale,E. Novak,Noise-Cancelling Headphones,Electronics,199.99,5,0,999.95,999.95
+ORD-100498,2024-10-03,Ahmed Rossi,SMB,North,Retail,F. Oyelaran,Monitor 27in,Electronics,179.99,5,0,899.95,899.95
+ORD-100624,2024-10-03,Linda Jones,Consumer,West,Retail,E. Novak,Notebook Pack,Stationery,12.99,3,0,38.97,38.97
+ORD-100691,2024-10-03,James Haddad,Enterprise,North,Online,D. Kim,Ergonomic Chair,Furniture,249.0,1,0,249.0,249.0
+ORD-100716,2024-10-03,Mary Anderson,Enterprise,North,Retail,D. Kim,Cable Organizer,Accessories,14.99,10,0,149.9,149.9
+ORD-100737,2024-10-03,Patricia Rossi,Enterprise,East,Online,A. Morgan,Cable Organizer,Accessories,14.99,7,0,104.93,104.93
+ORD-100851,2024-10-03,Wei Lopez,Enterprise,Central,Retail,F. Oyelaran,Webcam 1080p,Electronics,59.99,4,0.05,239.96,227.96
+ORD-100938,2024-10-03,Elizabeth Kim,Enterprise,North,Wholesale,A. Morgan,Notebook Pack,Stationery,12.99,5,0,64.95,64.95
+ORD-100602,2024-10-04,Jennifer Nguyen,SMB,West,Retail,E. Novak,Monitor 27in,Electronics,179.99,8,0,1439.92,1439.92
+ORD-100135,2024-10-05,Wei Lopez,Consumer,North,Retail,A. Morgan,Portable SSD 1TB,Electronics,119.99,6,0,719.94,719.94
+ORD-100192,2024-10-05,James Patel,SMB,North,Wholesale,D. Kim,Standing Desk,Furniture,399.0,9,0.1,3591.0,3231.9
+ORD-100248,2024-10-05,Liam Lopez,Consumer,North,Retail,B. Chen,Standing Desk,Furniture,399.0,8,0,3192.0,3192.0
+ORD-100385,2024-10-05,Ahmed Haddad,Enterprise,West,Retail,E. Novak,Cable Organizer,Accessories,14.99,1,0.05,14.99,14.24
+ORD-100593,2024-10-05,David Patel,Consumer,North,Wholesale,B. Chen,Ergonomic Chair,Furniture,249.0,3,0,747.0,747.0
+ORD-100238,2024-10-06,Nina Miller,Consumer,East,Wholesale,C. Diaz,Webcam 1080p,Electronics,59.99,5,0.1,299.95,269.95
+ORD-100401,2024-10-06,Nina Davis,Consumer,West,Online,A. Morgan,Desk Lamp,Home Office,45.0,2,0.2,90.0,72.0
+ORD-100634,2024-10-06,Nina Jones,Enterprise,North,Retail,E. Novak,Standing Desk,Furniture,399.0,5,0.1,1995.0,1795.5
+ORD-100793,2024-10-06,Elizabeth Haddad,SMB,Central,Wholesale,B. Chen,Standing Desk,Furniture,399.0,6,0.15,2394.0,2034.9
+ORD-100188,2024-10-07,Sofia Brown,SMB,South,Retail,A. Morgan,Monitor 27in,Electronics,179.99,10,0.1,1799.9,1619.91
+ORD-100578,2024-10-07,Wei Williams,Consumer,East,Wholesale,B. Chen,Wireless Mouse,Electronics,24.99,1,0.2,24.99,19.99
+ORD-100852,2024-10-07,Jennifer Haddad,Consumer,West,Retail,F. Oyelaran,USB-C Hub,Electronics,39.99,1,0.15,39.99,33.99
+ORD-100281,2024-10-08,Nina Haddad,SMB,South,Wholesale,C. Diaz,Ballpoint Pens (12),Stationery,8.49,6,0,50.94,50.94
+ORD-100616,2024-10-08,Liam Rossi,SMB,North,Wholesale,A. Morgan,Portable SSD 1TB,Electronics,119.99,5,0,599.95,599.95
+ORD-100706,2024-10-08,Ahmed Brown,SMB,North,Online,D. Kim,Wireless Mouse,Electronics,24.99,1,0.15,24.99,21.24
+ORD-100108,2024-10-09,Robert Williams,SMB,West,Retail,E. Novak,USB-C Hub,Electronics,39.99,7,0,279.93,279.93
+ORD-100289,2024-10-09,James Garcia,Consumer,West,Retail,F. Oyelaran,Ergonomic Chair,Furniture,249.0,1,0.15,249.0,211.65
+ORD-100318,2024-10-09,Sofia Rossi,Consumer,West,Wholesale,B. Chen,USB-C Hub,Electronics,39.99,6,0.1,239.94,215.95
+ORD-100083,2024-10-10,Sarah Nguyen,Enterprise,West,Retail,C. Diaz,Standing Desk,Furniture,399.0,6,0.05,2394.0,2274.3
+ORD-100478,2024-10-10,Nina Garcia,Enterprise,Central,Online,F. Oyelaran,Portable SSD 1TB,Electronics,119.99,7,0.2,839.93,671.94
+ORD-100603,2024-10-10,Robert Rossi,SMB,East,Wholesale,C. Diaz,USB-C Hub,Electronics,39.99,2,0.1,79.98,71.98
+ORD-100934,2024-10-10,Sarah Nguyen,Consumer,East,Wholesale,E. Novak,Coffee Mug,Home Office,11.5,5,0.15,57.5,48.88
+ORD-100965,2024-10-10,James Kim,Enterprise,South,Online,C. Diaz,Desk Lamp,Home Office,45.0,2,0.05,90.0,85.5
+ORD-100966,2024-10-10,Robert Wilson,Enterprise,West,Retail,A. Morgan,Notebook Pack,Stationery,12.99,2,0,25.98,25.98
+ORD-100701,2024-10-11,Elizabeth Patel,Consumer,Central,Online,F. Oyelaran,Mechanical Keyboard,Electronics,89.99,8,0,719.92,719.92
+ORD-100275,2024-10-13,Sarah Wilson,Consumer,South,Online,F. Oyelaran,Laptop Stand,Accessories,34.5,8,0,276.0,276.0
+ORD-100438,2024-10-13,Sarah Williams,Consumer,East,Online,F. Oyelaran,Cable Organizer,Accessories,14.99,3,0.15,44.97,38.22
+ORD-100553,2024-10-13,Sarah Brown,Enterprise,East,Wholesale,E. Novak,Mechanical Keyboard,Electronics,89.99,9,0,809.91,809.91
+ORD-100804,2024-10-13,James Smith,Consumer,East,Retail,F. Oyelaran,Monitor 27in,Electronics,179.99,8,0,1439.92,1439.92
+ORD-100237,2024-10-14,Wei Anderson,Consumer,West,Wholesale,C. Diaz,Webcam 1080p,Electronics,59.99,8,0.1,479.92,431.93
+ORD-100272,2024-10-14,Robert Patel,Consumer,East,Online,C. Diaz,Desk Lamp,Home Office,45.0,7,0.1,315.0,283.5
+ORD-100432,2024-10-14,Elizabeth Wilson,Enterprise,North,Retail,A. Morgan,Ballpoint Pens (12),Stationery,8.49,10,0.1,84.9,76.41
+ORD-100487,2024-10-14,Wei Davis,Enterprise,East,Wholesale,F. Oyelaran,Coffee Mug,Home Office,11.5,4,0.15,46.0,39.1
+ORD-100259,2024-10-15,Elizabeth Smith,SMB,East,Online,F. Oyelaran,Wireless Mouse,Electronics,24.99,9,0.05,224.91,213.66
+ORD-100279,2024-10-15,Robert Smith,SMB,Central,Wholesale,E. Novak,Coffee Mug,Home Office,11.5,4,0.15,46.0,39.1
+ORD-100123,2024-10-16,Nina Wilson,Consumer,Central,Retail,B. Chen,Coffee Mug,Home Office,11.5,1,0.1,11.5,10.35
+ORD-100521,2024-10-16,Nina Nguyen,Consumer,South,Retail,B. Chen,Ballpoint Pens (12),Stationery,8.49,3,0.15,25.47,21.65
+ORD-100794,2024-10-16,Patricia Haddad,Consumer,South,Wholesale,E. Novak,Monitor 27in,Electronics,179.99,8,0,1439.92,1439.92
+ORD-100018,2024-10-17,Nina Williams,Enterprise,South,Online,F. Oyelaran,Mechanical Keyboard,Electronics,89.99,2,0.15,179.98,152.98
+ORD-100204,2024-10-17,Liam Nguyen,SMB,West,Online,E. Novak,Wireless Mouse,Electronics,24.99,10,0,249.9,249.9
+ORD-100877,2024-10-17,Sofia Rossi,Enterprise,West,Online,B. Chen,Mechanical Keyboard,Electronics,89.99,1,0.15,89.99,76.49
+ORD-100096,2024-10-18,Patricia Rossi,Enterprise,East,Wholesale,D. Kim,Portable SSD 1TB,Electronics,119.99,5,0.05,599.95,569.95
+ORD-100353,2024-10-18,Jennifer Haddad,Consumer,North,Wholesale,A. Morgan,Desk Lamp,Home Office,45.0,6,0.1,270.0,243.0
+ORD-100442,2024-10-18,Sarah Garcia,Consumer,West,Retail,F. Oyelaran,Portable SSD 1TB,Electronics,119.99,8,0,959.92,959.92
+ORD-100905,2024-10-18,David Williams,Enterprise,North,Online,F. Oyelaran,Coffee Mug,Home Office,11.5,5,0,57.5,57.5
+ORD-100980,2024-10-18,Michael Garcia,Consumer,Central,Online,F. Oyelaran,Standing Desk,Furniture,399.0,8,0,3192.0,3192.0
+ORD-100111,2024-10-19,Sofia Johnson,SMB,West,Wholesale,D. Kim,Desk Lamp,Home Office,45.0,4,0.2,180.0,144.0
+ORD-100428,2024-10-19,Linda Davis,Enterprise,South,Retail,F. Oyelaran,Cable Organizer,Accessories,14.99,4,0.2,59.96,47.97
+ORD-100436,2024-10-19,Linda Haddad,Enterprise,East,Wholesale,C. Diaz,Coffee Mug,Home Office,11.5,4,0,46.0,46.0
+ORD-100860,2024-10-19,David Haddad,Consumer,South,Wholesale,A. Morgan,Monitor 27in,Electronics,179.99,9,0,1619.91,1619.91
+ORD-100875,2024-10-19,Linda Williams,SMB,South,Retail,F. Oyelaran,Laptop Stand,Accessories,34.5,1,0,34.5,34.5
+ORD-100719,2024-10-20,James Wilson,SMB,North,Online,E. Novak,Wireless Mouse,Electronics,24.99,5,0.2,124.95,99.96
+ORD-100940,2024-10-20,Sarah Davis,Enterprise,Central,Wholesale,F. Oyelaran,Monitor 27in,Electronics,179.99,1,0.05,179.99,170.99
+ORD-100942,2024-10-20,Wei Davis,Consumer,East,Wholesale,E. Novak,Ballpoint Pens (12),Stationery,8.49,3,0.15,25.47,21.65
+ORD-100073,2024-10-21,Michael Williams,Enterprise,South,Online,F. Oyelaran,Ballpoint Pens (12),Stationery,8.49,7,0.05,59.43,56.46
+ORD-100268,2024-10-21,Sarah Davis,SMB,South,Wholesale,E. Novak,Webcam 1080p,Electronics,59.99,10,0.1,599.9,539.91
+ORD-100567,2024-10-21,Patricia Lopez,Consumer,Central,Retail,D. Kim,Ballpoint Pens (12),Stationery,8.49,4,0.2,33.96,27.17
+ORD-100625,2024-10-21,Sofia Wilson,SMB,South,Online,C. Diaz,Standing Desk,Furniture,399.0,2,0,798.0,798.0
+ORD-100808,2024-10-21,Mary Jones,SMB,West,Wholesale,B. Chen,Wireless Mouse,Electronics,24.99,5,0,124.95,124.95
+ORD-100089,2024-10-22,Robert Wilson,Consumer,South,Online,E. Novak,Ballpoint Pens (12),Stationery,8.49,1,0,8.49,8.49
+ORD-100336,2024-10-22,Sofia Patel,SMB,North,Wholesale,A. Morgan,Ballpoint Pens (12),Stationery,8.49,5,0.15,42.45,36.08
+ORD-100030,2024-10-23,Sarah Johnson,Consumer,Central,Retail,E. Novak,Monitor 27in,Electronics,179.99,9,0,1619.91,1619.91
+ORD-100054,2024-10-23,Liam Rossi,Enterprise,South,Wholesale,D. Kim,Notebook Pack,Stationery,12.99,6,0.05,77.94,74.04
+ORD-100812,2024-10-23,Robert Wilson,SMB,West,Retail,C. Diaz,Webcam 1080p,Electronics,59.99,3,0,179.97,179.97
+ORD-100822,2024-10-23,Michael Miller,SMB,South,Wholesale,A. Morgan,Cable Organizer,Accessories,14.99,1,0.1,14.99,13.49
+ORD-100807,2024-10-24,David Haddad,Enterprise,North,Retail,E. Novak,Ergonomic Chair,Furniture,249.0,10,0.05,2490.0,2365.5
+ORD-100033,2024-10-25,David Miller,Enterprise,East,Online,C. Diaz,Notebook Pack,Stationery,12.99,9,0,116.91,116.91
+ORD-100774,2024-10-25,Robert Patel,Consumer,East,Wholesale,D. Kim,Wireless Mouse,Electronics,24.99,8,0.05,199.92,189.92
+ORD-100492,2024-10-26,Sarah Rossi,Enterprise,South,Online,B. Chen,Coffee Mug,Home Office,11.5,5,0,57.5,57.5
+ORD-100657,2024-10-26,Wei Kim,SMB,West,Online,B. Chen,Portable SSD 1TB,Electronics,119.99,9,0,1079.91,1079.91
+ORD-100914,2024-10-26,Wei Johnson,SMB,North,Online,F. Oyelaran,Laptop Stand,Accessories,34.5,4,0,138.0,138.0
+ORD-100292,2024-10-27,Elizabeth Garcia,Enterprise,South,Wholesale,D. Kim,USB-C Hub,Electronics,39.99,7,0,279.93,279.93
+ORD-100357,2024-10-27,Sofia Davis,Consumer,South,Online,D. Kim,Ballpoint Pens (12),Stationery,8.49,2,0,16.98,16.98
+ORD-100555,2024-10-27,Patricia Lopez,Consumer,West,Wholesale,B. Chen,Coffee Mug,Home Office,11.5,1,0.05,11.5,10.92
+ORD-100576,2024-10-27,Jennifer Garcia,Consumer,South,Wholesale,B. Chen,Standing Desk,Furniture,399.0,8,0.05,3192.0,3032.4
+ORD-100964,2024-10-27,Wei Brown,SMB,North,Retail,D. Kim,Laptop Stand,Accessories,34.5,8,0.1,276.0,248.4
+ORD-100163,2024-10-28,Wei Wilson,Enterprise,East,Online,C. Diaz,Desk Lamp,Home Office,45.0,9,0,405.0,405.0
+ORD-100314,2024-10-28,Ahmed Smith,SMB,North,Retail,D. Kim,Monitor 27in,Electronics,179.99,9,0,1619.91,1619.91
+ORD-100349,2024-10-28,Sofia Anderson,Consumer,South,Retail,F. Oyelaran,Monitor 27in,Electronics,179.99,7,0,1259.93,1259.93
+ORD-100417,2024-10-28,Patricia Wilson,Enterprise,East,Retail,C. Diaz,Notebook Pack,Stationery,12.99,2,0,25.98,25.98
+ORD-100447,2024-10-28,Mary Wilson,SMB,West,Wholesale,E. Novak,Noise-Cancelling Headphones,Electronics,199.99,3,0,599.97,599.97
+ORD-100959,2024-10-28,James Anderson,SMB,South,Retail,A. Morgan,Wireless Mouse,Electronics,24.99,8,0.2,199.92,159.94
+ORD-100529,2024-10-29,Linda Johnson,Consumer,Central,Wholesale,B. Chen,USB-C Hub,Electronics,39.99,7,0,279.93,279.93
+ORD-100769,2024-10-29,James Kim,Enterprise,South,Online,C. Diaz,Ergonomic Chair,Furniture,249.0,8,0,1992.0,1992.0
+ORD-100830,2024-10-29,Ahmed Miller,SMB,South,Wholesale,D. Kim,Mechanical Keyboard,Electronics,89.99,3,0,269.97,269.97
+ORD-100841,2024-10-29,Ahmed Nguyen,Enterprise,Central,Online,F. Oyelaran,Wireless Mouse,Electronics,24.99,3,0.2,74.97,59.98
+ORD-100157,2024-10-30,Elizabeth Johnson,Consumer,West,Wholesale,A. Morgan,Ergonomic Chair,Furniture,249.0,9,0.15,2241.0,1904.85
+ORD-100745,2024-10-30,John Wilson,SMB,Central,Retail,A. Morgan,Laptop Stand,Accessories,34.5,8,0.05,276.0,262.2
+ORD-100755,2024-10-30,Nina Jones,Consumer,South,Wholesale,C. Diaz,Portable SSD 1TB,Electronics,119.99,5,0.05,599.95,569.95
+ORD-100987,2024-10-30,David Davis,Consumer,West,Online,C. Diaz,Cable Organizer,Accessories,14.99,6,0.2,89.94,71.95
+ORD-100093,2024-10-31,Linda Wilson,Enterprise,East,Wholesale,D. Kim,Ergonomic Chair,Furniture,249.0,5,0,1245.0,1245.0
+ORD-100305,2024-10-31,Michael Haddad,SMB,South,Retail,C. Diaz,USB-C Hub,Electronics,39.99,5,0,199.95,199.95
+ORD-100681,2024-10-31,Sarah Johnson,SMB,West,Online,D. Kim,Mechanical Keyboard,Electronics,89.99,5,0.15,449.95,382.46
+ORD-100225,2024-11-01,James Brown,SMB,South,Retail,F. Oyelaran,Portable SSD 1TB,Electronics,119.99,8,0,959.92,959.92
+ORD-100448,2024-11-01,Robert Anderson,SMB,East,Online,B. Chen,Standing Desk,Furniture,399.0,6,0.05,2394.0,2274.3
+ORD-100582,2024-11-01,Elizabeth Nguyen,SMB,Central,Online,A. Morgan,Ergonomic Chair,Furniture,249.0,10,0.05,2490.0,2365.5
+ORD-100702,2024-11-01,Nina Johnson,Consumer,South,Online,E. Novak,Cable Organizer,Accessories,14.99,7,0,104.93,104.93
+ORD-100017,2024-11-02,Patricia Nguyen,SMB,South,Online,B. Chen,Webcam 1080p,Electronics,59.99,8,0,479.92,479.92
+ORD-100407,2024-11-03,James Miller,Consumer,East,Online,D. Kim,Ergonomic Chair,Furniture,249.0,4,0,996.0,996.0
+ORD-100490,2024-11-04,Liam Garcia,Enterprise,North,Online,B. Chen,Laptop Stand,Accessories,34.5,4,0,138.0,138.0
+ORD-100623,2024-11-04,Wei Johnson,SMB,Central,Online,C. Diaz,Portable SSD 1TB,Electronics,119.99,1,0.15,119.99,101.99
+ORD-100820,2024-11-04,Jennifer Nguyen,Consumer,North,Online,F. Oyelaran,Laptop Stand,Accessories,34.5,10,0,345.0,345.0
+ORD-100859,2024-11-04,Ahmed Williams,SMB,South,Online,A. Morgan,Noise-Cancelling Headphones,Electronics,199.99,2,0.05,399.98,379.98
+ORD-100870,2024-11-04,Sarah Rossi,Enterprise,North,Online,F. Oyelaran,Monitor 27in,Electronics,179.99,9,0.15,1619.91,1376.92
+ORD-100910,2024-11-04,Ahmed Patel,SMB,North,Online,B. Chen,Monitor 27in,Electronics,179.99,8,0,1439.92,1439.92
+ORD-100711,2024-11-05,Jennifer Rossi,Enterprise,West,Wholesale,D. Kim,Portable SSD 1TB,Electronics,119.99,7,0.1,839.93,755.94
+ORD-100072,2024-11-06,Jennifer Wilson,Consumer,Central,Online,C. Diaz,Notebook Pack,Stationery,12.99,2,0.2,25.98,20.78
+ORD-100255,2024-11-06,Nina Miller,Consumer,Central,Online,E. Novak,Webcam 1080p,Electronics,59.99,7,0.15,419.93,356.94
+ORD-100351,2024-11-06,Wei Wilson,Enterprise,North,Online,D. Kim,Standing Desk,Furniture,399.0,4,0.15,1596.0,1356.6
+ORD-100203,2024-11-07,Robert Williams,Consumer,East,Retail,D. Kim,Ballpoint Pens (12),Stationery,8.49,8,0,67.92,67.92
+ORD-100547,2024-11-07,Elizabeth Johnson,Consumer,West,Retail,A. Morgan,Wireless Mouse,Electronics,24.99,7,0.05,174.93,166.18
+ORD-100796,2024-11-07,Linda Lopez,Consumer,North,Online,E. Novak,Ballpoint Pens (12),Stationery,8.49,4,0.1,33.96,30.56
+ORD-100228,2024-11-08,Wei Nguyen,SMB,Central,Retail,B. Chen,Mechanical Keyboard,Electronics,89.99,3,0,269.97,269.97
+ORD-100467,2024-11-09,Jennifer Haddad,SMB,South,Online,D. Kim,Wireless Mouse,Electronics,24.99,1,0.15,24.99,21.24
+ORD-100606,2024-11-09,Sarah Brown,Consumer,Central,Wholesale,A. Morgan,Noise-Cancelling Headphones,Electronics,199.99,6,0.05,1199.94,1139.94
+ORD-100757,2024-11-09,Sofia Smith,Enterprise,South,Online,A. Morgan,Mechanical Keyboard,Electronics,89.99,5,0,449.95,449.95
+ORD-100768,2024-11-09,Linda Williams,SMB,Central,Retail,B. Chen,Portable SSD 1TB,Electronics,119.99,3,0.1,359.97,323.97
+ORD-100077,2024-11-11,Nina Rossi,SMB,Central,Retail,C. Diaz,Cable Organizer,Accessories,14.99,9,0.2,134.91,107.93
+ORD-100231,2024-11-11,Sarah Haddad,Enterprise,Central,Retail,D. Kim,Monitor 27in,Electronics,179.99,5,0.1,899.95,809.96
+ORD-100513,2024-11-11,Robert Nguyen,SMB,West,Online,A. Morgan,Ballpoint Pens (12),Stationery,8.49,5,0.15,42.45,36.08
+ORD-100648,2024-11-11,Linda Davis,Consumer,North,Retail,A. Morgan,Noise-Cancelling Headphones,Electronics,199.99,10,0.1,1999.9,1799.91
+ORD-100704,2024-11-11,Michael Anderson,SMB,Central,Wholesale,C. Diaz,Notebook Pack,Stationery,12.99,8,0,103.92,103.92
+ORD-100750,2024-11-11,Michael Kim,SMB,West,Retail,A. Morgan,Laptop Stand,Accessories,34.5,2,0.2,69.0,55.2
+ORD-100419,2024-11-12,Wei Anderson,Enterprise,South,Online,F. Oyelaran,Notebook Pack,Stationery,12.99,7,0,90.93,90.93
+ORD-100466,2024-11-12,Linda Haddad,SMB,West,Online,E. Novak,Mechanical Keyboard,Electronics,89.99,7,0.15,629.93,535.44
+ORD-100130,2024-11-13,Linda Williams,Enterprise,West,Wholesale,C. Diaz,Portable SSD 1TB,Electronics,119.99,9,0,1079.91,1079.91
+ORD-100993,2024-11-13,James Rossi,Enterprise,East,Wholesale,B. Chen,Mechanical Keyboard,Electronics,89.99,6,0.15,539.94,458.95
+ORD-100533,2024-11-15,Jennifer Anderson,SMB,Central,Wholesale,A. Morgan,Ballpoint Pens (12),Stationery,8.49,9,0,76.41,76.41
+ORD-100631,2024-11-15,Linda Miller,Enterprise,East,Online,F. Oyelaran,USB-C Hub,Electronics,39.99,8,0,319.92,319.92
+ORD-100115,2024-11-16,Mary Williams,Consumer,East,Online,F. Oyelaran,Monitor 27in,Electronics,179.99,8,0.2,1439.92,1151.94
+ORD-100517,2024-11-16,James Patel,Enterprise,South,Online,E. Novak,Mechanical Keyboard,Electronics,89.99,2,0,179.98,179.98
+ORD-100587,2024-11-16,David Wilson,Enterprise,Central,Retail,D. Kim,Laptop Stand,Accessories,34.5,9,0.2,310.5,248.4
+ORD-100989,2024-11-16,John Johnson,Consumer,West,Retail,F. Oyelaran,Ergonomic Chair,Furniture,249.0,10,0,2490.0,2490.0
+ORD-100348,2024-11-17,Liam Miller,Consumer,North,Online,A. Morgan,Monitor 27in,Electronics,179.99,3,0.05,539.97,512.97
+ORD-100665,2024-11-17,Jennifer Jones,Consumer,East,Online,B. Chen,Standing Desk,Furniture,399.0,4,0,1596.0,1596.0
+ORD-100941,2024-11-17,Linda Nguyen,SMB,East,Wholesale,F. Oyelaran,Ballpoint Pens (12),Stationery,8.49,9,0.2,76.41,61.13
+ORD-100233,2024-11-18,David Davis,Enterprise,North,Wholesale,D. Kim,Wireless Mouse,Electronics,24.99,10,0.05,249.9,237.41
+ORD-100901,2024-11-18,Sarah Rossi,Enterprise,South,Wholesale,F. Oyelaran,Desk Lamp,Home Office,45.0,2,0,90.0,90.0
+ORD-100195,2024-11-19,Liam Johnson,SMB,South,Online,B. Chen,USB-C Hub,Electronics,39.99,3,0,119.97,119.97
+ORD-100672,2024-11-19,Jennifer Davis,Enterprise,East,Online,A. Morgan,Ergonomic Chair,Furniture,249.0,8,0.2,1992.0,1593.6
+ORD-100742,2024-11-19,Sarah Williams,SMB,East,Wholesale,B. Chen,Ballpoint Pens (12),Stationery,8.49,2,0,16.98,16.98
+ORD-100440,2024-11-20,John Haddad,Consumer,Central,Online,F. Oyelaran,Notebook Pack,Stationery,12.99,10,0.1,129.9,116.91
+ORD-100124,2024-11-21,Robert Brown,Enterprise,North,Retail,D. Kim,Laptop Stand,Accessories,34.5,10,0,345.0,345.0
+ORD-100703,2024-11-21,Robert Jones,SMB,Central,Retail,D. Kim,Cable Organizer,Accessories,14.99,1,0.2,14.99,11.99
+ORD-100805,2024-11-21,Elizabeth Kim,Consumer,West,Wholesale,F. Oyelaran,Ergonomic Chair,Furniture,249.0,2,0.15,498.0,423.3
+ORD-100967,2024-11-21,Robert Nguyen,Enterprise,South,Online,E. Novak,Standing Desk,Furniture,399.0,4,0.2,1596.0,1276.8
+ORD-100040,2024-11-22,Liam Kim,Enterprise,North,Online,A. Morgan,Noise-Cancelling Headphones,Electronics,199.99,3,0.15,599.97,509.97
+ORD-100647,2024-11-22,Michael Brown,Consumer,South,Online,E. Novak,Portable SSD 1TB,Electronics,119.99,5,0,599.95,599.95
+ORD-100000,2024-11-23,David Davis,Consumer,South,Wholesale,A. Morgan,Mechanical Keyboard,Electronics,89.99,1,0.15,89.99,76.49
+ORD-100009,2024-11-23,Sarah Johnson,Consumer,North,Retail,D. Kim,Monitor 27in,Electronics,179.99,9,0,1619.91,1619.91
+ORD-100016,2024-11-23,Robert Nguyen,Consumer,Central,Wholesale,A. Morgan,Standing Desk,Furniture,399.0,10,0,3990.0,3990.0
+ORD-100121,2024-11-23,Elizabeth Miller,SMB,West,Online,B. Chen,Desk Lamp,Home Office,45.0,5,0.05,225.0,213.75
+ORD-100739,2024-11-23,Wei Lopez,Consumer,East,Retail,E. Novak,Wireless Mouse,Electronics,24.99,1,0.15,24.99,21.24
+ORD-100347,2024-11-24,James Garcia,SMB,East,Wholesale,B. Chen,Ballpoint Pens (12),Stationery,8.49,3,0,25.47,25.47
+ORD-100497,2024-11-24,Mary Anderson,SMB,North,Retail,C. Diaz,Notebook Pack,Stationery,12.99,10,0,129.9,129.9
+ORD-100504,2024-11-24,Mary Williams,SMB,Central,Online,C. Diaz,Monitor 27in,Electronics,179.99,10,0,1799.9,1799.9
+ORD-100871,2024-11-24,Robert Smith,SMB,South,Wholesale,C. Diaz,USB-C Hub,Electronics,39.99,8,0.2,319.92,255.94
+ORD-100151,2024-11-25,David Smith,Consumer,East,Wholesale,C. Diaz,Standing Desk,Furniture,399.0,1,0.1,399.0,359.1
+ORD-100832,2024-11-25,Wei Haddad,Enterprise,East,Online,D. Kim,Desk Lamp,Home Office,45.0,6,0.05,270.0,256.5
+ORD-100025,2024-11-26,Sarah Brown,Consumer,South,Online,E. Novak,Mechanical Keyboard,Electronics,89.99,1,0.05,89.99,85.49
+ORD-100262,2024-11-26,Liam Patel,SMB,North,Wholesale,F. Oyelaran,Desk Lamp,Home Office,45.0,6,0.05,270.0,256.5
+ORD-100312,2024-11-26,Sarah Kim,Consumer,North,Online,C. Diaz,Ballpoint Pens (12),Stationery,8.49,7,0.2,59.43,47.54
+ORD-100509,2024-11-26,Jennifer Garcia,Consumer,Central,Retail,B. Chen,Coffee Mug,Home Office,11.5,9,0,103.5,103.5
+ORD-100785,2024-11-26,John Smith,Consumer,Central,Wholesale,C. Diaz,Wireless Mouse,Electronics,24.99,5,0,124.95,124.95
+ORD-100008,2024-11-27,Jennifer Davis,Consumer,West,Retail,C. Diaz,Mechanical Keyboard,Electronics,89.99,10,0.15,899.9,764.91
+ORD-100273,2024-11-27,Ahmed Williams,Enterprise,South,Online,C. Diaz,Mechanical Keyboard,Electronics,89.99,8,0.2,719.92,575.94
+ORD-100131,2024-11-28,Mary Johnson,SMB,West,Online,A. Morgan,Desk Lamp,Home Office,45.0,2,0,90.0,90.0
+ORD-100537,2024-11-28,Ahmed Johnson,Enterprise,Central,Retail,B. Chen,Desk Lamp,Home Office,45.0,9,0.05,405.0,384.75
+ORD-100628,2024-11-29,Linda Davis,Consumer,East,Retail,C. Diaz,Notebook Pack,Stationery,12.99,4,0.1,51.96,46.76
+ORD-100728,2024-11-29,David Lopez,Consumer,East,Wholesale,E. Novak,Coffee Mug,Home Office,11.5,5,0,57.5,57.5
+ORD-100525,2024-11-30,David Patel,Consumer,Central,Retail,C. Diaz,Portable SSD 1TB,Electronics,119.99,2,0.1,239.98,215.98
+ORD-100335,2024-12-01,Robert Anderson,Consumer,West,Retail,B. Chen,USB-C Hub,Electronics,39.99,3,0,119.97,119.97
+ORD-100435,2024-12-01,Sofia Patel,SMB,North,Wholesale,F. Oyelaran,Ergonomic Chair,Furniture,249.0,5,0,1245.0,1245.0
+ORD-100512,2024-12-01,John Miller,SMB,West,Retail,C. Diaz,Laptop Stand,Accessories,34.5,2,0,69.0,69.0
+ORD-100473,2024-12-02,Patricia Davis,Consumer,East,Retail,F. Oyelaran,Webcam 1080p,Electronics,59.99,8,0,479.92,479.92
+ORD-100642,2024-12-02,Wei Davis,SMB,South,Wholesale,B. Chen,USB-C Hub,Electronics,39.99,2,0.15,79.98,67.98
+ORD-100216,2024-12-03,Mary Smith,Consumer,North,Wholesale,E. Novak,Notebook Pack,Stationery,12.99,10,0,129.9,129.9
+ORD-100687,2024-12-03,Elizabeth Miller,SMB,South,Online,C. Diaz,Monitor 27in,Electronics,179.99,5,0,899.95,899.95
+ORD-100858,2024-12-03,Mary Haddad,Consumer,North,Online,C. Diaz,Standing Desk,Furniture,399.0,3,0.15,1197.0,1017.45
+ORD-100453,2024-12-04,Robert Kim,Consumer,Central,Wholesale,E. Novak,Mechanical Keyboard,Electronics,89.99,9,0,809.91,809.91
+ORD-100577,2024-12-04,Jennifer Patel,Consumer,North,Online,D. Kim,Noise-Cancelling Headphones,Electronics,199.99,2,0,399.98,399.98
+ORD-100906,2024-12-04,Jennifer Patel,Consumer,North,Retail,F. Oyelaran,Ergonomic Chair,Furniture,249.0,3,0.2,747.0,597.6
+ORD-100051,2024-12-05,Elizabeth Wilson,Enterprise,West,Retail,D. Kim,Coffee Mug,Home Office,11.5,2,0.15,23.0,19.55
+ORD-100136,2024-12-05,Mary Anderson,Consumer,South,Wholesale,B. Chen,Laptop Stand,Accessories,34.5,10,0,345.0,345.0
+ORD-100635,2024-12-05,Jennifer Johnson,SMB,South,Wholesale,E. Novak,Standing Desk,Furniture,399.0,1,0,399.0,399.0
+ORD-100865,2024-12-05,Linda Lopez,Enterprise,West,Retail,F. Oyelaran,Cable Organizer,Accessories,14.99,1,0.15,14.99,12.74
+ORD-100892,2024-12-05,James Garcia,SMB,North,Online,D. Kim,Notebook Pack,Stationery,12.99,4,0.1,51.96,46.76
+ORD-100954,2024-12-06,Linda Patel,SMB,Central,Online,F. Oyelaran,Notebook Pack,Stationery,12.99,7,0.05,90.93,86.38
+ORD-100059,2024-12-07,Sarah Rossi,Enterprise,Central,Retail,E. Novak,Standing Desk,Furniture,399.0,9,0.1,3591.0,3231.9
+ORD-100120,2024-12-07,Jennifer Williams,SMB,East,Wholesale,C. Diaz,Wireless Mouse,Electronics,24.99,8,0,199.92,199.92
+ORD-100160,2024-12-08,Wei Johnson,SMB,North,Retail,A. Morgan,Cable Organizer,Accessories,14.99,6,0,89.94,89.94
+ORD-100251,2024-12-08,Nina Anderson,Consumer,North,Retail,D. Kim,Mechanical Keyboard,Electronics,89.99,3,0,269.97,269.97
+ORD-100457,2024-12-08,John Brown,SMB,South,Retail,C. Diaz,Ergonomic Chair,Furniture,249.0,3,0,747.0,747.0
+ORD-100148,2024-12-09,Sofia Johnson,SMB,Central,Retail,C. Diaz,Mechanical Keyboard,Electronics,89.99,7,0,629.93,629.93
+ORD-100511,2024-12-09,Michael Haddad,SMB,East,Online,F. Oyelaran,Mechanical Keyboard,Electronics,89.99,5,0,449.95,449.95
+ORD-100651,2024-12-09,Jennifer Rossi,Enterprise,West,Wholesale,C. Diaz,Laptop Stand,Accessories,34.5,4,0,138.0,138.0
+ORD-100976,2024-12-09,Wei Nguyen,SMB,South,Wholesale,A. Morgan,Ergonomic Chair,Furniture,249.0,2,0,498.0,498.0
+ORD-100099,2024-12-10,Mary Garcia,SMB,Central,Wholesale,D. Kim,Coffee Mug,Home Office,11.5,5,0.1,57.5,51.75
+ORD-100129,2024-12-10,Ahmed Brown,Enterprise,South,Retail,A. Morgan,Noise-Cancelling Headphones,Electronics,199.99,10,0.05,1999.9,1899.9
+ORD-100824,2024-12-10,Ahmed Patel,SMB,South,Wholesale,B. Chen,Mechanical Keyboard,Electronics,89.99,3,0.2,269.97,215.98
+ORD-100829,2024-12-10,John Brown,Consumer,West,Retail,F. Oyelaran,Mechanical Keyboard,Electronics,89.99,7,0.05,629.93,598.43
+ORD-100155,2024-12-11,Sofia Haddad,Enterprise,West,Retail,C. Diaz,Mechanical Keyboard,Electronics,89.99,5,0.05,449.95,427.45
+ORD-100250,2024-12-11,Wei Kim,Enterprise,East,Online,D. Kim,Cable Organizer,Accessories,14.99,4,0,59.96,59.96
+ORD-100001,2024-12-12,Sofia Johnson,Consumer,North,Online,B. Chen,Monitor 27in,Electronics,179.99,9,0,1619.91,1619.91
+ORD-100293,2024-12-12,Wei Jones,Enterprise,North,Wholesale,F. Oyelaran,Portable SSD 1TB,Electronics,119.99,9,0,1079.91,1079.91
+ORD-100446,2024-12-12,Ahmed Wilson,Consumer,North,Retail,E. Novak,Wireless Mouse,Electronics,24.99,4,0,99.96,99.96
+ORD-100556,2024-12-12,Sarah Kim,SMB,Central,Wholesale,A. Morgan,Monitor 27in,Electronics,179.99,4,0.2,719.96,575.97
+ORD-100685,2024-12-12,Mary Rossi,SMB,Central,Online,A. Morgan,USB-C Hub,Electronics,39.99,4,0.15,159.96,135.97
+ORD-100893,2024-12-12,Elizabeth Brown,SMB,East,Wholesale,A. Morgan,Mechanical Keyboard,Electronics,89.99,6,0,539.94,539.94
+ORD-100463,2024-12-13,Wei Nguyen,Enterprise,North,Wholesale,F. Oyelaran,Ergonomic Chair,Furniture,249.0,3,0.1,747.0,672.3
+ORD-100572,2024-12-13,Jennifer Wilson,SMB,East,Wholesale,E. Novak,Notebook Pack,Stationery,12.99,4,0.1,51.96,46.76
+ORD-100679,2024-12-13,James Miller,Enterprise,East,Retail,A. Morgan,Webcam 1080p,Electronics,59.99,9,0.1,539.91,485.92
+ORD-100998,2024-12-13,Mary Kim,SMB,South,Online,F. Oyelaran,USB-C Hub,Electronics,39.99,1,0,39.99,39.99
+ORD-100780,2024-12-14,John Nguyen,SMB,West,Retail,E. Novak,Desk Lamp,Home Office,45.0,5,0,225.0,225.0
+ORD-100726,2024-12-15,David Jones,Enterprise,West,Online,C. Diaz,Monitor 27in,Electronics,179.99,7,0.05,1259.93,1196.93
+ORD-100629,2024-12-16,Patricia Kim,SMB,East,Retail,B. Chen,Portable SSD 1TB,Electronics,119.99,10,0,1199.9,1199.9
+ORD-100644,2024-12-16,Robert Wilson,Enterprise,Central,Online,D. Kim,Cable Organizer,Accessories,14.99,4,0.2,59.96,47.97
+ORD-100731,2024-12-16,Elizabeth Lopez,Consumer,North,Online,E. Novak,Ergonomic Chair,Furniture,249.0,6,0,1494.0,1494.0
+ORD-100751,2024-12-16,Sarah Miller,Consumer,Central,Online,C. Diaz,Notebook Pack,Stationery,12.99,9,0,116.91,116.91
+ORD-100412,2024-12-17,Linda Haddad,SMB,North,Retail,F. Oyelaran,Coffee Mug,Home Office,11.5,8,0.1,92.0,82.8
+ORD-100505,2024-12-17,Elizabeth Rossi,SMB,West,Wholesale,A. Morgan,Noise-Cancelling Headphones,Electronics,199.99,10,0,1999.9,1999.9
+ORD-100882,2024-12-17,Sofia Lopez,Consumer,North,Wholesale,A. Morgan,Laptop Stand,Accessories,34.5,7,0.15,241.5,205.28
+ORD-100649,2024-12-18,Nina Nguyen,Consumer,West,Retail,D. Kim,Cable Organizer,Accessories,14.99,8,0,119.92,119.92
+ORD-100744,2024-12-18,Liam Miller,Consumer,North,Online,A. Morgan,Webcam 1080p,Electronics,59.99,8,0,479.92,479.92
+ORD-100041,2024-12-19,Mary Nguyen,Enterprise,Central,Online,D. Kim,Portable SSD 1TB,Electronics,119.99,3,0.1,359.97,323.97
+ORD-100134,2024-12-19,Liam Davis,SMB,North,Wholesale,C. Diaz,Webcam 1080p,Electronics,59.99,4,0.05,239.96,227.96
+ORD-100254,2024-12-19,Linda Davis,Consumer,West,Online,D. Kim,Mechanical Keyboard,Electronics,89.99,5,0,449.95,449.95
+ORD-100486,2024-12-19,Mary Nguyen,SMB,North,Wholesale,F. Oyelaran,Cable Organizer,Accessories,14.99,5,0,74.95,74.95
+ORD-100921,2024-12-19,Nina Jones,Consumer,South,Online,E. Novak,Monitor 27in,Electronics,179.99,2,0.15,359.98,305.98
+ORD-100052,2024-12-22,Michael Kim,Enterprise,West,Wholesale,F. Oyelaran,Noise-Cancelling Headphones,Electronics,199.99,9,0,1799.91,1799.91
+ORD-100345,2024-12-22,Sofia Jones,SMB,North,Online,D. Kim,Webcam 1080p,Electronics,59.99,2,0.2,119.98,95.98
+ORD-100421,2024-12-22,Linda Jones,SMB,West,Retail,C. Diaz,Ballpoint Pens (12),Stationery,8.49,2,0.2,16.98,13.58
+ORD-100462,2024-12-22,Jennifer Brown,SMB,Central,Retail,E. Novak,Monitor 27in,Electronics,179.99,1,0.2,179.99,143.99
+ORD-100670,2024-12-22,Patricia Williams,SMB,Central,Wholesale,C. Diaz,Laptop Stand,Accessories,34.5,10,0,345.0,345.0
+ORD-100975,2024-12-22,Wei Williams,Enterprise,North,Wholesale,A. Morgan,Monitor 27in,Electronics,179.99,8,0.2,1439.92,1151.94
+ORD-100087,2024-12-23,James Wilson,SMB,West,Retail,C. Diaz,USB-C Hub,Electronics,39.99,8,0,319.92,319.92
+ORD-100235,2024-12-24,Liam Anderson,SMB,South,Retail,F. Oyelaran,Mechanical Keyboard,Electronics,89.99,4,0,359.96,359.96
+ORD-100557,2024-12-24,Elizabeth Williams,SMB,East,Online,E. Novak,Coffee Mug,Home Office,11.5,5,0,57.5,57.5
+ORD-100866,2024-12-24,Linda Rossi,SMB,North,Retail,C. Diaz,Webcam 1080p,Electronics,59.99,2,0.1,119.98,107.98
+ORD-100621,2024-12-25,Elizabeth Johnson,Enterprise,Central,Retail,A. Morgan,Notebook Pack,Stationery,12.99,2,0.1,25.98,23.38
+ORD-100707,2024-12-25,Sarah Patel,SMB,West,Retail,E. Novak,Notebook Pack,Stationery,12.99,7,0.15,90.93,77.29
+ORD-100334,2024-12-26,David Brown,Consumer,West,Online,C. Diaz,Noise-Cancelling Headphones,Electronics,199.99,5,0.1,999.95,899.96
+ORD-100425,2024-12-26,Liam Patel,Enterprise,North,Wholesale,A. Morgan,Laptop Stand,Accessories,34.5,5,0,172.5,172.5
+ORD-100551,2024-12-26,Elizabeth Nguyen,SMB,East,Online,E. Novak,Mechanical Keyboard,Electronics,89.99,2,0.1,179.98,161.98
+ORD-100775,2024-12-26,John Patel,Enterprise,East,Wholesale,A. Morgan,Ballpoint Pens (12),Stationery,8.49,1,0.2,8.49,6.79
+ORD-100826,2024-12-26,Mary Williams,SMB,West,Online,D. Kim,Noise-Cancelling Headphones,Electronics,199.99,9,0.15,1799.91,1529.92
+ORD-100063,2024-12-27,Sofia Anderson,Enterprise,West,Retail,A. Morgan,Laptop Stand,Accessories,34.5,2,0.05,69.0,65.55
+ORD-100172,2024-12-28,Jennifer Nguyen,SMB,East,Retail,D. Kim,Ergonomic Chair,Furniture,249.0,8,0.1,1992.0,1792.8
+ORD-100359,2024-12-28,Nina Nguyen,Enterprise,Central,Wholesale,C. Diaz,USB-C Hub,Electronics,39.99,1,0,39.99,39.99
+ORD-100494,2024-12-28,Jennifer Williams,Enterprise,South,Retail,E. Novak,Webcam 1080p,Electronics,59.99,9,0,539.91,539.91
+ORD-100956,2024-12-28,Patricia Williams,Consumer,Central,Wholesale,E. Novak,Noise-Cancelling Headphones,Electronics,199.99,9,0.15,1799.91,1529.92
+ORD-100978,2024-12-29,Elizabeth Davis,Consumer,West,Retail,A. Morgan,Webcam 1080p,Electronics,59.99,4,0,239.96,239.96
+ORD-100377,2024-12-30,Mary Wilson,SMB,South,Online,D. Kim,Laptop Stand,Accessories,34.5,6,0.05,207.0,196.65
+ORD-100639,2024-12-30,Elizabeth Anderson,SMB,West,Wholesale,B. Chen,Wireless Mouse,Electronics,24.99,1,0,24.99,24.99
+ORD-100713,2024-12-30,Ahmed Johnson,Consumer,Central,Retail,F. Oyelaran,Standing Desk,Furniture,399.0,5,0.05,1995.0,1895.25
+ORD-100789,2024-12-30,Jennifer Jones,Consumer,South,Online,A. Morgan,Standing Desk,Furniture,399.0,5,0,1995.0,1995.0
+ORD-100920,2024-12-30,Ahmed Haddad,Consumer,Central,Online,C. Diaz,Desk Lamp,Home Office,45.0,7,0.2,315.0,252.0
+ORD-100947,2024-12-30,Patricia Miller,SMB,West,Online,F. Oyelaran,Ergonomic Chair,Furniture,249.0,3,0.15,747.0,634.95
+ORD-100878,2024-12-31,David Wilson,Enterprise,West,Retail,B. Chen,Laptop Stand,Accessories,34.5,4,0.2,138.0,110.4
+ORD-100902,2024-12-31,John Wilson,SMB,West,Online,D. Kim,USB-C Hub,Electronics,39.99,8,0.1,319.92,287.93
+ORD-100915,2024-12-31,Nina Wilson,Consumer,West,Retail,D. Kim,Desk Lamp,Home Office,45.0,7,0.2,315.0,252.0

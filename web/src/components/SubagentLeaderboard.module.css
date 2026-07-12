@@ -1,0 +1,300 @@
+/* Leaderboard overlays above the settings drawer (z 1000), so it must sit
+   higher. Its own scrim dims the drawer; closing returns to settings. */
+.overlay {
+  position: fixed; inset: 0; z-index: 1100;
+  background: var(--scrim);
+  display: grid; place-items: center;
+  padding: 24px;
+}
+
+.card {
+  display: flex; flex-direction: column;
+  width: min(1040px, 100%);
+  height: min(720px, calc(100vh - 48px));
+  background: var(--bg-composer);
+  border: 1px solid var(--hair-4);
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow-composer);
+  overflow: hidden;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .card { animation: cardIn 160ms ease-out; }
+  @keyframes cardIn {
+    from { transform: translateY(8px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+}
+
+.header {
+  flex: none;
+  display: flex; align-items: baseline; gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--hair-3);
+}
+.title { font-size: 13.5px; font-weight: 600; letter-spacing: -0.01em; }
+.subtitle {
+  font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: 0.08em;
+  color: var(--text-ghost);
+}
+.close {
+  margin-left: auto;
+  font-size: 13px; color: var(--text-faint);
+  width: 26px; height: 26px; border-radius: var(--r-btn);
+}
+.close:hover { color: var(--text-primary); background: var(--tint-3); }
+
+.filters { flex: none; padding: 9px 16px 10px; border-bottom: 1px solid var(--hair-2); }
+.segmented { display: inline-flex; padding: 2px; background: var(--tint-3); border-radius: var(--r-btn-lg); }
+.segmented button { padding: 4px 10px; border-radius: var(--r-btn); font-size: 11px; color: var(--text-faint); }
+.segmented button[aria-pressed='true'] { color: var(--text-primary); background: var(--bg-card); box-shadow: 0 0 0 1px var(--hair-3); }
+.chips { display: flex; gap: 6px; margin-top: 8px; overflow-x: auto; padding-bottom: 2px; }
+.chip { flex: none; display: flex; align-items: baseline; gap: 7px; padding: 5px 9px; border: 1px solid var(--hair-3); border-radius: var(--r-pill); color: var(--text-secondary); }
+.chip small { font-family: var(--font-mono); font-size: 8.5px; color: var(--text-ghost); }
+.chip[aria-pressed='true'] { border-color: color-mix(in oklab, var(--accent) 55%, var(--hair-3)); color: var(--text-primary); background: color-mix(in oklab, var(--accent) 8%, transparent); }
+.chip:disabled { opacity: .55; cursor: not-allowed; }
+.unknownNote { margin-top: 7px; font-size: 10.5px; color: var(--text-faint); }
+
+/* Two-column body: ranking on the left, recent/detail on the right. */
+.body {
+  flex: 1; min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+}
+.col { min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+.col + .col { border-left: 1px solid var(--hair-2); }
+.colHead {
+  flex: none;
+  display: flex; align-items: center; gap: 8px;
+  padding: 11px 16px 9px;
+  font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: 0.12em;
+  color: var(--text-secondary);
+}
+.colCount { color: var(--text-ghost); letter-spacing: 0.04em; }
+.colScroll { flex: 1; min-height: 0; overflow-y: auto; padding: 4px 12px 16px; }
+
+@media (max-width: 720px) {
+  .card { height: calc(100vh - 32px); }
+  .body { grid-template-columns: 1fr; grid-template-rows: auto auto; overflow-y: auto; }
+  .col + .col { border-left: none; border-top: 1px solid var(--hair-2); }
+  .col { overflow: visible; }
+  .colScroll { overflow-y: visible; }
+}
+
+/* ── Ranking: score rail is the signature element ─────────────────── */
+.rankRow {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 8px;
+  border-radius: var(--r-tile);
+}
+.rankRow + .rankRow { border-top: 1px solid var(--hair-1); }
+.rank {
+  font-family: var(--font-mono);
+  font-size: 12px; font-weight: 600;
+  color: var(--text-ghost);
+  text-align: right;
+}
+.rankRow:first-child .rank { color: var(--accent); }
+.rankMain { min-width: 0; }
+.rankName {
+  font-size: 12.5px; font-weight: 550; color: var(--text-primary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.rankMeta {
+  display: flex; gap: 8px; align-items: center;
+  margin-top: 2px;
+  font-size: 10.5px; color: var(--text-faint);
+}
+.rankErr { color: var(--danger-dim); }
+.rankScore {
+  font-family: var(--font-mono);
+  font-size: 20px; font-weight: 600; letter-spacing: -0.02em;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+.rankScoreEmpty { font-size: 12px; color: var(--text-ghost); font-weight: 500; }
+
+/* The rail: four stacked segments whose fill length encodes each dimension,
+   so ranking and per-dimension strength read at a glance without cards. */
+.rail {
+  grid-column: 2 / 4;
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr) 30px;
+  align-items: center;
+  gap: 8px;
+  margin-top: 7px;
+}
+.railLabel {
+  font-family: var(--font-mono);
+  font-size: 9px; letter-spacing: 0.04em;
+  color: var(--text-ghost);
+  text-align: right;
+  text-transform: uppercase;
+}
+.railTrack {
+  height: 5px; border-radius: var(--r-pill);
+  background: var(--tint-3);
+  overflow: hidden;
+}
+.railFill {
+  height: 100%; border-radius: var(--r-pill);
+  background: color-mix(in oklab, var(--accent) 70%, var(--text-muted));
+}
+.railFill[data-dim='overall'] { background: var(--accent); box-shadow: var(--glow-accent); }
+.railVal {
+  font-family: var(--font-mono);
+  font-size: 10px; color: var(--text-muted);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.railEmpty {
+  grid-column: 2 / 4;
+  margin-top: 6px;
+  font-size: 10.5px; color: var(--text-ghost); font-style: italic;
+}
+
+/* ── Recent evaluations rows ──────────────────────────────────────── */
+.evRow {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%;
+  padding: 7px 9px;
+  border-radius: var(--r-tile);
+  text-align: left;
+  border: 1px solid transparent;
+}
+.evRow:hover { background: var(--tint-3); }
+.evRow[data-active='true'] {
+  background: var(--tint-4);
+  border-color: var(--hair-3);
+}
+.evRow:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.evTime {
+  flex: none; width: 42px;
+  font-family: var(--font-mono);
+  font-size: 10px; color: var(--text-ghost);
+}
+.evBody { flex: 1; min-width: 0; display: block; }
+.evTask {
+  display: block;
+  font-size: 11.5px; color: var(--text-body);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.evSub {
+  display: block;
+  margin-top: 1px;
+  font-family: var(--font-mono);
+  font-size: 9.5px; color: var(--text-faint);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.badge {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 8.5px; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 1px 5px; border-radius: var(--r-pill);
+  color: var(--text-ghost); background: var(--tint-4);
+}
+.badge[data-mode='write'] { color: var(--warn-title); background: color-mix(in oklab, var(--warn) 14%, transparent); }
+.evScore {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 13px; font-weight: 600; color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+.evErr { flex: none; font-size: 10px; color: var(--danger-dim); }
+
+/* ── Detail view ──────────────────────────────────────────────────── */
+.detail { display: flex; flex-direction: column; gap: 14px; padding: 4px 4px 8px; }
+.detailBack {
+  align-self: flex-start;
+  font-size: 11px; color: var(--text-secondary);
+  padding: 3px 8px 3px 4px; border-radius: var(--r-btn);
+}
+.detailBack:hover { color: var(--text-primary); background: var(--tint-3); }
+.detailHeadName { font-size: 12.5px; font-weight: 600; color: var(--text-primary); }
+.detailHeadSub {
+  margin-top: 2px;
+  font-family: var(--font-mono);
+  font-size: 10px; color: var(--text-faint);
+}
+
+.scoreGrid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
+}
+.scoreCell {
+  padding: 8px; border-radius: var(--r-tile);
+  background: var(--tint-2); border: 1px solid var(--hair-2);
+  text-align: center;
+}
+.scoreCellVal {
+  font-family: var(--font-mono);
+  font-size: 16px; font-weight: 600; color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+.scoreCell[data-dim='overall'] .scoreCellVal { color: var(--accent); }
+.scoreCellLabel {
+  margin-top: 2px;
+  font-family: var(--font-mono);
+  font-size: 8.5px; letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--text-ghost);
+}
+
+.block { }
+.blockTitle {
+  font-family: var(--font-mono);
+  font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 5px;
+}
+.prose {
+  font-size: 11.5px; line-height: 1.55; color: var(--text-body);
+  white-space: pre-wrap; word-break: break-word;
+}
+.list { margin: 0; padding-left: 16px; }
+.list li { font-size: 11.5px; line-height: 1.5; color: var(--text-body); margin: 2px 0; }
+.listIssue li { color: var(--danger-dim); }
+
+.meta {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 14px;
+}
+.metaItem { display: flex; justify-content: space-between; gap: 8px; font-size: 11px; }
+.metaKey { color: var(--text-faint); }
+.metaVal {
+  font-family: var(--font-mono);
+  color: var(--text-body); font-variant-numeric: tabular-nums;
+  min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.pre {
+  margin: 0;
+  max-height: 260px; overflow: auto;
+  padding: 8px 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-tile);
+  font-family: var(--font-mono);
+  font-size: 10.5px; line-height: 1.5; color: var(--text-muted);
+  white-space: pre-wrap; word-break: break-word;
+}
+
+/* ── Shared states ────────────────────────────────────────────────── */
+.state {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: 32px 20px; text-align: center;
+}
+.stateMsg { font-size: 11.5px; color: var(--text-faint); line-height: 1.5; max-width: 320px; }
+.stateErr { color: var(--danger-dim); }
+.retry {
+  font-size: 11px; color: var(--text-secondary);
+  padding: 4px 12px; border-radius: var(--r-btn-lg);
+  border: 1px solid var(--hair-5);
+}
+.retry:hover { border-color: var(--hair-hover); color: var(--text-primary); }
+.inlineState { padding: 16px 8px; font-size: 11px; color: var(--text-faint); }
+
+:where(.close, .retry, .detailBack, .evRow, .segmented button, .chip):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}

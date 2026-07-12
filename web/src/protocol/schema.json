@@ -1,0 +1,2223 @@
+{
+  "event": {
+    "$defs": {
+      "ApprovalRequested": {
+        "properties": {
+          "seq": {
+            "default": 0,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "type": {
+            "const": "approval_requested",
+            "default": "approval_requested",
+            "title": "Type",
+            "type": "string"
+          },
+          "call_id": {
+            "title": "Call Id",
+            "type": "string"
+          },
+          "tool": {
+            "title": "Tool",
+            "type": "string"
+          },
+          "display": {
+            "title": "Display",
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_id",
+          "ts",
+          "call_id",
+          "tool",
+          "display"
+        ],
+        "title": "ApprovalRequested",
+        "type": "object"
+      },
+      "ApprovalResolved": {
+        "properties": {
+          "seq": {
+            "default": 0,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "type": {
+            "const": "approval_resolved",
+            "default": "approval_resolved",
+            "title": "Type",
+            "type": "string"
+          },
+          "call_id": {
+            "title": "Call Id",
+            "type": "string"
+          },
+          "decision": {
+            "enum": [
+              "allow",
+              "deny"
+            ],
+            "title": "Decision",
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_id",
+          "ts",
+          "call_id",
+          "decision"
+        ],
+        "title": "ApprovalResolved",
+        "type": "object"
+      },
+      "AssistantMessage": {
+        "properties": {
+          "seq": {
+            "default": 0,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "type": {
+            "const": "assistant_message",
+            "default": "assistant_message",
+            "title": "Type",
+            "type": "string"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          },
+          "tool_calls": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/ToolCallSpec"
+            },
+            "title": "Tool Calls",
+            "type": "array"
+          },
+          "usage_tokens": {
+            "default": 0,
+            "title": "Usage Tokens",
+            "type": "integer"
+          },
+          "context_seq": {
+            "default": 0,
+            "title": "Context Seq",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "session_id",
+          "ts",
+          "text"
+        ],
+        "title": "AssistantMessage",
+        "type": "object"
+      },
+      "AutonomyChanged": {
+        "properties": {
+          "seq": {
+            "default": 0,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "type": {
+            "const": "autonomy_changed",
+            "default": "autonomy_changed",
+            "title": "Type",
+            "type": "string"
+          },
+          "autonomy": {
+            "enum": [
+              "yolo",
+              "guarded"
+            ],
+            "title": "Autonomy",
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_id",
+          "ts",
+          "autonomy"
+        ],
+        "title": "AutonomyChanged",
+        "type": "object"
+      },
+      "ContextCompacted": {
+        "properties": {
+          "seq": {
+            "default": 0,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "type": {
+            "const": "context_compacted",
+            "default": "context_compacted",
+            "title": "Type",
+            "type": "string"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          },
+          "upto_seq": {
+            "title": "Upto Seq",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "session_id",
+          "ts",
+          "summary",
+          "upto_seq"
+        ],
+        "title": "ContextCompacted",
+        "type": "object"
+      },
+      "DiffStats": {
+        "properties": {
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "added": {
+            "title": "Added",
+            "type": "integer"
+          },
+          "removed": {
+            "title": "Removed",
+            "type": "integer"
+          },
+          "changeset_index": {
+            "title": "Changeset Index",
+            "type": "integer"
+          },
+          "diff": {
+            "default": "",
+            "title": "Diff",
+            "type": "string"
+          }
+        },
+        "required": [
+          "path",
+          "added",
+          "removed",
+          "changeset_index"
+        ],
+        "title": "DiffStats",
+        "type": "object"
+      },
+      "EffortChanged": {
+        "properties": {
+          "seq": {
+            "default": 0,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "type": {
+            "const": "effort_changed",
+            "default": "effort_changed",
+            "title": "Type",
+            "type": "string"
+          },
+          "effort": {
+            "enum": [
+              "default",
+              "low",
+              "medium",
+              "high"
+            ],
+            "title": "Effort",
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_id",
+          "ts",
+          "effort"
+        ],
+        "title": "EffortChanged",
+        "type": "object"
+      },
+      "ErrorEvent": {
+        "properties": {
+          "seq": {
+            "default": 0,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "type": {
+            "const": "error",
+            "default": "error",
+            "title": "Type",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_id",
+          "ts",
+          "message"
+        ],
+        "title": "ErrorEvent",
+        "type": "object"
+      },
+      "HistoryRewound": {
+        "description": "Append-only marker that rewinds the active conversation branch to just\nbefore ``target_user_seq``. Conversational/run events on the then-active\nbranch with seq >= target_user_seq become inactive; session settings and\nlifecycle events remain. Never truncates the log.",
+        "properties": {
+          "seq": {
+            "default": 0,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "type": {
+            "const": "history_rewound",
+            "default": "history_rewound",
+            "title": "Type",
+            "type": "string"
+          },
+          "target_user_seq": {
+            "title": "Target User Seq",
+            "type": "integer"
+          },
+          "target_checkpoint": {
+            "title": "Target Checkpoint",
+            "type": "string"
+          },
+          "safety_checkpoint": {
+            "title": "Safety Checkpoint",
+            "type": "string"
+          },
+          "replacement": {
+            "title": "Replacement",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "session_id",
+          "ts",
+          "target_user_seq",
+          "target_checkpoint",
+          "safety_checkpoint",
+          "replacement"
+        ],
+        "title": "HistoryRewound",
+        "type": "object"
+      },
+      "MemoryRecalled": {
+        "description": "Memory snippets retrieved for one user message; rendered below it in\nthe projection. Durable so retrieval results never shift between turns.",
+        "properties": {
+          "seq": {
+            "default": 0,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "type": {
+            "const": "memory_recalled",
+            "default": "memory_recalled",
+            "title": "Type",
+            "type": "string"
+          },
+          "user_seq": {
+            "title": "User Seq",
+            "type": "integer"
+          },
+          "snippets": {
+            "items": {
+              "$ref": "#/$defs/RecalledSnippet"
+            },
+            "title": "Snippets",
+            "type": "array"
+          }
+        },
+        "required": [
+          "session_id",
+          "ts",
+          "user_seq",
+          "snippets"
+        ],
+        "title": "MemoryRecalled",
+        "type": "object"
+      },
+      "MessageCheckpointed": {
+        "description": "Attaches a workspace checkpoint to an already-emitted user message. The\ncapture runs off the event loop after the bubble is published, so the\nmessage renders instantly; this durable follow-up records the rewind target\nonce the snapshot completes.",
+        "properties": {
+          "seq": {
+            "default": 0,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "type": {
+            "const": "message_checkpointed",
+            "default": "message_checkpointed",
+            "title": "Type",
+            "type": "string"
+          },
+          "user_seq": {
+            "title": "User Seq",
+            "type": "integer"
+          },
+          "checkpoint": {
+            "title": "Checkpoint",
+            "type": "string"
+          },
+          "workspace_activity_seq": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Workspace Activity Seq"
+          }
+        },
+        "required": [
+          "session_id",
+          "ts",
+          "user_seq",
+          "checkpoint"
+        ],
+        "title": "MessageCheckpointed",
+        "type": "object"
+      },
+      "ModeChanged": {
+        "properties": {
+          "seq": {
+            "default": 0,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "type": {
+            "const": "mode_changed",
+            "default": "mode_changed",
+            "title": "Type",
+            "type": "string"
+          },
+          "mode": {
+            "enum": [
+              "act",
+              "plan"
+            ],
+            "title": "Mode",
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_id",
+          "ts",
+          "mode"
+        ],
+        "title": "ModeChanged",
+        "type": "object"
+      },
+      "ModelChanged": {
+        "properties": {
+          "seq": {
+            "default": 0,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "type": {
+            "const": "model_changed",
+            "default": "model_changed",
+            "title": "Type",
+            "type": "string"
+          },
+          "model": {
+            "title": "Model",
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_id",
+          "ts",
+          "model"
+        ],
+        "title": "ModelChanged",
+        "type": "object"
+      },
+      "PlanProposed": {
+        "properties": {
+          "seq": {
+            "default": 0,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "type": {
+            "const": "plan_proposed",
+            "default": "plan_proposed",
+            "title": "Type",
+            "type": "string"
+          },
+          "call_id": {
+            "title": "Call Id",
+            "type": "string"
+          },
+          "plan": {
+            "title": "Plan",
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_id",
+          "ts",
+          "call_id",
+          "plan"
+        ],
+        "title": "PlanProposed",
+        "type": "object"
+      },
+      "PlanResolved": {
+        "properties": {
+          "seq": {
+            "default": 0,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "type": {
+            "const": "plan_resolved",
+            "default": "plan_resolved",
+            "title": "Type",
+            "type": "string"
+          },
+          "call_id": {
+            "title": "Call Id",
+            "type": "string"
+          },
+          "decision": {
+            "enum": [
+              "approve",
+              "revise"
+            ],
+            "title": "Decision",
+            "type": "string"
+          },
+          "feedback": {
+            "default": "",
+            "title": "Feedback",
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_id",
+          "ts",
+          "call_id",
+          "decision"
+        ],
+        "title": "PlanResolved",
+        "type": "object"
+      },
+      "PolicyAdded": {
+        "properties": {
+          "seq": {
+            "default": 0,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "type": {
+            "const": "policy_added",
+            "default": "policy_added",
+            "title": "Type",
+            "type": "string"
+          },
+          "tool": {
+            "title": "Tool",
+            "type": "string"
+          },
+          "pattern": {
+            "title": "Pattern",
+            "type": "string"
+          },
+          "scope": {
+            "enum": [
+              "session",
+              "global"
+            ],
+            "title": "Scope",
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_id",
+          "ts",
+          "tool",
+          "pattern",
+          "scope"
+        ],
+        "title": "PolicyAdded",
+        "type": "object"
+      },
+      "RecalledSnippet": {
+        "properties": {
+          "tier": {
+            "enum": [
+              "global",
+              "project"
+            ],
+            "title": "Tier",
+            "type": "string"
+          },
+          "region": {
+            "title": "Region",
+            "type": "string"
+          },
+          "start_line": {
+            "title": "Start Line",
+            "type": "integer"
+          },
+          "end_line": {
+            "title": "End Line",
+            "type": "integer"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          },
+          "score": {
+            "title": "Score",
+            "type": "number"
+          }
+        },
+        "required": [
+          "tier",
+          "region",
+          "start_line",
+          "end_line",
+          "text",
+          "score"
+        ],
+        "title": "RecalledSnippet",
+        "type": "object"
+      },
+      "RunAcknowledged": {
+        "description": "Durable, idempotent read acknowledgment: records that the latest\nsuccessful ``completed`` run (identified by its ``run_finished`` seq) has\nbeen seen by the user, clearing the session's unread marker. Emitted only\nwhen a completed run is currently unread, so replaying the active branch\nyields a monotonic read watermark that rewinds ignore on abandoned\nbranches.",
+        "properties": {
+          "seq": {
+            "default": 0,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "type": {
+            "const": "run_acknowledged",
+            "default": "run_acknowledged",
+            "title": "Type",
+            "type": "string"
+          },
+          "run_seq": {
+            "title": "Run Seq",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "session_id",
+          "ts",
+          "run_seq"
+        ],
+        "title": "RunAcknowledged",
+        "type": "object"
+      },
+      "RunFinished": {
+        "properties": {
+          "seq": {
+            "default": 0,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "type": {
+            "const": "run_finished",
+            "default": "run_finished",
+            "title": "Type",
+            "type": "string"
+          },
+          "reason": {
+            "enum": [
+              "completed",
+              "cancelled",
+              "interrupted",
+              "error"
+            ],
+            "title": "Reason",
+            "type": "string"
+          },
+          "unread": {
+            "default": false,
+            "title": "Unread",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "session_id",
+          "ts",
+          "reason"
+        ],
+        "title": "RunFinished",
+        "type": "object"
+      },
+      "SessionArchived": {
+        "properties": {
+          "seq": {
+            "default": 0,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "type": {
+            "const": "session_archived",
+            "default": "session_archived",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_id",
+          "ts"
+        ],
+        "title": "SessionArchived",
+        "type": "object"
+      },
+      "SessionCreated": {
+        "properties": {
+          "seq": {
+            "default": 0,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "type": {
+            "const": "session_created",
+            "default": "session_created",
+            "title": "Type",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "cwd": {
+            "title": "Cwd",
+            "type": "string"
+          },
+          "model": {
+            "title": "Model",
+            "type": "string"
+          },
+          "autonomy": {
+            "enum": [
+              "yolo",
+              "guarded"
+            ],
+            "title": "Autonomy",
+            "type": "string"
+          },
+          "project_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Project Id"
+          },
+          "effort": {
+            "default": "default",
+            "enum": [
+              "default",
+              "low",
+              "medium",
+              "high"
+            ],
+            "title": "Effort",
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_id",
+          "ts",
+          "name",
+          "cwd",
+          "model",
+          "autonomy"
+        ],
+        "title": "SessionCreated",
+        "type": "object"
+      },
+      "SessionRenamed": {
+        "properties": {
+          "seq": {
+            "default": 0,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "type": {
+            "const": "session_renamed",
+            "default": "session_renamed",
+            "title": "Type",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_id",
+          "ts",
+          "name"
+        ],
+        "title": "SessionRenamed",
+        "type": "object"
+      },
+      "SessionUnarchived": {
+        "properties": {
+          "seq": {
+            "default": 0,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "type": {
+            "const": "session_unarchived",
+            "default": "session_unarchived",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_id",
+          "ts"
+        ],
+        "title": "SessionUnarchived",
+        "type": "object"
+      },
+      "StatusChanged": {
+        "properties": {
+          "seq": {
+            "default": 0,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "type": {
+            "const": "status_changed",
+            "default": "status_changed",
+            "title": "Type",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "idle",
+              "running",
+              "attention",
+              "queued"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_id",
+          "ts",
+          "status"
+        ],
+        "title": "StatusChanged",
+        "type": "object"
+      },
+      "SubagentState": {
+        "description": "Durable snapshot of one spawn_agents worker's lifecycle state, so the\ncrew viewer can reconstruct after refresh/reconnect without persisting\nhigh-frequency activity lines. Only lifecycle transitions land here; the\nlive tool-line stream stays ephemeral (SubagentUpdate). Replaying the log\nyields the latest state per worker plus the final report on done/error.",
+        "properties": {
+          "seq": {
+            "default": 0,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "type": {
+            "const": "subagent_state",
+            "default": "subagent_state",
+            "title": "Type",
+            "type": "string"
+          },
+          "call_id": {
+            "title": "Call Id",
+            "type": "string"
+          },
+          "worker": {
+            "title": "Worker",
+            "type": "integer"
+          },
+          "task": {
+            "title": "Task",
+            "type": "string"
+          },
+          "mode": {
+            "default": "read",
+            "enum": [
+              "read",
+              "write"
+            ],
+            "title": "Mode",
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "queued",
+              "running",
+              "blocked",
+              "done",
+              "error"
+            ],
+            "title": "State",
+            "type": "string"
+          },
+          "report": {
+            "default": "",
+            "title": "Report",
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_id",
+          "ts",
+          "call_id",
+          "worker",
+          "task",
+          "state"
+        ],
+        "title": "SubagentState",
+        "type": "object"
+      },
+      "TerminalState": {
+        "description": "Durable snapshot of one PTY terminal's lifecycle, so the terminal viewer\ncan reconstruct its records after refresh/reconnect without persisting the\nraw output stream. Emitted on open, resize, and every final transition\n(exit/close), plus an ``orphaned`` marker written at rehydrate when a replay\nshows a terminal still ``running`` but the runtime process is gone. Replaying\nthe log yields the latest state per terminal; the live byte stream stays\nephemeral (TerminalOutput).",
+        "properties": {
+          "seq": {
+            "default": 0,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "type": {
+            "const": "terminal_state",
+            "default": "terminal_state",
+            "title": "Type",
+            "type": "string"
+          },
+          "terminal_id": {
+            "title": "Terminal Id",
+            "type": "string"
+          },
+          "command": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Command",
+            "type": "array"
+          },
+          "cwd": {
+            "title": "Cwd",
+            "type": "string"
+          },
+          "cols": {
+            "title": "Cols",
+            "type": "integer"
+          },
+          "rows": {
+            "title": "Rows",
+            "type": "integer"
+          },
+          "state": {
+            "enum": [
+              "starting",
+              "running",
+              "exited",
+              "closed",
+              "orphaned"
+            ],
+            "title": "State",
+            "type": "string"
+          },
+          "output_offset": {
+            "default": 0,
+            "title": "Output Offset",
+            "type": "integer"
+          },
+          "exit_code": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Exit Code"
+          },
+          "exit_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Exit Reason"
+          }
+        },
+        "required": [
+          "session_id",
+          "ts",
+          "terminal_id",
+          "command",
+          "cwd",
+          "cols",
+          "rows",
+          "state"
+        ],
+        "title": "TerminalState",
+        "type": "object"
+      },
+      "Todo": {
+        "properties": {
+          "text": {
+            "title": "Text",
+            "type": "string"
+          },
+          "status": {
+            "default": "pending",
+            "enum": [
+              "pending",
+              "in_progress",
+              "completed"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "title": "Todo",
+        "type": "object"
+      },
+      "TodosUpdated": {
+        "properties": {
+          "seq": {
+            "default": 0,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "type": {
+            "const": "todos_updated",
+            "default": "todos_updated",
+            "title": "Type",
+            "type": "string"
+          },
+          "todos": {
+            "items": {
+              "$ref": "#/$defs/Todo"
+            },
+            "title": "Todos",
+            "type": "array"
+          }
+        },
+        "required": [
+          "session_id",
+          "ts",
+          "todos"
+        ],
+        "title": "TodosUpdated",
+        "type": "object"
+      },
+      "ToolCallFinished": {
+        "properties": {
+          "seq": {
+            "default": 0,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "type": {
+            "const": "tool_call_finished",
+            "default": "tool_call_finished",
+            "title": "Type",
+            "type": "string"
+          },
+          "call_id": {
+            "title": "Call Id",
+            "type": "string"
+          },
+          "tool": {
+            "title": "Tool",
+            "type": "string"
+          },
+          "output": {
+            "title": "Output",
+            "type": "string"
+          },
+          "is_error": {
+            "default": false,
+            "title": "Is Error",
+            "type": "boolean"
+          },
+          "duration_ms": {
+            "default": 0,
+            "title": "Duration Ms",
+            "type": "integer"
+          },
+          "diff_stats": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/DiffStats"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "images": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Images",
+            "type": "array"
+          }
+        },
+        "required": [
+          "session_id",
+          "ts",
+          "call_id",
+          "tool",
+          "output"
+        ],
+        "title": "ToolCallFinished",
+        "type": "object"
+      },
+      "ToolCallSpec": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "arguments": {
+            "title": "Arguments",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "arguments"
+        ],
+        "title": "ToolCallSpec",
+        "type": "object"
+      },
+      "ToolCallStarted": {
+        "properties": {
+          "seq": {
+            "default": 0,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "type": {
+            "const": "tool_call_started",
+            "default": "tool_call_started",
+            "title": "Type",
+            "type": "string"
+          },
+          "call_id": {
+            "title": "Call Id",
+            "type": "string"
+          },
+          "tool": {
+            "title": "Tool",
+            "type": "string"
+          },
+          "display": {
+            "title": "Display",
+            "type": "string"
+          },
+          "auto_approved": {
+            "default": false,
+            "title": "Auto Approved",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "session_id",
+          "ts",
+          "call_id",
+          "tool",
+          "display"
+        ],
+        "title": "ToolCallStarted",
+        "type": "object"
+      },
+      "UserMessage": {
+        "properties": {
+          "seq": {
+            "default": 0,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "type": {
+            "const": "user_message",
+            "default": "user_message",
+            "title": "Type",
+            "type": "string"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          },
+          "images": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Images",
+            "type": "array"
+          },
+          "steering": {
+            "default": false,
+            "title": "Steering",
+            "type": "boolean"
+          },
+          "workspace_checkpoint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Workspace Checkpoint"
+          }
+        },
+        "required": [
+          "session_id",
+          "ts",
+          "text"
+        ],
+        "title": "UserMessage",
+        "type": "object"
+      }
+    },
+    "discriminator": {
+      "mapping": {
+        "approval_requested": "#/$defs/ApprovalRequested",
+        "approval_resolved": "#/$defs/ApprovalResolved",
+        "assistant_message": "#/$defs/AssistantMessage",
+        "autonomy_changed": "#/$defs/AutonomyChanged",
+        "context_compacted": "#/$defs/ContextCompacted",
+        "effort_changed": "#/$defs/EffortChanged",
+        "error": "#/$defs/ErrorEvent",
+        "history_rewound": "#/$defs/HistoryRewound",
+        "memory_recalled": "#/$defs/MemoryRecalled",
+        "message_checkpointed": "#/$defs/MessageCheckpointed",
+        "mode_changed": "#/$defs/ModeChanged",
+        "model_changed": "#/$defs/ModelChanged",
+        "plan_proposed": "#/$defs/PlanProposed",
+        "plan_resolved": "#/$defs/PlanResolved",
+        "policy_added": "#/$defs/PolicyAdded",
+        "run_acknowledged": "#/$defs/RunAcknowledged",
+        "run_finished": "#/$defs/RunFinished",
+        "session_archived": "#/$defs/SessionArchived",
+        "session_created": "#/$defs/SessionCreated",
+        "session_renamed": "#/$defs/SessionRenamed",
+        "session_unarchived": "#/$defs/SessionUnarchived",
+        "status_changed": "#/$defs/StatusChanged",
+        "subagent_state": "#/$defs/SubagentState",
+        "terminal_state": "#/$defs/TerminalState",
+        "todos_updated": "#/$defs/TodosUpdated",
+        "tool_call_finished": "#/$defs/ToolCallFinished",
+        "tool_call_started": "#/$defs/ToolCallStarted",
+        "user_message": "#/$defs/UserMessage"
+      },
+      "propertyName": "type"
+    },
+    "oneOf": [
+      {
+        "$ref": "#/$defs/SessionCreated"
+      },
+      {
+        "$ref": "#/$defs/SessionRenamed"
+      },
+      {
+        "$ref": "#/$defs/StatusChanged"
+      },
+      {
+        "$ref": "#/$defs/AutonomyChanged"
+      },
+      {
+        "$ref": "#/$defs/ModelChanged"
+      },
+      {
+        "$ref": "#/$defs/UserMessage"
+      },
+      {
+        "$ref": "#/$defs/MessageCheckpointed"
+      },
+      {
+        "$ref": "#/$defs/AssistantMessage"
+      },
+      {
+        "$ref": "#/$defs/ToolCallStarted"
+      },
+      {
+        "$ref": "#/$defs/ToolCallFinished"
+      },
+      {
+        "$ref": "#/$defs/ApprovalRequested"
+      },
+      {
+        "$ref": "#/$defs/ApprovalResolved"
+      },
+      {
+        "$ref": "#/$defs/PolicyAdded"
+      },
+      {
+        "$ref": "#/$defs/ContextCompacted"
+      },
+      {
+        "$ref": "#/$defs/RunFinished"
+      },
+      {
+        "$ref": "#/$defs/RunAcknowledged"
+      },
+      {
+        "$ref": "#/$defs/ErrorEvent"
+      },
+      {
+        "$ref": "#/$defs/SessionArchived"
+      },
+      {
+        "$ref": "#/$defs/SessionUnarchived"
+      },
+      {
+        "$ref": "#/$defs/EffortChanged"
+      },
+      {
+        "$ref": "#/$defs/ModeChanged"
+      },
+      {
+        "$ref": "#/$defs/PlanProposed"
+      },
+      {
+        "$ref": "#/$defs/PlanResolved"
+      },
+      {
+        "$ref": "#/$defs/TodosUpdated"
+      },
+      {
+        "$ref": "#/$defs/MemoryRecalled"
+      },
+      {
+        "$ref": "#/$defs/HistoryRewound"
+      },
+      {
+        "$ref": "#/$defs/SubagentState"
+      },
+      {
+        "$ref": "#/$defs/TerminalState"
+      }
+    ]
+  },
+  "text_delta": {
+    "properties": {
+      "seq": {
+        "default": 0,
+        "title": "Seq",
+        "type": "integer"
+      },
+      "session_id": {
+        "title": "Session Id",
+        "type": "string"
+      },
+      "type": {
+        "const": "text_delta",
+        "default": "text_delta",
+        "title": "Type",
+        "type": "string"
+      },
+      "text": {
+        "title": "Text",
+        "type": "string"
+      }
+    },
+    "required": [
+      "session_id",
+      "text"
+    ],
+    "title": "TextDelta",
+    "type": "object"
+  },
+  "output_chunk": {
+    "properties": {
+      "seq": {
+        "default": 0,
+        "title": "Seq",
+        "type": "integer"
+      },
+      "session_id": {
+        "title": "Session Id",
+        "type": "string"
+      },
+      "type": {
+        "const": "output_chunk",
+        "default": "output_chunk",
+        "title": "Type",
+        "type": "string"
+      },
+      "call_id": {
+        "title": "Call Id",
+        "type": "string"
+      },
+      "text": {
+        "title": "Text",
+        "type": "string"
+      }
+    },
+    "required": [
+      "session_id",
+      "call_id",
+      "text"
+    ],
+    "title": "OutputChunk",
+    "type": "object"
+  },
+  "session_deleted": {
+    "properties": {
+      "seq": {
+        "default": 0,
+        "title": "Seq",
+        "type": "integer"
+      },
+      "session_id": {
+        "title": "Session Id",
+        "type": "string"
+      },
+      "type": {
+        "const": "session_deleted",
+        "default": "session_deleted",
+        "title": "Type",
+        "type": "string"
+      }
+    },
+    "required": [
+      "session_id"
+    ],
+    "title": "SessionDeleted",
+    "type": "object"
+  },
+  "tool_call_pending": {
+    "description": "Announced the moment the model starts streaming a tool call, before\nits arguments have finished arriving. The durable ToolCallStarted (or an\napproval gate) supersedes it.",
+    "properties": {
+      "seq": {
+        "default": 0,
+        "title": "Seq",
+        "type": "integer"
+      },
+      "session_id": {
+        "title": "Session Id",
+        "type": "string"
+      },
+      "type": {
+        "const": "tool_call_pending",
+        "default": "tool_call_pending",
+        "title": "Type",
+        "type": "string"
+      },
+      "call_id": {
+        "title": "Call Id",
+        "type": "string"
+      },
+      "tool": {
+        "title": "Tool",
+        "type": "string"
+      }
+    },
+    "required": [
+      "session_id",
+      "call_id",
+      "tool"
+    ],
+    "title": "ToolCallPending",
+    "type": "object"
+  },
+  "steering_consumed": {
+    "description": "Announced when a completion STARTS: every pending steering message with\nseq <= context_seq is now part of the context the model is generating\nagainst, so its bubble can un-ghost (and relocate) immediately instead of\nwaiting for the completion to finish. The durable AssistantMessage carries\nthe same context_seq and un-ghosts identically on replay.",
+    "properties": {
+      "seq": {
+        "default": 0,
+        "title": "Seq",
+        "type": "integer"
+      },
+      "session_id": {
+        "title": "Session Id",
+        "type": "string"
+      },
+      "type": {
+        "const": "steering_consumed",
+        "default": "steering_consumed",
+        "title": "Type",
+        "type": "string"
+      },
+      "context_seq": {
+        "title": "Context Seq",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "session_id",
+      "context_seq"
+    ],
+    "title": "SteeringConsumed",
+    "type": "object"
+  },
+  "memory_update": {
+    "description": "Progress of the post-run project-memory pass. Never persisted: after a\nreload the indicator simply disappears.",
+    "properties": {
+      "seq": {
+        "default": 0,
+        "title": "Seq",
+        "type": "integer"
+      },
+      "session_id": {
+        "title": "Session Id",
+        "type": "string"
+      },
+      "type": {
+        "const": "memory_update",
+        "default": "memory_update",
+        "title": "Type",
+        "type": "string"
+      },
+      "state": {
+        "enum": [
+          "running",
+          "written",
+          "unchanged",
+          "error"
+        ],
+        "title": "State",
+        "type": "string"
+      }
+    },
+    "required": [
+      "session_id",
+      "state"
+    ],
+    "title": "MemoryUpdate",
+    "type": "object"
+  },
+  "file_index_progress": {
+    "description": "Progress of a project's workspace vectorization pass. Project-scoped (no\nsession_id) and never persisted: after a reload the current status is\nre-fetched over REST (GET /api/index).",
+    "properties": {
+      "seq": {
+        "default": 0,
+        "title": "Seq",
+        "type": "integer"
+      },
+      "type": {
+        "const": "file_index_progress",
+        "default": "file_index_progress",
+        "title": "Type",
+        "type": "string"
+      },
+      "project_id": {
+        "title": "Project Id",
+        "type": "string"
+      },
+      "state": {
+        "enum": [
+          "indexing",
+          "ready",
+          "error"
+        ],
+        "title": "State",
+        "type": "string"
+      },
+      "done": {
+        "default": 0,
+        "title": "Done",
+        "type": "integer"
+      },
+      "total": {
+        "default": 0,
+        "title": "Total",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "project_id",
+      "state"
+    ],
+    "title": "FileIndexProgress",
+    "type": "object"
+  },
+  "compaction": {
+    "description": "Progress of a context-compaction pass (manual or automatic). Never\npersisted: after a reload the indicator simply disappears. `phase` is the\nnumber of summary sections completed (0..9) and `label` names the current\nsection, driving a determinate progress display.",
+    "properties": {
+      "seq": {
+        "default": 0,
+        "title": "Seq",
+        "type": "integer"
+      },
+      "session_id": {
+        "title": "Session Id",
+        "type": "string"
+      },
+      "type": {
+        "const": "compaction",
+        "default": "compaction",
+        "title": "Type",
+        "type": "string"
+      },
+      "state": {
+        "enum": [
+          "running",
+          "done"
+        ],
+        "title": "State",
+        "type": "string"
+      },
+      "phase": {
+        "default": 0,
+        "title": "Phase",
+        "type": "integer"
+      },
+      "label": {
+        "default": "",
+        "title": "Label",
+        "type": "string"
+      }
+    },
+    "required": [
+      "session_id",
+      "state"
+    ],
+    "title": "CompactionState",
+    "type": "object"
+  },
+  "subagent_update": {
+    "description": "Live progress of one spawn_agents worker. Never persisted: the durable\nstory is the parent tool_call_finished report.",
+    "properties": {
+      "seq": {
+        "default": 0,
+        "title": "Seq",
+        "type": "integer"
+      },
+      "session_id": {
+        "title": "Session Id",
+        "type": "string"
+      },
+      "type": {
+        "const": "subagent_update",
+        "default": "subagent_update",
+        "title": "Type",
+        "type": "string"
+      },
+      "call_id": {
+        "title": "Call Id",
+        "type": "string"
+      },
+      "worker": {
+        "title": "Worker",
+        "type": "integer"
+      },
+      "task": {
+        "title": "Task",
+        "type": "string"
+      },
+      "mode": {
+        "default": "read",
+        "enum": [
+          "read",
+          "write"
+        ],
+        "title": "Mode",
+        "type": "string"
+      },
+      "state": {
+        "enum": [
+          "queued",
+          "running",
+          "blocked",
+          "done",
+          "error"
+        ],
+        "title": "State",
+        "type": "string"
+      },
+      "activity": {
+        "default": "",
+        "title": "Activity",
+        "type": "string"
+      },
+      "report": {
+        "default": "",
+        "title": "Report",
+        "type": "string"
+      }
+    },
+    "required": [
+      "session_id",
+      "call_id",
+      "worker",
+      "task",
+      "state"
+    ],
+    "title": "SubagentUpdate",
+    "type": "object"
+  },
+  "terminal_output": {
+    "description": "Live decoded output for one PTY terminal. Never persisted: the durable\nstory is the TerminalState snapshots plus the terminal's own ring buffer.\n``start_offset``/``end_offset`` are the monotonic byte cursors bounding this\nchunk, letting the frontend dedupe overlapping replays and detect a gap\n(a ``start_offset`` beyond the last ``end_offset`` it saw).",
+    "properties": {
+      "seq": {
+        "default": 0,
+        "title": "Seq",
+        "type": "integer"
+      },
+      "session_id": {
+        "title": "Session Id",
+        "type": "string"
+      },
+      "type": {
+        "const": "terminal_output",
+        "default": "terminal_output",
+        "title": "Type",
+        "type": "string"
+      },
+      "ts": {
+        "title": "Ts",
+        "type": "number"
+      },
+      "terminal_id": {
+        "title": "Terminal Id",
+        "type": "string"
+      },
+      "start_offset": {
+        "title": "Start Offset",
+        "type": "integer"
+      },
+      "end_offset": {
+        "title": "End Offset",
+        "type": "integer"
+      },
+      "text": {
+        "title": "Text",
+        "type": "string"
+      }
+    },
+    "required": [
+      "session_id",
+      "ts",
+      "terminal_id",
+      "start_offset",
+      "end_offset",
+      "text"
+    ],
+    "title": "TerminalOutput",
+    "type": "object"
+  },
+  "session_meta": {
+    "properties": {
+      "id": {
+        "title": "Id",
+        "type": "string"
+      },
+      "name": {
+        "default": "New session",
+        "title": "Name",
+        "type": "string"
+      },
+      "cwd": {
+        "title": "Cwd",
+        "type": "string"
+      },
+      "model": {
+        "title": "Model",
+        "type": "string"
+      },
+      "autonomy": {
+        "default": "yolo",
+        "enum": [
+          "yolo",
+          "guarded"
+        ],
+        "title": "Autonomy",
+        "type": "string"
+      },
+      "status": {
+        "default": "idle",
+        "enum": [
+          "idle",
+          "running",
+          "attention",
+          "queued"
+        ],
+        "title": "Status",
+        "type": "string"
+      },
+      "project_id": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Project Id"
+      },
+      "archived": {
+        "default": false,
+        "title": "Archived",
+        "type": "boolean"
+      },
+      "effort": {
+        "default": "default",
+        "enum": [
+          "default",
+          "low",
+          "medium",
+          "high"
+        ],
+        "title": "Effort",
+        "type": "string"
+      },
+      "mode": {
+        "default": "act",
+        "enum": [
+          "act",
+          "plan"
+        ],
+        "title": "Mode",
+        "type": "string"
+      },
+      "last_message_at": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Last Message At"
+      },
+      "last_run_reason": {
+        "anyOf": [
+          {
+            "enum": [
+              "completed",
+              "cancelled",
+              "interrupted",
+              "error"
+            ],
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Last Run Reason"
+      },
+      "last_run_seq": {
+        "anyOf": [
+          {
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Last Run Seq"
+      },
+      "unread": {
+        "default": false,
+        "title": "Unread",
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "id",
+      "cwd",
+      "model"
+    ],
+    "title": "SessionMeta",
+    "type": "object"
+  },
+  "changeset": {
+    "properties": {
+      "index": {
+        "title": "Index",
+        "type": "integer"
+      },
+      "path": {
+        "title": "Path",
+        "type": "string"
+      },
+      "added": {
+        "title": "Added",
+        "type": "integer"
+      },
+      "removed": {
+        "title": "Removed",
+        "type": "integer"
+      },
+      "diff": {
+        "title": "Diff",
+        "type": "string"
+      },
+      "status": {
+        "default": "pending",
+        "enum": [
+          "pending",
+          "kept",
+          "reverted"
+        ],
+        "title": "Status",
+        "type": "string"
+      },
+      "session_id": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Session Id"
+      },
+      "call_id": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Call Id"
+      },
+      "before_hash": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Before Hash"
+      },
+      "after_hash": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "After Hash"
+      }
+    },
+    "required": [
+      "index",
+      "path",
+      "added",
+      "removed",
+      "diff"
+    ],
+    "title": "Changeset",
+    "type": "object"
+  },
+  "project": {
+    "properties": {
+      "id": {
+        "title": "Id",
+        "type": "string"
+      },
+      "name": {
+        "title": "Name",
+        "type": "string"
+      },
+      "cwd": {
+        "title": "Cwd",
+        "type": "string"
+      },
+      "default_model": {
+        "default": "",
+        "title": "Default Model",
+        "type": "string"
+      },
+      "default_autonomy": {
+        "default": "",
+        "title": "Default Autonomy",
+        "type": "string"
+      },
+      "default_effort": {
+        "default": "",
+        "title": "Default Effort",
+        "type": "string"
+      }
+    },
+    "required": [
+      "id",
+      "name",
+      "cwd"
+    ],
+    "title": "Project",
+    "type": "object"
+  }
+}

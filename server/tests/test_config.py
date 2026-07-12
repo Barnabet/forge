@@ -1,4 +1,10 @@
-from forge.store.config import Policy, load_config, policy_matches, save_global_policy
+import pytest
+from pydantic import ValidationError
+
+from forge.store.config import (
+    ForgeConfig, ModelConfig, Policy, dump_config_toml, load_config,
+    policy_matches, save_config, save_global_policy,
+)
 
 
 def test_defaults_when_missing(tmp_path):
@@ -31,6 +37,36 @@ def test_policy_matching_and_persist(tmp_path):
 
     save_global_policy(tmp_path, Policy(tool="edit_file", pattern="*"))
     assert Policy(tool="edit_file", pattern="*") in load_config(tmp_path).policies
+
+
+def test_memory_similarity_threshold_bounds():
+    assert ForgeConfig(memory_similarity_threshold=0.0).memory_similarity_threshold == 0.0
+    assert ForgeConfig(memory_similarity_threshold=1.0).memory_similarity_threshold == 1.0
+    for bad in (-0.1, 1.5):
+        with pytest.raises(ValidationError):
+            ForgeConfig(memory_similarity_threshold=bad)
+
+
+def test_dump_config_roundtrips_through_load(tmp_path):
+    cfg = ForgeConfig(
+        max_concurrent=7, memory_similarity_threshold=0.8, base_url="http://x/v1",
+        models=[ModelConfig(id="m1", display_name="M1", context_window=123)],
+        policies=[Policy(tool="bash", pattern="ls*")])
+    save_config(tmp_path, cfg)
+    loaded = load_config(tmp_path)
+    assert loaded.max_concurrent == 7
+    assert loaded.memory_similarity_threshold == 0.8
+    assert loaded.base_url == "http://x/v1"
+    assert loaded.models == cfg.models
+    assert loaded.policies == cfg.policies
+
+
+def test_dump_config_toml_is_reparseable():
+    text = dump_config_toml(ForgeConfig())
+    assert "max_concurrent = 3" in text
+    # Re-parsing the emitted TOML yields an equivalent config.
+    import tomllib
+    ForgeConfig.model_validate(tomllib.loads(text))
 
 
 def test_policy_with_quotes_and_backslashes_roundtrips(tmp_path):

@@ -1,0 +1,255 @@
+/* Crew tape: a strip centered in the top bar. Collapsed it spans half the
+   screen — pills + the newest tool line from any worker, like a flight
+   recorder. Expanded it narrows to a 30vw dossier that drops a sheet with
+   one lane per worker. */
+.dock {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 30;
+  width: 50vw;
+  max-width: 860px;
+  transition: width 220ms cubic-bezier(0.3, 0.9, 0.3, 1);
+}
+.dock[data-expanded] { width: 30vw; }
+@media (max-width: 1100px) {
+  .dock { width: 46vw; }
+  .dock[data-expanded] { width: 42vw; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dock { transition: none; }
+}
+
+.strip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: 32px;
+  padding: 0 10px 0 6px;
+  background: color-mix(in oklab, var(--bg-card) 88%, transparent);
+  border: 1px solid var(--hair-3);
+  border-radius: var(--r-pill);
+  text-align: left;
+  cursor: pointer;
+}
+.strip:hover { border-color: var(--hair-hover); }
+.strip:focus-visible {
+  outline: 1px solid color-mix(in oklab, var(--accent) 55%, transparent);
+  outline-offset: -1px;
+}
+.dock[data-expanded] .strip {
+  border-radius: var(--r-card) var(--r-card) 0 0;
+  border-bottom-color: transparent;
+  background: var(--bg-card);
+}
+
+/* status pills */
+.pills { flex: none; display: flex; align-items: center; gap: 5px; }
+.pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: var(--r-pill);
+  font-size: 10.5px;
+  font-weight: 550;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.pillDot { width: 5px; height: 5px; border-radius: 50%; }
+.pill[data-kind='running'] {
+  color: color-mix(in oklab, var(--accent) 80%, var(--text-primary));
+  background: color-mix(in oklab, var(--accent) 12%, transparent);
+}
+.pill[data-kind='running'] .pillDot {
+  background: var(--accent);
+  box-shadow: var(--glow-accent);
+  animation: breathe 1.4s ease-in-out infinite;
+}
+.pill[data-kind='done'] { color: var(--ok-dim); background: var(--ok-bg); }
+.pill[data-kind='done'] .pillDot { background: var(--ok); }
+.pill[data-kind='waiting'] { color: var(--text-faint); background: var(--tint-4); }
+.pill[data-kind='waiting'] .pillDot { background: var(--text-ghost); }
+.pill[data-kind='failed'] { color: var(--danger-dim); background: var(--danger-bg); }
+.pill[data-kind='failed'] .pillDot { background: var(--danger); }
+@keyframes breathe { 50% { opacity: 0.35; } }
+@media (prefers-reduced-motion: reduce) {
+  .pill[data-kind='running'] .pillDot { animation: none; }
+}
+
+/* live feed: the rest of the strip belongs to the newest tool line */
+.feed {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--text-muted);
+}
+.feed[data-idle] { color: var(--text-faint); font-style: italic; }
+.feedTag {
+  flex: none;
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  color: color-mix(in oklab, var(--accent) 65%, var(--text-muted));
+}
+.feedLine {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  animation: swap 240ms ease-out;
+}
+@keyframes swap {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .feedLine { animation: none; }
+}
+
+.chevron { flex: none; font-size: 9px; color: var(--text-ghost); }
+.strip:hover .chevron { color: var(--text-secondary); }
+
+/* Dismiss, only rendered once every worker has settled. */
+.close {
+  position: absolute;
+  top: 6px;
+  right: 28px;
+  display: grid;
+  place-items: center;
+  width: 20px; height: 20px;
+  border-radius: var(--r-pill);
+  font-size: 10px;
+  color: var(--text-ghost);
+}
+.close:hover { color: var(--text-secondary); background: var(--tint-5); }
+.close:focus-visible {
+  outline: 1px solid color-mix(in oklab, var(--accent) 55%, transparent);
+  outline-offset: -1px;
+}
+
+/* expanded sheet, dropped below the strip */
+.sheet {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: min(60vh, 480px);
+  overflow-y: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--hair-3);
+  border-top: 1px solid var(--hair-2);
+  border-radius: 0 0 var(--r-card) var(--r-card);
+  box-shadow: var(--shadow-composer);
+  animation: drop 180ms ease-out;
+}
+@keyframes drop {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sheet { animation: none; }
+}
+
+.lane { border-top: 1px solid var(--hair-1); }
+.lane:first-child { border-top: none; }
+
+.laneHead {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  width: 100%;
+  padding: 8px 12px 2px;
+  text-align: left;
+}
+.laneHead[data-expandable='true'] { cursor: pointer; }
+.laneHead[data-expandable='true']:hover .task { color: var(--text-primary); }
+.laneHead:focus-visible {
+  outline: 1px solid color-mix(in oklab, var(--accent) 55%, transparent);
+  outline-offset: -1px;
+}
+
+/* state glyphs */
+.dot {
+  flex: none;
+  align-self: center;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+}
+.dot[data-state='queued'],
+.dot[data-state='blocked'] { background: var(--text-ghost-2); }
+.dot[data-state='running'] {
+  background: var(--accent);
+  box-shadow: var(--glow-accent);
+  animation: breathe 1.4s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dot[data-state='running'] { animation: none; }
+}
+.glyph { flex: none; font-size: 10.5px; line-height: 1; }
+.glyph[data-state='done'] { color: var(--ok); }
+.glyph[data-state='error'] { color: var(--danger); }
+
+.mode {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-ghost);
+}
+.mode[data-mode='write'] { color: var(--warn-title); }
+
+.task {
+  flex: 1;
+  min-width: 0;
+  font-size: 11.5px;
+  color: var(--text-body);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.laneChevron { flex: none; font-size: 9px; color: var(--text-ghost); }
+
+/* Live ticker: newest line at the bottom, older lines fade upward. */
+.ticker {
+  padding: 1px 12px 8px 25px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  line-height: 1.65;
+  overflow: hidden;
+}
+.tick {
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tick[data-age='1'] { color: var(--text-ghost); }
+.tick[data-age='2'] { color: var(--text-ghost-2); }
+.previousCalls {
+  color: var(--text-ghost-2);
+  font-size: 9.5px;
+  font-style: italic;
+}
+.waiting { color: var(--text-ghost-2); font-style: italic; }
+
+.report {
+  margin: 2px 12px 9px 25px;
+  padding: 4px 0 4px 10px;
+  border-left: 2px solid var(--hair-2);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  line-height: 1.65;
+  color: var(--text-muted);
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.pad { height: 7px; }

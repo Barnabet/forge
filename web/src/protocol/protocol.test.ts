@@ -20,6 +20,8 @@ describe('protocol', () => {
       'text_delta', 'output_chunk',
       'session_archived', 'session_unarchived', 'effort_changed', 'session_deleted',
       'mode_changed', 'plan_proposed', 'plan_resolved', 'todos_updated',
+      'subagent_update', 'subagent_state', 'memory_recalled',
+      'terminal_state', 'terminal_output',
     ]) expect(src).toContain(`"${t}"`)
   })
 

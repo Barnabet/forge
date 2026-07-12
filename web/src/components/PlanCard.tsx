@@ -1,7 +1,11 @@
 import { useState } from 'react'
 import Markdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import type { StreamItem } from '../state/reducer'
 import s from './PlanCard.module.css'
+
+// Module-level so the array identity is stable across renders.
+const gfmPlugins = [remarkGfm]
 
 const BADGE: Record<string, string> = {
   pending: 'awaiting approval',
@@ -42,7 +46,7 @@ export default function PlanCard({
       </button>
       {expanded && (
         <div className={s.body}>
-          <Markdown>{item.plan}</Markdown>
+          <Markdown remarkPlugins={gfmPlugins}>{item.plan}</Markdown>
         </div>
       )}
       {item.state === 'revising' && item.feedback && (

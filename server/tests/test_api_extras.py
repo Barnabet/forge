@@ -11,7 +11,15 @@ from forge.store.config import load_config
 
 
 @pytest.fixture()
-def make_client(tmp_path):
+def make_client(tmp_path, monkeypatch):
+    # A session created without a cwd falls back to Path.home() (manager.py).
+    # A test that posts a message then checkpoints that whole directory into
+    # git — under a real $HOME that's gigabytes, and it hangs. Point the
+    # fallback at a scoped, empty workspace so the checkpoint stays tiny.
+    ws = tmp_path / "ws"
+    ws.mkdir()
+    monkeypatch.setattr("forge.engine.manager.Path.home", lambda: ws)
+
     def _make(script=None, delay=0.0):
         config = load_config(tmp_path)
         llm = FakeLLM(script or [], delay=delay)
@@ -50,6 +58,30 @@ def test_model_change_survives_rehydrate(tmp_path):
     app2 = create_app(tmp_path, load_config(tmp_path), FakeLLM([]))
     with TestClient(app2) as client:
         assert client.get("/api/sessions").json()[0]["model"] == "gpt-5.2"
+
+
+def test_mark_read_clears_unread_idempotently(make_client):
+    client = make_client(script=[CompletionResult(text="done", usage_tokens=1)])
+    with client:
+        sid = client.post("/api/sessions", json={}).json()["id"]
+        client.post(f"/api/sessions/{sid}/messages", json={"text": "hello"})
+        for _ in range(100):
+            if client.get("/api/sessions").json()[0]["status"] == "idle":
+                break
+        assert client.get("/api/sessions").json()[0]["unread"] is True
+
+        assert client.post(f"/api/sessions/{sid}/read").status_code == 200
+        assert client.get("/api/sessions").json()[0]["unread"] is False
+        acks = [e for e in client.get(f"/api/sessions/{sid}/events").json()
+                if e["type"] == "run_acknowledged"]
+        assert len(acks) == 1
+
+        # A second read is a no-op: still read, no new acknowledgment emitted.
+        assert client.post(f"/api/sessions/{sid}/read").status_code == 200
+        assert client.get("/api/sessions").json()[0]["unread"] is False
+        acks2 = [e for e in client.get(f"/api/sessions/{sid}/events").json()
+                 if e["type"] == "run_acknowledged"]
+        assert len(acks2) == 1
 
 
 def test_manual_compact_emits_event(make_client):
@@ -278,6 +310,53 @@ def test_create_session_recovers_from_poisoned_project(tmp_path):
         r = client.post("/api/sessions", json={"project_id": "poison01"})
         assert r.status_code == 400  # recovery path: 400, not a 500 crash
         assert client.get("/api/sessions").json() == []
+
+
+def test_get_config_returns_defaults(tmp_path):
+    with TestClient(create_app(tmp_path, load_config(tmp_path), FakeLLM([]))) as client:
+        cfg = client.get("/api/config").json()
+        assert cfg["max_concurrent"] == 3
+        assert cfg["default_autonomy"] == "yolo"
+        assert "models" in cfg
+
+
+def test_patch_config_persists_to_disk(tmp_path):
+    with TestClient(create_app(tmp_path, load_config(tmp_path), FakeLLM([]))) as client:
+        r = client.patch("/api/config", json={"max_concurrent": 7})
+        assert r.status_code == 200 and r.json()["max_concurrent"] == 7
+    # A fresh load from disk sees the persisted value.
+    assert load_config(tmp_path).max_concurrent == 7
+
+
+def test_patch_config_rejects_invalid_threshold(tmp_path):
+    with TestClient(create_app(tmp_path, load_config(tmp_path), FakeLLM([]))) as client:
+        r = client.patch("/api/config", json={"memory_similarity_threshold": 5})
+        assert r.status_code == 400
+        # Nothing persisted.
+        assert load_config(tmp_path).memory_similarity_threshold == 0.45
+
+
+def test_patch_config_applies_live_without_restart(tmp_path):
+    app = create_app(tmp_path, load_config(tmp_path), FakeLLM([]))
+    manager = app.state.manager
+    with TestClient(app) as client:
+        assert manager.scheduler._max == 3 and manager.max_resident == 24
+        r = client.patch("/api/config",
+                         json={"max_concurrent": 9, "max_resident_sessions": 5})
+        assert r.status_code == 200
+        # Live runtime state re-derived without recreating the app.
+        assert manager.scheduler._max == 9
+        assert manager.max_resident == 5
+
+
+def test_patch_config_reconfigures_llm_credentials(tmp_path):
+    llm = FakeLLM([])
+    calls: list[tuple[str, str]] = []
+    llm.reconfigure = lambda base_url, api_key: calls.append((base_url, api_key))
+    app = create_app(tmp_path, load_config(tmp_path), llm)
+    with TestClient(app) as client:
+        client.patch("/api/config", json={"base_url": "http://x/v1", "api_key": "k"})
+    assert calls[-1] == ("http://x/v1", "k")
 
 
 def test_effort_validation_and_replay(tmp_path):

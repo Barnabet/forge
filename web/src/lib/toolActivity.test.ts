@@ -5,6 +5,7 @@ import { familyOf, groupLabel, relDisplay, segmentItems, toolVerb, type ToolItem
 const tool = (over: Partial<ToolItem>): ToolItem => ({
   kind: 'tool', seq: 1, callId: 'c1', tool: 'bash', display: 'ls',
   status: 'done', output: '', durationMs: 0, diffStats: null, autoApproved: false,
+  images: [],
   ...over,
 })
 
@@ -48,7 +49,8 @@ describe('relDisplay', () => {
 })
 
 describe('toolVerb', () => {
-  it('conjugates on status', () => {
+  it('conjugates across the three states', () => {
+    expect(toolVerb(tool({ tool: 'read_file', status: 'running', pending: true }))).toBe('About to read')
     expect(toolVerb(tool({ tool: 'read_file', status: 'running' }))).toBe('Reading')
     expect(toolVerb(tool({ tool: 'read_file', status: 'done' }))).toBe('Read')
     expect(toolVerb(tool({ tool: 'bash', status: 'running' }))).toBe('Running')
@@ -56,7 +58,15 @@ describe('toolVerb', () => {
     expect(toolVerb(tool({ tool: 'edit_file', status: 'error' }))).toBe('Edited')
   })
 
-  it('falls back to Running/Ran for unknown tools', () => {
+  it('covers the newer tools', () => {
+    expect(toolVerb(tool({ tool: 'read_pdf', status: 'running' }))).toBe('Reading PDF')
+    expect(toolVerb(tool({ tool: 'view', status: 'done' }))).toBe('Viewed')
+    expect(toolVerb(tool({ tool: 'spawn_agents', status: 'running' }))).toBe('Delegating')
+    expect(toolVerb(tool({ tool: 'remember', status: 'done' }))).toBe('Recalled')
+  })
+
+  it('falls back to the default action for unknown tools', () => {
+    expect(toolVerb(tool({ tool: 'web_fetch', status: 'running', pending: true }))).toBe('About to run')
     expect(toolVerb(tool({ tool: 'web_fetch', status: 'running' }))).toBe('Running')
     expect(toolVerb(tool({ tool: 'web_fetch', status: 'done' }))).toBe('Ran')
   })
@@ -79,6 +89,13 @@ describe('groupLabel', () => {
       tool({ tool: 'read_file', display: 'a.py', callId: 'a' }),
       tool({ tool: 'read_file', display: 'b.py', callId: 'b', status: 'running' }),
     ])).toBe('Reading 2 files')
+  })
+
+  it('uses the about phrasing while every member is still pending', () => {
+    expect(groupLabel([
+      tool({ tool: 'read_file', display: 'a.py', callId: 'a', status: 'running', pending: true }),
+      tool({ tool: 'read_file', display: 'b.py', callId: 'b', status: 'running', pending: true }),
+    ])).toBe('About to read 2 files')
   })
 
   it('counts unique files for read/edit, not calls', () => {

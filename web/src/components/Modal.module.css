@@ -1,6 +1,6 @@
 .overlay {
   position: fixed; inset: 0; z-index: 50;
-  background: rgba(0, 0, 0, 0.55);
+  background: var(--scrim);
   display: grid; place-items: center;
 }
 .card {
@@ -8,7 +8,7 @@
   background: var(--bg-raised-1);
   border: 1px solid var(--hair-4);
   border-radius: var(--r-card);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  box-shadow: var(--shadow-composer);
   padding: 16px;
 }
 .title { font-size: 13.5px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 12px; }

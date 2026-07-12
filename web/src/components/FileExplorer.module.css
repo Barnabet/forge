@@ -1,0 +1,114 @@
+.explorer {
+  display: flex; flex-direction: column;
+  height: 100%; min-height: 0;
+  background: var(--bg-drawer);
+}
+
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 8px 4px;
+}
+.headerLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--text-ghost);
+}
+.refresh {
+  font-size: 12px; color: var(--text-faint);
+  padding: 2px 5px; border-radius: var(--r-tile);
+}
+.refresh:hover { color: var(--text-secondary); background: var(--tint-5); }
+
+.tree {
+  flex: 1; min-height: 0;
+  overflow-y: auto;
+  padding: 2px 4px 8px;
+}
+.tree[data-drop='over'] { background: color-mix(in oklab, var(--accent) 8%, transparent); }
+
+.row, .rowDir {
+  display: flex; align-items: center; gap: 4px;
+  padding: 3px 4px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-secondary);
+  border-radius: var(--r-tile);
+  border: 1px solid transparent;
+  white-space: nowrap;
+  cursor: default;
+}
+.rowDir { color: var(--text-body); }
+.row:hover, .rowDir:hover { background: var(--tint-3); }
+.row[data-drop='over'], .rowDir[data-drop='over'] {
+  background: color-mix(in oklab, var(--accent) 12%, transparent);
+  border-color: color-mix(in oklab, var(--accent) 40%, transparent);
+}
+
+/* VSCode-style indent guide: hairline aligned under the parent chevron
+   (row padding-left 4px + half the 12px chevron column = ~10px). */
+.guide {
+  margin-left: 10px;
+  border-left: 1px solid var(--hair-2);
+}
+
+.chevron {
+  flex: none;
+  width: 12px;
+  font-size: 9px;
+  color: var(--text-ghost);
+  text-align: center;
+}
+.icon {
+  flex: none;
+  width: 14px; height: 14px;
+}
+/* Material's and vscode's saturated colors overpower the muted palette;
+   knock them back. Catppuccin and Seti are already muted. */
+.icon[data-theme='material'], .icon[data-theme='vscode'] {
+  filter: saturate(0.65) brightness(0.95);
+}
+/* Light surfaces take saturation better; skip the brightness dim. */
+:global([data-theme='light']) .icon[data-theme='material'],
+:global([data-theme='light']) .icon[data-theme='vscode'] {
+  filter: saturate(0.8);
+}
+.row:hover .icon, .rowDir:hover .icon { filter: none; }
+
+.name, .dirName {
+  overflow: hidden; text-overflow: ellipsis;
+}
+.dirName { color: var(--text-body); }
+
+.input {
+  flex: 1; min-width: 0;
+  background: var(--bg-raised-1);
+  border: 1px solid var(--hair-4);
+  border-radius: var(--r-tile);
+  color: var(--text-primary);
+  font-size: 12px;
+  font-family: var(--font-mono);
+  padding: 1px 4px;
+}
+.input:focus { outline: none; border-color: var(--hair-hover); }
+.input[data-error] { border-color: var(--danger); }
+
+.menu {
+  position: fixed;
+  z-index: 40;
+  min-width: 140px;
+  background: var(--bg-raised-2);
+  border: 1px solid var(--hair-4);
+  border-radius: var(--r-btn);
+  padding: 4px;
+  box-shadow: var(--shadow-card);
+  display: flex; flex-direction: column;
+}
+.menuItem {
+  text-align: left;
+  font-size: 12.5px;
+  color: var(--text-body);
+  padding: 5px 8px;
+  border-radius: var(--r-tile);
+}
+.menuItem:hover { background: var(--tint-5); color: var(--text-primary); }

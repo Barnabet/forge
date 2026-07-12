@@ -1,17 +1,17 @@
 .gate {
   display: flex; align-items: center; gap: 12px;
   padding: 14px 16px;
-  background: linear-gradient(180deg, #16130a, #111008);
-  border: 1px solid rgba(229, 184, 75, 0.25);
+  background: var(--warn-surface);
+  border: 1px solid color-mix(in oklab, var(--warn) 30%, transparent);
   border-radius: var(--r-card);
-  box-shadow: 0 0 24px rgba(229, 184, 75, 0.06);
+  box-shadow: 0 0 24px color-mix(in oklab, var(--warn) 8%, transparent);
 }
 
 .tile {
   width: 30px; height: 30px; flex: none;
   display: grid; place-items: center;
   border-radius: var(--r-btn-lg);
-  background: rgba(229, 184, 75, 0.12);
+  background: color-mix(in oklab, var(--warn) 14%, transparent);
   color: var(--warn);
   font-size: 14px;
 }
@@ -49,7 +49,7 @@
   background: var(--bg-raised-1);
   border: 1px solid var(--hair-4);
   border-radius: var(--r-btn-lg);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow-pop);
   min-width: 240px;
   padding: 4px;
 }
@@ -59,7 +59,7 @@
   padding: 7px 10px; border-radius: 6px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.menuItem:hover { background: rgba(255, 255, 255, 0.06); }
+.menuItem:hover { background: var(--tint-5); }
 
 .deniedRow {
   display: flex; align-items: center; gap: 9px;

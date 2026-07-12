@@ -11,4 +11,4 @@ body {
 button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
 input, textarea { font: inherit; color: inherit; background: none; border: none; outline: none; }
 ::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.08); border-radius: 5px; border: 3px solid transparent; background-clip: content-box; }
+::-webkit-scrollbar-thumb { background: var(--tint-6); border-radius: 5px; border: 3px solid transparent; background-clip: content-box; }

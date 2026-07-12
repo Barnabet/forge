@@ -10,6 +10,7 @@ class SkillMeta(BaseModel):
     name: str
     description: str
     path: str  # directory containing SKILL.md
+    activates: list[str] = []  # tool names this skill unlocks when loaded
 
 
 def parse_skill_md(text: str) -> tuple[dict, str]:
@@ -43,6 +44,33 @@ def discover_skills(dirs: list[Path]) -> list[SkillMeta]:
             except (yaml.YAMLError, OSError, UnicodeDecodeError):
                 continue  # a broken skill must not take down system prompt build
             name = fm.get("name", d.name)
+            activates = fm.get("activates_tools") or []
+            if not isinstance(activates, list):
+                activates = []
+            activates = [t for t in activates if isinstance(t, str)]
             found[name] = SkillMeta(
-                name=name, description=fm.get("description", ""), path=str(d))
+                name=name, description=fm.get("description", ""), path=str(d),
+                activates=activates)
     return list(found.values())
+
+
+def load_skill_body(dirs: list[Path], name: str) -> str | None:
+    """Return a skill's SKILL.md body (plus a note listing any bundled files),
+    or None if no skill by that name is found."""
+    for s in discover_skills(dirs):
+        if s.name == name:
+            d = Path(s.path)
+            _, body = parse_skill_md((d / "SKILL.md").read_text())
+            extras = sorted(p.name for p in d.iterdir() if p.name != "SKILL.md")
+            files = f"\n\nBundled files in {d}: {', '.join(extras)}" if extras else ""
+            return body + files
+    return None
+
+
+def skill_tool_activations(dirs: list[Path]) -> dict[str, str]:
+    """Map each gated tool name → the skill name that activates it."""
+    activations: dict[str, str] = {}
+    for s in discover_skills(dirs):
+        for tool in s.activates:
+            activations[tool] = s.name
+    return activations

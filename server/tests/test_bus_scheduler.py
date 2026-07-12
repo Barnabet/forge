@@ -30,3 +30,29 @@ async def test_scheduler_queues_beyond_cap():
     t2 = asyncio.create_task(job("b", 0))
     await asyncio.gather(t1, t2)
     assert order == ["a:run", "b:queued", "b:run"]
+
+
+async def test_scheduler_raise_cap_admits_queued_waiter():
+    sched = Scheduler(max_concurrent=1)
+    order: list[str] = []
+    release = asyncio.Event()
+
+    async def job(name: str, hold: bool):
+        def on_queued(): order.append(f"{name}:queued")
+        async with sched.slot(on_queued):
+            order.append(f"{name}:run")
+            if hold:
+                await release.wait()
+
+    t1 = asyncio.create_task(job("a", True))   # holds the only slot
+    await asyncio.sleep(0.02)
+    t2 = asyncio.create_task(job("b", False))  # queued behind the cap
+    await asyncio.sleep(0.02)
+    assert order == ["a:run", "b:queued"]
+
+    await sched.set_max_concurrent(2)          # raising the cap wakes b
+    await asyncio.sleep(0.02)
+    assert order == ["a:run", "b:queued", "b:run"]
+
+    release.set()
+    await asyncio.gather(t1, t2)

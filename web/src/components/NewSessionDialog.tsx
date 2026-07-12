@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { api, ApiError } from '../api'
 import { useForge } from '../state/store'
+import FolderBrowser from './FolderBrowser'
 import Modal from './Modal'
 import s from './Dialogs.module.css'
 
@@ -37,13 +38,7 @@ export default function NewSessionDialog() {
 
   return (
     <Modal title="New session" onClose={closeDialog}>
-      <input
-        className={s.pathInput}
-        placeholder="/path/to/folder"
-        value={cwd}
-        onChange={e => setCwd(e.target.value)}
-        autoFocus
-      />
+      <FolderBrowser value={cwd} onChange={setCwd} />
       {recents.length > 0 && (
         <div className={s.recents}>
           {recents.map(r => (

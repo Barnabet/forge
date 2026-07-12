@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Forge mark: "The Strike" — molten ingot struck by a wedge; cut stops at center -->
+  <defs>
+    <!-- gap around the wedge, carved out of the circle -->
+    <mask id="cut">
+      <rect width="512" height="512" fill="#fff"/>
+      <!-- wedge silhouette expanded by a uniform gap -->
+      <path d="M 176 120 L 336 120 L 272 300 L 240 300 Z" fill="#000" stroke="#000" stroke-width="30" stroke-linejoin="round"/>
+    </mask>
+  </defs>
+  <!-- ingot -->
+  <circle cx="256" cy="320" r="152" fill="#FF5A1F" mask="url(#cut)"/>
+  <!-- wedge -->
+  <path d="M 186 128 L 326 128 L 268 292 L 244 292 Z" fill="#15171A"/>
+</svg>

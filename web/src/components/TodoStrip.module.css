@@ -3,6 +3,7 @@
   border: 1px solid var(--hair-3);
   border-radius: var(--r-card);
   overflow: hidden;
+  box-shadow: var(--shadow-bubble);
 }
 
 .summary {

@@ -1,5 +1,6 @@
-import { beforeEach, describe, expect, it } from 'vitest'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { act, fireEvent, render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { useForge } from '../state/store'
 import type { WireEvent } from '../protocol'
 import ChatStream from './ChatStream'
@@ -11,6 +12,10 @@ beforeEach(() => {
   useForge.setState(useForge.getInitialState(), true)
   const { applyEvent } = useForge.getState()
   applyEvent(ev('session_created', 1, { name: 'n', cwd: '/w', model: 'm', autonomy: 'guarded' }))
+})
+
+afterEach(() => {
+  vi.useRealTimers()
 })
 
 const apply = (...events: WireEvent[]) => {
@@ -56,6 +61,100 @@ describe('ChatStream', () => {
     expect(screen.queryByText(/step 1/)).not.toBeInTheDocument()
   })
 
+  it('shows the compaction progress at idle and clears it when done', () => {
+    const comp = (state: string, phase = 0, label = ''): WireEvent =>
+      ({ type: 'compaction', session_id: 'aa', seq: 0, state, phase, label }) as unknown as WireEvent
+    // Idle session, manual /compact fires — starts in the Analyzing phase.
+    apply(comp('running'))
+    const { rerender } = render(<ChatStream />)
+    expect(screen.getByText('Compacting context')).toBeInTheDocument()
+    expect(screen.getByText('0/9')).toBeInTheDocument()
+
+    // A section header crosses: the label and count advance.
+    apply(comp('running', 3, 'Files and Code Sections'))
+    rerender(<ChatStream />)
+    expect(screen.getByText('Compacting context · Files and Code Sections')).toBeInTheDocument()
+    expect(screen.getByText('3/9')).toBeInTheDocument()
+
+    apply(comp('done'))
+    rerender(<ChatStream />)
+    expect(screen.queryByText(/Compacting context/)).not.toBeInTheDocument()
+  })
+
+  it('shows an increasing timer beside "Thinking" and resets it after a real hide', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(0)
+    // The anchor rides on the event ts (epoch seconds); elapsed is measured
+    // against the wall clock, so keep the two in lockstep.
+    apply(ev('status_changed', 2, { status: 'running', ts: 0 }))
+    const { rerender } = render(<ChatStream />)
+
+    expect(screen.getByText('Thinking')).toBeInTheDocument()
+    expect(screen.getByText('0s')).toBeInTheDocument()
+
+    act(() => {
+      vi.advanceTimersByTime(2000)
+    })
+    expect(screen.getByText('2s')).toBeInTheDocument()
+
+    apply(ev('tool_call_started', 3, { call_id: 'c1', tool: 'bash', display: 'ls', ts: 2 }))
+    rerender(<ChatStream />)
+    expect(screen.queryByText('Thinking')).not.toBeInTheDocument()
+    expect(screen.queryByText('2s')).not.toBeInTheDocument()
+
+    // A real Thinking-hide followed by return to silence re-anchors at "now",
+    // so the timer restarts from zero rather than resuming the old span.
+    apply(ev('tool_call_finished', 4, { call_id: 'c1', tool: 'bash', output: 'ok', is_error: false, ts: 2 }))
+    rerender(<ChatStream />)
+    expect(screen.getByText('Thinking')).toBeInTheDocument()
+    expect(screen.getByText('0s')).toBeInTheDocument()
+  })
+
+  it('keeps each session\'s Thinking timer on its own persisted anchor across navigation', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(0)
+    // Session A ('aa') is created in beforeEach; anchor it thinking at t=0.
+    apply(ev('status_changed', 2, { status: 'running', ts: 0 }))
+    const { rerender } = render(<ChatStream />)
+    expect(screen.getByText('0s')).toBeInTheDocument()
+
+    act(() => { vi.advanceTimersByTime(3000) })
+    expect(screen.getByText('3s')).toBeInTheDocument()
+
+    // Session B ('bb') starts thinking later, at t=3s.
+    apply(
+      ev('session_created', 3, { session_id: 'bb', name: 'n2', cwd: '/w', model: 'm', autonomy: 'guarded' }),
+      ev('status_changed', 4, { session_id: 'bb', status: 'running', ts: 3 }),
+    )
+    act(() => { useForge.getState().setActive('bb') })
+    rerender(<ChatStream />)
+    // B shows its own fresh span, not A's 3s.
+    expect(screen.getByText('0s')).toBeInTheDocument()
+    expect(screen.queryByText('3s')).not.toBeInTheDocument()
+
+    act(() => { vi.advanceTimersByTime(2000) })
+    expect(screen.getByText('2s')).toBeInTheDocument()
+
+    // Back to A: it must reflect its persisted anchor (t=0 → now 5s), not restart.
+    act(() => { useForge.getState().setActive('aa') })
+    rerender(<ChatStream />)
+    expect(screen.getByText('5s')).toBeInTheDocument()
+  })
+
+  it('restores the elapsed value from the persisted anchor after a remount', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(0)
+    apply(ev('status_changed', 2, { status: 'running', ts: 0 }))
+    const { unmount } = render(<ChatStream />)
+    expect(screen.getByText('0s')).toBeInTheDocument()
+
+    unmount()
+    act(() => { vi.advanceTimersByTime(4000) })
+
+    render(<ChatStream />)
+    expect(screen.getByText('4s')).toBeInTheDocument()
+  })
+
   it('hides "Thinking" while text is streaming in', () => {
     apply(
       ev('status_changed', 2, { status: 'running' }),
@@ -94,6 +193,42 @@ describe('ChatStream', () => {
     expect(screen.getByText('LLM unreachable')).toBeInTheDocument()
     expect(screen.getByText('Run cancelled')).toBeInTheDocument()
     expect(screen.getByText('· context compacted ·')).toBeInTheDocument()
+  })
+
+  it('edits a message inline and confirms the workspace-restore before rewinding', async () => {
+    const user = userEvent.setup()
+    const submitEdit = vi.fn(async () => {})
+    useForge.setState({ submitEdit })
+    apply(ev('user_message', 2, { text: 'fix the bug', workspace_checkpoint: 'cp1' }))
+    render(<ChatStream />)
+
+    // Enter inline edit mode via the pencil.
+    await user.click(screen.getByRole('button', { name: 'Edit from here' }))
+    const box = screen.getByDisplayValue('fix the bug')
+    await user.clear(box)
+    await user.type(box, 'fix it properly')
+
+    // Save does NOT rewind yet — it opens the workspace-restore confirmation.
+    await user.click(screen.getByRole('button', { name: 'Save' }))
+    expect(submitEdit).not.toHaveBeenCalled()
+    expect(screen.getByText('Save edit?')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Save & rewind' }))
+    expect(submitEdit).toHaveBeenCalledWith(2, 'fix it properly', [])
+  })
+
+  it('cancels an inline edit without rewinding', async () => {
+    const user = userEvent.setup()
+    const submitEdit = vi.fn(async () => {})
+    useForge.setState({ submitEdit })
+    apply(ev('user_message', 2, { text: 'fix the bug', workspace_checkpoint: 'cp1' }))
+    render(<ChatStream />)
+
+    await user.click(screen.getByRole('button', { name: 'Edit from here' }))
+    await user.click(screen.getByRole('button', { name: 'Cancel' }))
+    expect(screen.queryByDisplayValue('fix the bug')).not.toBeInTheDocument()
+    expect(screen.getByText('fix the bug')).toBeInTheDocument()
+    expect(submitEdit).not.toHaveBeenCalled()
   })
 
   it('does not leak dropdown state to the next gate when a gate resolves', () => {

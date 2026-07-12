@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { cursors, useForge } from './store'
-import type { WireEvent } from '../protocol'
+import { api } from '../api'
+import type { SessionMeta, WireEvent } from '../protocol'
 
 const ev = (type: string, sid: string, seq: number, fields: object = {}): WireEvent =>
   ({ type, session_id: sid, ts: 0, seq, ...fields }) as unknown as WireEvent
@@ -46,6 +47,32 @@ describe('store', () => {
     expect(s.healthy).toBe(true)
   })
 
+  it('hydrate keeps core sessions/projects when optional index endpoint is unavailable', async () => {
+    const meta = { id: 'aa', name: 'restored', cwd: '/w', model: 'm1', autonomy: 'guarded', status: 'idle' }
+    const project = { id: 'p1', name: 'Forge', cwd: '/w' }
+    vi.stubGlobal('fetch', vi.fn(async (url: string) => {
+      if (url === '/api/index') return { ok: false, status: 404, json: async () => ({}) }
+      return {
+        ok: true,
+        status: 200,
+        json: async () =>
+          url.includes('/models') ? []
+          : url.includes('/health') ? { ok: true }
+          : url.includes('/projects') ? [project]
+          : url.includes('/events') ? []
+          : [meta],
+      }
+    }) as unknown as typeof fetch)
+
+    await useForge.getState().hydrate()
+
+    const state = useForge.getState()
+    expect(state.sessions['aa'].stream.name).toBe('restored')
+    expect(state.projects).toEqual([project])
+    expect(state.fileIndex).toEqual({})
+    expect(state.healthy).toBe(true)
+  })
+
   it('hydrate backfills events over REST after each session lastSeq, deduping overlap', async () => {
     const { applyEvent } = useForge.getState()
     // Seed a session that already has events applied up to seq 2 (lastSeq === 2).
@@ -79,20 +106,49 @@ describe('store', () => {
     expect(texts).toEqual(['two', 'three', 'four']) // overlap dropped, backfill appended
   })
 
-  it('openDrawer fetches changesets and sets state; closeDrawer keeps index', async () => {
+  it('optimistic send anchors thinkingSince on idle→running', async () => {
     const { applyEvent } = useForge.getState()
     applyEvent(ev('session_created', 'aa', 1, { name: 'n', cwd: '/', model: 'm', autonomy: 'yolo' }))
-    vi.stubGlobal('fetch', vi.fn(async () => ({
-      ok: true,
-      json: async () => [{ index: 0, path: '/w/a.py', added: 1, removed: 0, diff: '', status: 'pending' }],
-    })) as unknown as typeof fetch)
-    await useForge.getState().openDrawer(0)
-    let s = useForge.getState().sessions['aa']
-    expect(s.drawer).toMatchObject({ open: true, changesetIndex: 0, view: 'diff' })
-    expect(s.changesets).toHaveLength(1)
-    useForge.getState().closeDrawer()
-    s = useForge.getState().sessions['aa']
-    expect(s.drawer.open).toBe(false)
+    vi.stubGlobal('fetch', vi.fn(async () => ({ ok: true, json: async () => ({}) })) as unknown as typeof fetch)
+    const before = Date.now()
+    await useForge.getState().send('go')
+    const stream = useForge.getState().sessions['aa'].stream
+    expect(stream.status).toBe('running')
+    expect(stream.thinkingSince).toBeGreaterThanOrEqual(before)
+  })
+
+  it('optimistic send clears thinkingSince when the request fails', async () => {
+    const { applyEvent } = useForge.getState()
+    applyEvent(ev('session_created', 'aa', 1, { name: 'n', cwd: '/', model: 'm', autonomy: 'yolo' }))
+    vi.stubGlobal('fetch', vi.fn(async () => { throw new Error('network') }) as unknown as typeof fetch)
+    await expect(useForge.getState().send('go')).rejects.toThrow('network')
+    const stream = useForge.getState().sessions['aa'].stream
+    expect(stream.status).toBe('idle')
+    expect(stream.thinkingSince).toBeNull()
+  })
+
+  it('submitEdit rewinds-and-replaces at the given seq', async () => {
+    const { applyEvent } = useForge.getState()
+    applyEvent(ev('session_created', 'aa', 1, { name: 'a', cwd: '/', model: 'm', autonomy: 'yolo' }))
+    useForge.getState().setActive('aa')
+    const fetchMock = vi.fn(async () => ({ ok: true, json: async () => ({}) }))
+    vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch)
+    await useForge.getState().submitEdit(5, 'new text', [])
+    expect(fetchMock).toHaveBeenCalledWith(
+      '/api/sessions/aa/rewind',
+      expect.objectContaining({
+        body: JSON.stringify({ target_user_seq: 5, text: 'new text', images: [] }),
+      }),
+    )
+  })
+
+  it('revert calls the API with the changeset index', async () => {
+    const { applyEvent } = useForge.getState()
+    applyEvent(ev('session_created', 'aa', 1, { name: 'n', cwd: '/', model: 'm', autonomy: 'yolo' }))
+    const fetchMock = vi.fn(async () => ({ ok: true, json: async () => ({}) }))
+    vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch)
+    await useForge.getState().revert(2)
+    expect(fetchMock).toHaveBeenCalledWith('/api/sessions/aa/changesets/2/revert', expect.anything())
   })
 })
 
@@ -187,5 +243,97 @@ describe('store: v1.1', () => {
     expect(useForge.getState().dialog).toBe('new-project')
     useForge.getState().closeDialog()
     expect(useForge.getState().dialog).toBeNull()
+  })
+})
+
+describe('store: session pill acknowledgment', () => {
+  it('selecting an unread session clears it optimistically and acks once', () => {
+    const { applyEvent } = useForge.getState()
+    // 'bb' becomes active first; the run on the inactive 'aa' stays unread.
+    applyEvent(ev('session_created', 'bb', 1, { name: 'n', cwd: '/', model: 'm', autonomy: 'yolo' }))
+    applyEvent(ev('session_created', 'aa', 1, { name: 'n', cwd: '/', model: 'm', autonomy: 'yolo' }))
+    applyEvent(ev('run_finished', 'aa', 2, { reason: 'completed', unread: true }))
+    expect(useForge.getState().sessions['aa'].stream.unread).toBe(true)
+    const spy = vi.spyOn(api, 'markRead').mockResolvedValue(undefined)
+
+    useForge.getState().setActive('aa')
+
+    expect(useForge.getState().sessions['aa'].stream.unread).toBe(false)
+    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveBeenCalledWith('aa')
+  })
+
+  it('selecting an already-read session does not ack', () => {
+    const { applyEvent } = useForge.getState()
+    applyEvent(ev('session_created', 'aa', 1, { name: 'n', cwd: '/', model: 'm', autonomy: 'yolo' }))
+    const spy = vi.spyOn(api, 'markRead').mockResolvedValue(undefined)
+
+    useForge.getState().setActive('aa')
+
+    expect(spy).not.toHaveBeenCalled()
+  })
+
+  it('a completion landing on the active session auto-acks on arrival', () => {
+    const { applyEvent } = useForge.getState()
+    applyEvent(ev('session_created', 'aa', 1, { name: 'n', cwd: '/', model: 'm', autonomy: 'yolo' }))
+    useForge.setState({ activeId: 'aa' })
+    const spy = vi.spyOn(api, 'markRead').mockResolvedValue(undefined)
+
+    applyEvent(ev('run_finished', 'aa', 2, { reason: 'completed', unread: true }))
+
+    expect(useForge.getState().sessions['aa'].stream.unread).toBe(false)
+    expect(spy).toHaveBeenCalledWith('aa')
+  })
+
+  it('a completion on an inactive session stays unread and does not ack', () => {
+    const { applyEvent } = useForge.getState()
+    applyEvent(ev('session_created', 'aa', 1, { name: 'n', cwd: '/', model: 'm', autonomy: 'yolo' }))
+    applyEvent(ev('session_created', 'bb', 1, { name: 'n', cwd: '/', model: 'm', autonomy: 'yolo' }))
+    useForge.setState({ activeId: 'aa' })
+    const spy = vi.spyOn(api, 'markRead').mockResolvedValue(undefined)
+
+    applyEvent(ev('run_finished', 'bb', 2, { reason: 'completed', unread: true }))
+
+    expect(useForge.getState().sessions['bb'].stream.unread).toBe(true)
+    expect(spy).not.toHaveBeenCalled()
+  })
+
+  it('hydrate acks the remembered active session it restored as unread', async () => {
+    localStorage.setItem('forge.active', 'aa')
+    const meta = {
+      id: 'aa', name: 'n', cwd: '/', model: 'm', autonomy: 'yolo', status: 'idle',
+      last_run_reason: 'completed', last_run_seq: 2, unread: true,
+    }
+    const spy = vi.spyOn(api, 'markRead').mockResolvedValue(undefined)
+    vi.stubGlobal('fetch', vi.fn(async (url: string) => ({
+      ok: true,
+      json: async () =>
+        url.includes('/models') ? []
+        : url.includes('/health') ? { ok: true }
+        : url.includes('/projects') ? []
+        : url.includes('/events') ? []
+        : [meta],
+    })) as unknown as typeof fetch)
+
+    await useForge.getState().hydrate()
+
+    expect(useForge.getState().activeId).toBe('aa')
+    expect(useForge.getState().sessions['aa'].stream.unread).toBe(false)
+    expect(spy).toHaveBeenCalledWith('aa')
+  })
+
+  it('metadata seeds lastRunSeq so a live ack before backfill clears unread', () => {
+    // Seed only from meta (no run_finished replayed yet): lastRunSeq must come
+    // from meta.last_run_seq so a live run_acknowledged can match the right run.
+    useForge.getState().upsertSession('aa', {
+      id: 'aa', name: 'n', cwd: '/', model: 'm', autonomy: 'yolo', status: 'idle',
+      last_run_reason: 'completed', last_run_seq: 7, unread: true,
+    } as SessionMeta)
+    expect(useForge.getState().sessions['aa'].stream.lastRunSeq).toBe(7)
+
+    // A run_acknowledged for that run arrives over the WS before REST backfill.
+    useForge.getState().applyEvent(ev('run_acknowledged', 'aa', 8, { run_seq: 7 }))
+
+    expect(useForge.getState().sessions['aa'].stream.unread).toBe(false)
   })
 })

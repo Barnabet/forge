@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useForge } from '../state/store'
 import ConfirmDialog from './ConfirmDialog'
@@ -30,6 +30,7 @@ describe('NewSessionDialog', () => {
   it('shows recents, submits the typed path, closes on success', async () => {
     const fetchMock = vi.fn(async (url: string, init?: RequestInit) => ({
       ok: true,
+      status: 200,
       json: async () =>
         url.includes('recent_dirs') ? ['/w/one', '/w/two']
         : init?.method === 'POST'
@@ -41,7 +42,8 @@ describe('NewSessionDialog', () => {
     useForge.setState({ dialog: 'new-session' })
     render(<NewSessionDialog />)
     await userEvent.click(await screen.findByText('/w/one'))  // recent fills the input
-    expect(screen.getByPlaceholderText('/path/to/folder')).toHaveValue('/w/one')
+    await waitFor(() =>
+      expect(screen.getByPlaceholderText('/path/to/folder')).toHaveValue('/w/one'))
     await userEvent.click(screen.getByRole('button', { name: 'Start session' }))
     expect(fetchMock).toHaveBeenCalledWith('/api/sessions', expect.objectContaining({
       method: 'POST', body: JSON.stringify({ cwd: '/w/one' }),
@@ -53,11 +55,13 @@ describe('NewSessionDialog', () => {
     vi.stubGlobal('fetch', vi.fn(async (url: string, init?: RequestInit) => ({
       ok: !(init?.method === 'POST'),
       status: init?.method === 'POST' ? 400 : 200,
-      json: async () => (url.includes('recent_dirs') ? [] : {}),
+      json: async () =>
+        url.includes('recent_dirs') ? [] : {},
     })) as unknown as typeof fetch)
     useForge.setState({ dialog: 'new-session' })
     render(<NewSessionDialog />)
-    await userEvent.type(screen.getByPlaceholderText('/path/to/folder'), '/nope')
+    const pathInput = screen.getByPlaceholderText('/path/to/folder')
+    await userEvent.type(pathInput, '/nope')
     await userEvent.click(screen.getByRole('button', { name: 'Start session' }))
     expect(await screen.findByText(/not a valid folder/i)).toBeInTheDocument()
     expect(useForge.getState().dialog).toBe('new-session')
@@ -68,6 +72,7 @@ describe('NewProjectDialog', () => {
   it('creates the project with chosen defaults and closes', async () => {
     const fetchMock = vi.fn(async (url: string, init?: RequestInit) => ({
       ok: true,
+      status: 200,
       json: async () =>
         url.includes('recent_dirs') ? []
         : init?.method === 'POST'
@@ -79,7 +84,8 @@ describe('NewProjectDialog', () => {
     useForge.setState({ dialog: 'new-project' })
     render(<NewProjectDialog />)
     await userEvent.type(screen.getByPlaceholderText('Project name'), 'mygent')
-    await userEvent.type(screen.getByPlaceholderText('/path/to/folder'), '/w')
+    const pathInput = screen.getByPlaceholderText('/path/to/folder')
+    await userEvent.type(pathInput, '/w')
     await userEvent.selectOptions(screen.getByLabelText('Autonomy'), 'guarded')
     await userEvent.selectOptions(screen.getByLabelText('Effort'), 'high')
     await userEvent.click(screen.getByRole('button', { name: 'Create project' }))
@@ -89,5 +95,30 @@ describe('NewProjectDialog', () => {
         default_autonomy: 'guarded', default_effort: 'high' }),
     }))
     expect(useForge.getState().dialog).toBeNull()
+  })
+
+  it('Browse opens the native picker and fills the chosen path', async () => {
+    const fetchMock = vi.fn(async (url: string, init?: RequestInit) => ({
+      ok: true,
+      status: 200,
+      json: async () =>
+        url.includes('/api/fs/pick') ? { path: '/home/user/proj' }
+        : url.includes('recent_dirs') ? []
+        : init?.method === 'POST'
+          ? { id: 'p1', name: 'mygent', cwd: '/home/user/proj' }
+          : [],
+    }))
+    vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch)
+    useForge.setState({ dialog: 'new-project' })
+    render(<NewProjectDialog />)
+    await userEvent.type(screen.getByPlaceholderText('Project name'), 'mygent')
+    await userEvent.click(screen.getByRole('button', { name: 'Browse…' }))
+    await waitFor(() =>
+      expect(screen.getByPlaceholderText('/path/to/folder')).toHaveValue('/home/user/proj'))
+    await userEvent.click(screen.getByRole('button', { name: 'Create project' }))
+    expect(fetchMock).toHaveBeenCalledWith('/api/projects', expect.objectContaining({
+      method: 'POST',
+      body: JSON.stringify({ name: 'mygent', cwd: '/home/user/proj' }),
+    }))
   })
 })

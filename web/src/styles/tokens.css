@@ -35,6 +35,17 @@
   --warn: #e5b84b;
   --warn-dot: #e0b34b;
   --warn-title: #eac26a;
+  --warn-surface: linear-gradient(180deg, #16130a, #111008);
+
+  /* terminal dock signal rail — cool/attention/ended derived per theme */
+  --signal-quiet: var(--hair-4);
+  --signal-live: #4aa8d8;
+  --signal-attention: var(--warn);
+  --signal-ended: var(--text-ghost);
+
+  /* diff gutters */
+  --diff-del-gutter: #6e4040;
+  --diff-add-gutter: #3e6e50;
 
   /* hairlines by elevation */
   --hair-1: rgba(255, 255, 255, 0.05);
@@ -43,6 +54,15 @@
   --hair-4: rgba(255, 255, 255, 0.08);
   --hair-5: rgba(255, 255, 255, 0.09);
   --hair-hover: rgba(255, 255, 255, 0.14);
+
+  /* interaction tints (hover washes, stripes, active fills) */
+  --tint-1: rgba(255, 255, 255, 0.015);
+  --tint-2: rgba(255, 255, 255, 0.03);
+  --tint-3: rgba(255, 255, 255, 0.04);
+  --tint-4: rgba(255, 255, 255, 0.05);
+  --tint-5: rgba(255, 255, 255, 0.06);
+  --tint-6: rgba(255, 255, 255, 0.08);
+  --halo: rgba(255, 255, 255, 0.025);
 
   /* radii */
   --r-tile: 5px;
@@ -53,12 +73,97 @@
   --r-composer: 14px;
   --r-pill: 999px;
 
-  /* shadows */
+  /* shadows & overlays */
   --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 2px 10px rgba(0, 0, 0, 0.25);
   --shadow-composer: 0 12px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  --shadow-menu: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-pop: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-bubble: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-tab: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --scrim: rgba(0, 0, 0, 0.55);
   --glow-accent: 0 0 12px color-mix(in oklab, var(--accent) 30%, transparent);
 
   /* type */
   --font-sans: 'Geist Sans', system-ui, sans-serif;
   --font-mono: 'Geist Mono', ui-monospace, monospace;
+
+  color-scheme: dark;
+}
+
+:root[data-theme='light'] {
+  --accent: #0da88c;
+  --ink: #fdfdfe;
+
+  /* backgrounds */
+  --bg-app: #f3f3f5;
+  --bg-bar: linear-gradient(180deg, #fcfcfd, #f4f4f6);
+  --bg-card: #ffffff;
+  --bg-drawer: #f8f8fa;
+  --bg-composer: #ffffff;
+  --bg-raised-1: #ffffff;
+  --bg-raised-2: #fdfdfe;
+  --bg-raised-3: #eeeef1;
+
+  /* text */
+  --text-primary: #1b1b21;
+  --text-body: #34343d;
+  --text-secondary: #4d4d58;
+  --text-muted: #5e5e69;
+  --text-faint: #8c8c97;
+  --text-faint-2: #9b9ba5;
+  --text-ghost: #a7a7b1;
+  --text-ghost-2: #b5b5be;
+
+  /* semantic */
+  --ok: #2f9e5c;
+  --ok-dim: #38915c;
+  --ok-bg: rgba(47, 158, 92, 0.1);
+  --ok-row: rgba(47, 158, 92, 0.07);
+  --danger: #d64545;
+  --danger-dim: #c25353;
+  --danger-bg: rgba(214, 69, 69, 0.08);
+  --danger-row: rgba(214, 69, 69, 0.06);
+  --warn: #b0861a;
+  --warn-dot: #c29a2a;
+  --warn-title: #8a6a14;
+  --warn-surface: linear-gradient(180deg, #fdf8e9, #faf2d9);
+
+  /* terminal dock signal rail */
+  --signal-quiet: var(--hair-4);
+  --signal-live: #2a7fb0;
+  --signal-attention: var(--warn);
+  --signal-ended: var(--text-ghost);
+
+  /* diff gutters */
+  --diff-del-gutter: #c9938f;
+  --diff-add-gutter: #8fb99f;
+
+  /* hairlines */
+  --hair-1: rgba(20, 20, 30, 0.06);
+  --hair-2: rgba(20, 20, 30, 0.07);
+  --hair-3: rgba(20, 20, 30, 0.08);
+  --hair-4: rgba(20, 20, 30, 0.1);
+  --hair-5: rgba(20, 20, 30, 0.11);
+  --hair-hover: rgba(20, 20, 30, 0.2);
+
+  /* interaction tints */
+  --tint-1: rgba(20, 20, 30, 0.015);
+  --tint-2: rgba(20, 20, 30, 0.03);
+  --tint-3: rgba(20, 20, 30, 0.04);
+  --tint-4: rgba(20, 20, 30, 0.05);
+  --tint-5: rgba(20, 20, 30, 0.06);
+  --tint-6: rgba(20, 20, 30, 0.12);
+  --halo: rgba(20, 20, 30, 0.02);
+
+  /* shadows & overlays */
+  --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 2px 10px rgba(24, 24, 34, 0.06);
+  --shadow-composer: 0 12px 32px rgba(24, 24, 34, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --shadow-menu: 0 8px 24px rgba(24, 24, 34, 0.12);
+  --shadow-pop: 0 8px 24px rgba(24, 24, 34, 0.16);
+  --shadow-bubble: 0 2px 8px rgba(24, 24, 34, 0.07);
+  --shadow-tab: 0 1px 2px rgba(24, 24, 34, 0.1);
+  --scrim: rgba(24, 24, 34, 0.3);
+  --glow-accent: 0 0 12px color-mix(in oklab, var(--accent) 22%, transparent);
+
+  color-scheme: light;
 }

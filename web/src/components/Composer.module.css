@@ -16,7 +16,7 @@
 }
 
 /* plan mode: a quiet warm tint marks the different contract */
-.card[data-plan] { border-color: rgba(229, 184, 75, 0.28); }
+.card[data-plan] { border-color: color-mix(in oklab, var(--warn) 33%, transparent); }
 .planTag { color: var(--warn-title); }
 
 .attachments {
@@ -84,7 +84,7 @@
   font-family: var(--font-mono);
   font-size: 10.5px;
   color: var(--text-secondary);
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--tint-3);
   border-radius: var(--r-pill);
   padding: 4px 10px;
 }
@@ -102,12 +102,16 @@
 }
 .send:disabled { opacity: 0.4; cursor: default; }
 
-.ctxPill {
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  color: var(--text-faint);
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: var(--r-pill);
-  padding: 4px 10px;
+.stop {
+  width: 28px; height: 28px;
+  display: grid; place-items: center;
+  border-radius: var(--r-btn-lg);
+  background: var(--tint-3);
+  border: 1px solid var(--hair-4);
+  color: var(--text-primary);
+  font-size: 11px;
+  cursor: pointer;
 }
-.ctxPill[data-warn='true'] { color: var(--warn); }
+.stop:hover { background: var(--tint-2, var(--tint-3)); }
+.stop:disabled { opacity: 0.4; cursor: default; }
+

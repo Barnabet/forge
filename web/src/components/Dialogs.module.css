@@ -20,7 +20,7 @@
   padding: 5px 8px; border-radius: 6px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.recentRow:hover { background: rgba(255, 255, 255, 0.06); }
+.recentRow:hover { background: var(--tint-5); }
 
 .selects { display: flex; gap: 8px; margin-bottom: 10px; }
 .field {
@@ -54,7 +54,7 @@
 .accent:disabled { opacity: 0.4; cursor: default; }
 .danger {
   background: var(--danger-bg); color: var(--danger);
-  border: 1px solid rgba(238, 132, 132, 0.35);
+  border: 1px solid color-mix(in oklab, var(--danger) 40%, transparent);
   font-size: 12px; font-weight: 600;
   border-radius: var(--r-btn-lg); padding: 6px 14px;
 }

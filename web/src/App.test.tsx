@@ -22,14 +22,17 @@ beforeEach(() => {
   vi.stubGlobal('fetch', vi.fn(async (url: string) => ({
     ok: true,
     json: async () =>
-      url.includes('/models') ? [] : url.includes('/health') ? { ok: true } : [],
+      url.includes('/models') ? []
+      : url.includes('/health') ? { ok: true }
+      : url.includes('/fs/list') ? { entries: [] }
+      : [],
   })))
 })
 
 describe('App', () => {
   it('boots: hydrates, opens the websocket, renders the frame', async () => {
     render(<App />)
-    expect(await screen.findByText('Forge')).toBeInTheDocument()          // brand
+    expect(await screen.findByText('No session')).toBeInTheDocument()     // brand context
     // Seed a session so the chat column (and its composer) mounts.
     useForge.getState().applyEvent({
       type: 'session_created', session_id: 'aa', seq: 1, ts: 0,
@@ -62,7 +65,7 @@ describe('App', () => {
       .mockResolvedValue()
     render(<App />)
     // Frame still renders despite the rejected boot hydrate — no crash.
-    expect(await screen.findByText('Forge')).toBeInTheDocument()
+    expect(await screen.findByText('No session')).toBeInTheDocument()
     expect(errorSpy).toHaveBeenCalled()
     // When the engine comes back the WS opens and hydrate runs again (retry loop).
     FakeWebSocket.instances[0].onopen?.()
@@ -70,12 +73,15 @@ describe('App', () => {
   })
 
   it('renders events pushed through the store', async () => {
+    const { default: userEvent } = await import('@testing-library/user-event')
     render(<App />)
     useForge.getState().applyEvent({
       type: 'session_created', session_id: 'aa', seq: 1, ts: 0,
       name: 'hello world', cwd: '/w', model: 'm', autonomy: 'yolo',
     } as never)
-    expect(await screen.findByText('hello world')).toBeInTheDocument()  // sidebar row
+    // The session row now lives in the projects menu behind the sidebar header.
+    await userEvent.click(await screen.findByRole('button', { name: 'Toggle projects menu' }))
+    expect(await screen.findByText('hello world')).toBeInTheDocument()
   })
 
   it('shows the empty state when no session exists', async () => {
@@ -88,12 +94,20 @@ describe('App', () => {
     const { default: userEvent } = await import('@testing-library/user-event')
     localStorage.removeItem('forge.sidebar')
     render(<App />)
-    expect(await screen.findByText('PROJECTS')).toBeInTheDocument()
+    // Seed a session so the explorer (sidebar content) mounts.
+    useForge.getState().applyEvent({
+      type: 'session_created', session_id: 'aa', seq: 1, ts: 0,
+      name: 'hello world', cwd: '/w', model: 'm', autonomy: 'yolo',
+    } as never)
+    const nav = document.querySelector('nav')!
+    expect(await screen.findByText('EXPLORER')).toBeInTheDocument()
+    expect(nav).not.toHaveAttribute('data-collapsed')
     await userEvent.click(screen.getByRole('button', { name: 'Toggle sidebar' }))
-    expect(screen.queryByText('PROJECTS')).not.toBeInTheDocument()
+    // Sidebar stays mounted (animates to width 0) but is marked collapsed/hidden.
+    expect(nav).toHaveAttribute('data-collapsed')
     expect(localStorage.getItem('forge.sidebar')).toBe('collapsed')
     await userEvent.click(screen.getByRole('button', { name: 'Toggle sidebar' }))
-    expect(screen.getByText('PROJECTS')).toBeInTheDocument()
+    expect(nav).not.toHaveAttribute('data-collapsed')
     expect(localStorage.getItem('forge.sidebar')).toBe('open')
   })
 })

@@ -1,16 +1,28 @@
-import { useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { api } from '../api'
+import type { Autonomy, Effort } from '../protocol'
 import { useForge } from '../state/store'
 import CommandPalette from './CommandPalette'
+import ContextMeter from './ContextMeter'
 import FilePicker from './FilePicker'
+import PillSelect from './PillSelect'
 import s from './Composer.module.css'
+
+const EFFORT_OPTIONS: { value: Effort; label: string }[] = [
+  { value: 'default', label: 'default' },
+  { value: 'low', label: 'low' },
+  { value: 'medium', label: 'medium' },
+  { value: 'high', label: 'high' },
+]
+
+const AUTONOMY_OPTIONS: { value: Autonomy; label: string; hint: string }[] = [
+  { value: 'yolo', label: 'yolo', hint: 'auto-approve' },
+  { value: 'guarded', label: 'guarded', hint: 'ask first' },
+]
 
 export function paletteQuery(draft: string): string | null {
   const m = /^\/(\S*)$/.exec(draft)
   return m ? m[1] : null
-}
-
-function fmtTokens(n: number): string {
-  return n >= 1000 ? `${Math.round(n / 1000)}k` : String(n)
 }
 
 export function atQuery(draft: string): string | null {
@@ -27,22 +39,26 @@ function readAsDataUrl(file: File): Promise<string> {
   })
 }
 
+const DRAFT_KEY = 'forge.composer.draft'
+
 export default function Composer() {
-  const [draft, setDraft] = useState('')
+  // Restored from localStorage so an app crash/reload never eats a half-written prompt.
+  const [draft, setDraft] = useState(() => localStorage.getItem(DRAFT_KEY) ?? '')
   const [images, setImages] = useState<string[]>([])
   const [dragOver, setDragOver] = useState(false)
   const boxRef = useRef<HTMLTextAreaElement>(null)
   const send = useForge(st => st.send)
   const models = useForge(st => st.models)
   const healthy = useForge(st => st.healthy)
+  const activeId = useForge(st => st.activeId)
   const stream = useForge(st => (st.activeId ? st.sessions[st.activeId].stream : undefined))
 
   const modelName =
     models.find(m => m.id === stream?.model)?.display_name ?? stream?.model ?? ''
 
   const archived = stream?.archived ?? false
-  const effortPart = stream && stream.effort !== 'default' ? `${stream.effort} · ` : ''
   const planMode = stream?.mode === 'plan'
+  const running = stream?.status !== undefined && stream.status !== 'idle'
 
   const usage = stream?.usageTokens ?? 0
   const ctxWindow = models.find(m => m.id === stream?.model)?.context_window ?? 0
@@ -68,13 +84,18 @@ export default function Composer() {
     setImages(prev => [...prev, ...urls])
   }
 
-  const autosize = () => {
+  useEffect(() => {
+    if (draft) localStorage.setItem(DRAFT_KEY, draft)
+    else localStorage.removeItem(DRAFT_KEY)
+  }, [draft])
+
+  useLayoutEffect(() => {
     const el = boxRef.current
     if (!el) return
     el.style.height = 'auto'
     el.style.height = `${Math.min(el.scrollHeight, 140)}px`
     el.style.overflowY = el.scrollHeight > 140 ? 'auto' : 'hidden'
-  }
+  }, [draft])
 
   return (
     <div className={s.wrap}>
@@ -130,9 +151,10 @@ export default function Composer() {
           className={s.input}
           rows={1}
           disabled={archived}
-          placeholder={archived ? 'Archived — unarchive to continue' : 'Reply, steer, or queue another task…'}
+          placeholder={archived ? 'Archived — unarchive to continue'
+            : 'Reply, steer, or queue another task…'}
           value={draft}
-          onChange={e => { setDraft(e.target.value); autosize() }}
+          onChange={e => setDraft(e.target.value)}
           onPaste={e => {
             const files = [...e.clipboardData.files]
             if (files.some(f => f.type.startsWith('image/'))) {
@@ -151,14 +173,14 @@ export default function Composer() {
           <span className={s.chip}>@ files</span>
           <span className={s.chip}>/ commands</span>
           <span className={s.spacer} />
-          {ctxPct !== null && (
-            <span
-              className={s.ctxPill}
-              data-warn={ctxPct >= 75}
-              title={`${usage.toLocaleString()} of ${ctxWindow.toLocaleString()} context tokens (auto-compacts at 75%)`}
-            >
-              {fmtTokens(usage)} · {ctxPct}%
-            </span>
+          {ctxPct !== null && activeId && (
+            <ContextMeter
+              usage={usage}
+              window={ctxWindow}
+              pct={ctxPct}
+              disabled={archived}
+              onCompact={() => void api.compact(activeId)}
+            />
           )}
           <span
             className={s.modelPill}
@@ -166,8 +188,45 @@ export default function Composer() {
           >
             {!healthy && <span className={s.healthDot} />}
             {planMode && <span className={s.planTag}>plan · </span>}
-            {modelName} · {effortPart}{stream?.autonomy ?? 'yolo'}
+            {activeId && stream ? (
+              <PillSelect
+                disabled={archived}
+                segments={[
+                  {
+                    key: 'model',
+                    value: stream.model,
+                    options: models.map(m => ({ value: m.id, label: m.display_name })),
+                    onPick: m => void api.setModel(activeId, m),
+                  },
+                  {
+                    key: 'effort',
+                    value: stream.effort ?? 'default',
+                    options: EFFORT_OPTIONS,
+                    onPick: e => void api.setEffort(activeId, e as Effort),
+                  },
+                  {
+                    key: 'autonomy',
+                    value: stream.autonomy ?? 'yolo',
+                    options: AUTONOMY_OPTIONS,
+                    onPick: a => void api.setAutonomy(activeId, a as Autonomy),
+                  },
+                ]}
+              />
+            ) : (
+              modelName
+            )}
           </span>
+          {running && (
+            <button
+              className={s.stop}
+              aria-label="Stop"
+              title="Stop the current run"
+              disabled={!activeId}
+              onClick={() => activeId && void api.cancel(activeId)}
+            >
+              ■
+            </button>
+          )}
           <button
             className={s.send}
             aria-label="Send"

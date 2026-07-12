@@ -5,8 +5,8 @@
   overflow: hidden;
 }
 .card[data-state='pending'] {
-  border-color: rgba(229, 184, 75, 0.25);
-  box-shadow: 0 0 24px rgba(229, 184, 75, 0.06);
+  border-color: color-mix(in oklab, var(--warn) 30%, transparent);
+  box-shadow: 0 0 24px color-mix(in oklab, var(--warn) 8%, transparent);
 }
 .card[data-state='revising'] { opacity: 0.75; }
 
@@ -26,9 +26,9 @@
   font-size: 11px; padding: 2px 8px;
   border-radius: var(--r-btn-lg);
 }
-.badge[data-state='pending'] { color: var(--warn-title); background: rgba(229, 184, 75, 0.12); }
+.badge[data-state='pending'] { color: var(--warn-title); background: color-mix(in oklab, var(--warn) 14%, transparent); }
 .badge[data-state='approved'] { color: var(--accent); background: color-mix(in oklab, var(--accent) 12%, transparent); }
-.badge[data-state='revising'] { color: var(--text-secondary); background: rgba(255, 255, 255, 0.06); }
+.badge[data-state='revising'] { color: var(--text-secondary); background: var(--tint-5); }
 
 .chevron { margin-left: auto; color: var(--text-ghost); font-size: 11px; }
 
@@ -38,7 +38,30 @@
   max-height: 420px; overflow-y: auto;
 }
 .body :is(h1, h2, h3) { font-size: 13.5px; margin: 12px 0 6px; }
+.body :is(ul, ol) {
+  /* the global reset zeroes list padding — restore the indent */
+  padding-left: 22px;
+  margin: 8px 0;
+}
+.body li { margin: 3px 0; }
+.body li::marker { color: var(--text-muted); }
 .body code { font-family: var(--font-mono); font-size: 12px; }
+.body table {
+  border-collapse: collapse;
+  margin: 8px 0;
+  font-size: 12px;
+  display: block; max-width: 100%; overflow-x: auto;
+}
+.body th, .body td {
+  border: 1px solid var(--hair-3);
+  padding: 4px 10px;
+  text-align: left;
+}
+.body th {
+  font-weight: 600;
+  background: var(--tint-2);
+}
+.body tbody tr:nth-child(even) { background: var(--tint-1); }
 
 .feedbackNote {
   padding: 8px 16px 12px;
