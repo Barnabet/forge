@@ -87,14 +87,14 @@
   line-height: 1.65;
   color: var(--text-primary);
 }
-/* Streaming prose carries the gutter sparks on its last line — the sparks
-   "follow" the line being written. */
+/* Streaming prose carries the spark-burst in the gutter of its last line —
+   the marker "follows" the line being written. */
 .prose[data-live] { position: relative; }
 .proseSparks {
   position: absolute;
-  left: -36px;
-  bottom: -5px;
-  width: 32px; height: 32px;
+  left: -26px;
+  bottom: 2px;
+  width: 16px; height: 16px;
 }
 .prose :global(p + p) { margin-top: 8px; }
 .prose :global(h1), .prose :global(h2), .prose :global(h3),
@@ -211,18 +211,14 @@
     animation: pulse 1.2s ease-in-out infinite;
     transform: none;
   }
-  @keyframes pulse {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 1; }
-  }
 }
 
-.spinner {
+.statusSparks {
   position: absolute; /* gutter: left of the text margin */
-  left: -36px;
+  left: -26px;
   top: 50%;
-  margin-top: -16px;
-  width: 32px; height: 32px;
+  margin-top: -8px;
+  width: 16px; height: 16px;
 }
 @media (prefers-reduced-motion: reduce) {
   .statusLine [data-thinking] { animation: none; }

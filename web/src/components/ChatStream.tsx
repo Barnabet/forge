@@ -8,9 +8,9 @@ import ApprovalGate from './ApprovalGate'
 import ConfirmDialog from './ConfirmDialog'
 import { useLightbox } from './Lightbox'
 import PlanCard from './PlanCard'
+import { Sparks } from './Sparks'
 import ToolActivity from './ToolActivity'
 import TodoStrip from './TodoStrip'
-import { Sparks } from './Sparks'
 import s from './ChatStream.module.css'
 
 // Module-level so the array identity is stable across renders.
@@ -288,7 +288,7 @@ export default function ChatStream() {
               )
             }
             case 'prose':
-              // data-live puts the gutter sparks on the line being written
+              // data-live puts the spark-burst gutter marker on the streaming line
               return (
                 <div key={key} className={s.prose} data-live={item.streaming || undefined}>
                   {item.streaming && <Sparks className={s.proseSparks} />}
@@ -332,7 +332,7 @@ export default function ChatStream() {
               <CompactionProgress phase={compactionPhase} label={compactionLabel} />
             ) : statusText && (
               <>
-                <Sparks className={s.spinner} />
+                <Sparks className={s.statusSparks} />
                 <span data-thinking={thinking || undefined}>{statusText}</span>
                 {thinking && thinkingSince !== null && <ThinkingTimer since={thinkingSince} />}
               </>

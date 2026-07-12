@@ -1,53 +1,26 @@
 import s from './Sparks.module.css'
 
-// The "Forge is working" indicator: sparks spraying off a struck anvil. On
-// each cycle every ember fires at once — a single strike — but in a tight
-// directional cone up-and-to-the-left (not a radial starburst, which reads as
-// fireworks), then a beat of stillness before the next strike. The travel
-// vectors cluster around one diagonal; a gravity droop pulls the tail back
-// down as each streak decays, so it reads as a real spark spray.
-// Sizing/positioning come from the caller's className (the old spinner slots).
-const SPARKS = [
-  { dx: -3.5, dy: -8.5 },
-  { dx: -5.5, dy: -7 },
-  { dx: -7, dy: -5 },
-  { dx: -6.2, dy: -3 },
-  { dx: -4.6, dy: -6 },
-  { dx: -2.4, dy: -7.2 },
-]
-
+/**
+ * The "Forge agent working" indicator. A brief hammer-impact flash launches
+ * ember streaks from one point; they spread, arc down, and disappear before
+ * the next strike. Sizing and gutter position come from the caller.
+ */
 export function Sparks({ className }: { className?: string }) {
   return (
-    <svg
-      className={className ? `${s.sparks} ${className}` : s.sparks}
-      // Framed tightly around the animated spark spread (bbox center ≈ 8.5,12.9
-      // in the 0–24 draw space) so box-centering in the gutter lands it right.
-      viewBox="2 6.5 13 13"
+    <span
+      className={[s.sparks, className].filter(Boolean).join(' ')}
       aria-hidden="true"
-      focusable="false"
     >
-      <g fill="var(--spark)">
-        {SPARKS.map((sp, i) => {
-          // point the streak along its travel vector (rect is drawn pointing up)
-          const rot = (Math.atan2(sp.dy, sp.dx) * 180) / Math.PI + 90
-          return (
-            <rect
-              key={i}
-              className={s.spark}
-              x={11.4}
-              y={14}
-              width={1.2}
-              height={3.2}
-              rx={0.6}
-              style={{
-                ['--dx' as string]: sp.dx,
-                ['--dy' as string]: sp.dy,
-                ['--rot' as string]: `${rot}deg`,
-              }}
-            />
-          )
-        })}
-      </g>
-    </svg>
+      <svg viewBox="0 0 24 24" className={s.svg}>
+        <circle className={s.impact} cx="12" cy="18.5" r="1.4" />
+
+        <line className={`${s.spark} ${s.farLeft}`} x1="10.8" y1="17.7" x2="7.4" y2="16.2" />
+        <line className={`${s.spark} ${s.highLeft}`} x1="11.2" y1="17.2" x2="9.3" y2="13.8" />
+        <line className={`${s.spark} ${s.top}`} x1="12" y1="16.9" x2="12.3" y2="12.8" />
+        <line className={`${s.spark} ${s.highRight}`} x1="12.8" y1="17.2" x2="15" y2="14" />
+        <line className={`${s.spark} ${s.farRight}`} x1="13.2" y1="17.7" x2="16.8" y2="16" />
+        <circle className={`${s.ember} ${s.lowRight}`} cx="14" cy="18" r="0.65" />
+      </svg>
+    </span>
   )
 }

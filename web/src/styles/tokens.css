@@ -3,7 +3,7 @@
   --accent: #35e0c2;
   --ink: color-mix(in oklab, var(--accent) 20%, #050505);
 
-  /* brand ember — the "working" sparks (matches the logo) */
+  /* brand ember — the forge spark-burst working indicator */
   --spark: #ff7a18;
 
   /* backgrounds */
@@ -96,6 +96,7 @@
 :root[data-theme='light'] {
   --accent: #0da88c;
   --ink: #fdfdfe;
+  --spark: #f2660a;
 
   /* backgrounds */
   --bg-app: #f3f3f5;

@@ -15,17 +15,17 @@
 .row[data-clickable='true']:hover .verb { color: var(--text-muted); }
 .row[data-clickable='true']:hover .chevron { color: var(--text-muted); }
 
-/* Gutter sparks: sit left of the text margin, marking where execution is.
-   The brand ember flame — same indicator as ChatStream's status line. */
+/* Gutter spark-burst: sits left of the text margin, marking where execution
+   is. Same forge indicator as ChatStream's status line. */
 .pulse {
   position: absolute;
-  left: -36px;
+  left: -26px;
   top: 50%;
-  margin-top: -16px;
-  width: 32px; height: 32px;
+  margin-top: -8px;
+  width: 16px; height: 16px;
 }
-/* Indented lines inside an expanded group: keep the sparks in the gutter. */
-.line[data-indent] .pulse { left: -54px; }
+/* Indented lines inside an expanded group: keep the marker in the gutter. */
+.line[data-indent] .pulse { left: -44px; }
 
 .verb { flex: none; }
 

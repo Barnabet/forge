@@ -1,48 +1,99 @@
-/* Sparks flying off a struck anvil. Every ember shares ONE timeline: on each
-   cycle they all fire together — a single strike — shoot outward along their
-   own vectors (--dx/--dy), fade, then hold still for a beat before the next
-   strike. That rhythm reads as hammering, not a continuous drizzle. Shared by
-   the chat status line, streaming prose, and tool gutters. */
+/* Hammer-on-anvil working indicator. Every cycle is a discrete impact: a
+   flash at one origin, ember streaks fan outward, gravity pulls them back
+   down, then the frame rests before the next strike. */
 .sparks {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  line-height: 0;
+}
+.svg {
+  width: 100%;
+  height: 100%;
   overflow: visible;
 }
-.spark {
-  transform-box: fill-box;
-  transform-origin: 50% 100%;
-  animation: sparkStrike 1.15s ease-out infinite;
-  will-change: transform, opacity;
-}
 
-/* The strike + flight happen in the first ~40% of the cycle; the remainder is
-   the quiet gap before the hammer falls again. A constant +y gravity droop
-   (3px) added at the tail bends each streak into an arc rather than a straight
-   radial line, killing the fireworks look. */
-@keyframes sparkStrike {
-  0% {
+.spark,
+.ember,
+.impact {
+  color: var(--spark);
+  fill: currentColor;
+  stroke: currentColor;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation-duration: 1.15s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+.spark {
+  fill: none;
+  stroke-width: 1.35;
+  stroke-linecap: round;
+  animation-name: fly;
+}
+.ember { stroke: none; animation-name: fly; }
+.impact { stroke: none; transform-origin: center; animation-name: impact; }
+
+/* Every particle launches together from the strike point. --x/--y is its
+   apex; --fall-x/--fall-y is the later, visibly lower gravity position.
+   Streaks rotate toward the downward tangent during the fall. */
+.farLeft  { --x: -6px;   --y: -4px;  --fall-x: -10px; --fall-y: 6px;  --r: -42deg; }
+.highLeft { --x: -3.5px; --y: -8px;  --fall-x: -7px;  --fall-y: 5px;  --r: -28deg; }
+.top      { --x: .5px;   --y: -10px; --fall-x: 2px;   --fall-y: 6px;  --r: 12deg; }
+.highRight{ --x: 4px;    --y: -7px;  --fall-x: 8px;   --fall-y: 6px;  --r: 32deg; }
+.farRight { --x: 6.5px;  --y: -3px;  --fall-x: 11px;  --fall-y: 8px;  --r: 48deg; }
+.lowRight { --x: 5px;    --y: -1px;  --fall-x: 9px;   --fall-y: 7px;  --r: 0deg; }
+
+@keyframes fly {
+  0%, 6% {
     opacity: 0;
-    transform: translate(0, 0) rotate(var(--rot)) scaleY(0.3);
+    transform: translate(0, 0) rotate(0) scale(.15);
   }
-  6% {
+  9% {
     opacity: 1;
-    transform: translate(calc(var(--dx) * 0.28px), calc(var(--dy) * 0.28px)) rotate(var(--rot)) scaleY(1);
+    transform: translate(0, 0) rotate(0) scale(1.15);
   }
-  40% {
+  /* Fast launch, slowing as the ember fights gravity. */
+  25% {
+    opacity: 1;
+    transform: translate(calc(var(--x) * .82), calc(var(--y) * .88)) rotate(0) scale(1);
+  }
+  /* Apex: vertical speed reaches zero. */
+  34% {
+    opacity: 1;
+    transform: translate(var(--x), var(--y)) rotate(0) scale(.92);
+  }
+  /* The drop starts gently... */
+  45% {
+    opacity: .9;
+    transform: translate(var(--x), calc(var(--y) + 2px)) rotate(var(--r)) scale(.78);
+  }
+  /* ...then accelerates sharply below the anvil's strike height. */
+  65% {
     opacity: 0;
-    transform: translate(calc(var(--dx) * 1px), calc(var(--dy) * 1px + 3px)) rotate(var(--rot)) scaleY(0.5);
+    transform: translate(var(--fall-x), var(--fall-y)) rotate(var(--r)) scale(.28);
   }
   100% {
     opacity: 0;
-    transform: translate(calc(var(--dx) * 1px), calc(var(--dy) * 1px + 3px)) rotate(var(--rot)) scaleY(0.5);
+    transform: translate(var(--fall-x), var(--fall-y)) rotate(var(--r)) scale(.28);
   }
 }
 
+@keyframes impact {
+  0%, 5% { opacity: 0; transform: scale(.2); }
+  8% { opacity: 1; transform: scale(1.6); }
+  15% { opacity: .7; transform: scale(.65); }
+  24%, 100% { opacity: 0; transform: scale(.2); }
+}
+
+/* Reduced motion retains the strike/rest rhythm without particle travel. */
 @media (prefers-reduced-motion: reduce) {
-  .spark {
-    animation: sparkGlow 1.4s ease-in-out infinite;
-    transform: translate(calc(var(--dx) * 0.55px), calc(var(--dy) * 0.55px)) rotate(var(--rot));
-  }
-  @keyframes sparkGlow {
-    0%, 60%, 100% { opacity: 0.25; }
-    20% { opacity: 1; }
+  .spark,
+  .ember { display: none; }
+  .impact { animation: reducedStrike 1.4s ease-in-out infinite; }
+  @keyframes reducedStrike {
+    0%, 12%, 100% { opacity: .25; transform: scale(.65); }
+    6% { opacity: 1; transform: scale(1.2); }
   }
 }
