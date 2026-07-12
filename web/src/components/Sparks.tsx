@@ -1,17 +1,17 @@
 import s from './Sparks.module.css'
 
-// The "Forge is working" indicator: sparks flying off a struck anvil. Small
-// ember streaks eject from a low strike point in a fan, arc outward and fade —
-// a repeating shower, not a static flame. Each streak carries its own travel
-// vector (--dx/--dy) and staggered delay so the burst never looks in lockstep.
+// The "Forge is working" indicator: sparks flying off a struck anvil. On each
+// cycle every ember fires at once — a single strike — fanning outward along its
+// own vector (--dx/--dy), then a beat of stillness before the next strike, so
+// it reads as rhythmic hammering rather than a continuous drizzle.
 // Sizing/positioning come from the caller's className (the old spinner slots).
 const SPARKS = [
-  { dx: -5.5, dy: -3.5, delay: '0s', dur: '0.85s' },
-  { dx: -2.8, dy: -7.5, delay: '-0.15s', dur: '0.95s' },
-  { dx: 0.2, dy: -8.5, delay: '-0.5s', dur: '0.9s' },
-  { dx: 3.2, dy: -7, delay: '-0.28s', dur: '1s' },
-  { dx: 5.8, dy: -3, delay: '-0.62s', dur: '0.88s' },
-  { dx: -1.5, dy: -5.5, delay: '-0.78s', dur: '0.8s' },
+  { dx: -5.5, dy: -3.5 },
+  { dx: -2.8, dy: -7.5 },
+  { dx: 0.2, dy: -8.5 },
+  { dx: 3.2, dy: -7 },
+  { dx: 5.8, dy: -3 },
+  { dx: -1.5, dy: -5.5 },
 ]
 
 export function Sparks({ className }: { className?: string }) {
@@ -39,8 +39,6 @@ export function Sparks({ className }: { className?: string }) {
                 ['--dx' as string]: sp.dx,
                 ['--dy' as string]: sp.dy,
                 ['--rot' as string]: `${rot}deg`,
-                animationDelay: sp.delay,
-                animationDuration: sp.dur,
               }}
             />
           )

@@ -1,43 +1,46 @@
-/* Sparks flying off a struck anvil: each ember streak launches from a low
-   strike point, shoots outward along its own vector (--dx/--dy), stretches in
-   flight and fades — a repeating shower. Staggered delays keep the burst
-   irregular. Shared by the chat status line, streaming prose, and tool
-   gutters. */
+/* Sparks flying off a struck anvil. Every ember shares ONE timeline: on each
+   cycle they all fire together — a single strike — shoot outward along their
+   own vectors (--dx/--dy), fade, then hold still for a beat before the next
+   strike. That rhythm reads as hammering, not a continuous drizzle. Shared by
+   the chat status line, streaming prose, and tool gutters. */
 .sparks {
   overflow: visible;
 }
 .spark {
   transform-box: fill-box;
   transform-origin: 50% 100%;
-  animation-name: sparkFly;
-  animation-timing-function: cubic-bezier(0.15, 0.6, 0.5, 1);
-  animation-iteration-count: infinite;
+  animation: sparkStrike 1.15s ease-out infinite;
   will-change: transform, opacity;
 }
 
-@keyframes sparkFly {
+/* The strike + flight happen in the first ~40% of the cycle; the remainder is
+   the quiet gap before the hammer falls again. */
+@keyframes sparkStrike {
   0% {
     opacity: 0;
-    transform: translate(0, 0) rotate(var(--rot)) scaleY(0.35);
+    transform: translate(0, 0) rotate(var(--rot)) scaleY(0.3);
   }
-  12% {
+  6% {
     opacity: 1;
-    transform: translate(calc(var(--dx) * 0.35px), calc(var(--dy) * 0.35px)) rotate(var(--rot)) scaleY(1);
+    transform: translate(calc(var(--dx) * 0.28px), calc(var(--dy) * 0.28px)) rotate(var(--rot)) scaleY(1);
+  }
+  40% {
+    opacity: 0;
+    transform: translate(calc(var(--dx) * 1px), calc(var(--dy) * 1px)) rotate(var(--rot)) scaleY(0.5);
   }
   100% {
     opacity: 0;
-    transform: translate(calc(var(--dx) * 1px), calc(var(--dy) * 1px)) rotate(var(--rot)) scaleY(0.55);
+    transform: translate(calc(var(--dx) * 1px), calc(var(--dy) * 1px)) rotate(var(--rot)) scaleY(0.5);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .spark {
-    animation: sparkGlow 1.2s ease-in-out infinite;
-    animation-delay: 0s !important;
+    animation: sparkGlow 1.4s ease-in-out infinite;
     transform: translate(calc(var(--dx) * 0.55px), calc(var(--dy) * 0.55px)) rotate(var(--rot));
   }
   @keyframes sparkGlow {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 1; }
+    0%, 60%, 100% { opacity: 0.25; }
+    20% { opacity: 1; }
   }
 }
