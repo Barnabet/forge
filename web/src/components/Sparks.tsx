@@ -1,17 +1,19 @@
 import s from './Sparks.module.css'
 
-// The "Forge is working" indicator: sparks flying off a struck anvil. On each
-// cycle every ember fires at once — a single strike — fanning outward along its
-// own vector (--dx/--dy), then a beat of stillness before the next strike, so
-// it reads as rhythmic hammering rather than a continuous drizzle.
+// The "Forge is working" indicator: sparks spraying off a struck anvil. On
+// each cycle every ember fires at once — a single strike — but in a tight
+// directional cone up-and-to-the-right (not a radial starburst, which reads as
+// fireworks), then a beat of stillness before the next strike. The travel
+// vectors cluster around one diagonal; a gravity droop pulls the tail back
+// down as each streak decays, so it reads as a real spark spray.
 // Sizing/positioning come from the caller's className (the old spinner slots).
 const SPARKS = [
-  { dx: -5.5, dy: -3.5 },
-  { dx: -2.8, dy: -7.5 },
-  { dx: 0.2, dy: -8.5 },
-  { dx: 3.2, dy: -7 },
-  { dx: 5.8, dy: -3 },
-  { dx: -1.5, dy: -5.5 },
+  { dx: 3.5, dy: -8.5 },
+  { dx: 5.5, dy: -7 },
+  { dx: 7, dy: -5 },
+  { dx: 6.2, dy: -3 },
+  { dx: 4.6, dy: -6 },
+  { dx: 2.4, dy: -7.2 },
 ]
 
 export function Sparks({ className }: { className?: string }) {

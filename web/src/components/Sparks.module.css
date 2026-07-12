@@ -14,7 +14,9 @@
 }
 
 /* The strike + flight happen in the first ~40% of the cycle; the remainder is
-   the quiet gap before the hammer falls again. */
+   the quiet gap before the hammer falls again. A constant +y gravity droop
+   (3px) added at the tail bends each streak into an arc rather than a straight
+   radial line, killing the fireworks look. */
 @keyframes sparkStrike {
   0% {
     opacity: 0;
@@ -26,11 +28,11 @@
   }
   40% {
     opacity: 0;
-    transform: translate(calc(var(--dx) * 1px), calc(var(--dy) * 1px)) rotate(var(--rot)) scaleY(0.5);
+    transform: translate(calc(var(--dx) * 1px), calc(var(--dy) * 1px + 3px)) rotate(var(--rot)) scaleY(0.5);
   }
   100% {
     opacity: 0;
-    transform: translate(calc(var(--dx) * 1px), calc(var(--dy) * 1px)) rotate(var(--rot)) scaleY(0.5);
+    transform: translate(calc(var(--dx) * 1px), calc(var(--dy) * 1px + 3px)) rotate(var(--rot)) scaleY(0.5);
   }
 }
 
